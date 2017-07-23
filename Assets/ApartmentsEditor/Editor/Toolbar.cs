@@ -15,12 +15,20 @@ namespace Nox7atra.ApartmentEditor
         public void Draw()
         {
             EditorGUILayout.BeginHorizontal();
+            CreateRoomButton();
             RecenterButton();
             EditorGUILayout.EndHorizontal();
         }
         #endregion
 
         #region buttons
+        public void CreateRoomButton()
+        {
+            if (GUILayout.Button("CreateRoom"))
+            {
+                _ParentWindow.CreateRoomBegin();
+            }
+        }
         public void RecenterButton()
         {
             if (GUILayout.Button("Recenter"))

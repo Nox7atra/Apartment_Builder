@@ -27,6 +27,7 @@ namespace Nox7atra.ApartmentEditor
         #region callbacks
         public event Action<EventType, Event> onKeyEvent;
         #endregion
+
         #region properties
         public Apartment CurrentApartment
         {
@@ -36,23 +37,29 @@ namespace Nox7atra.ApartmentEditor
             }
         }
         #endregion
+
         #region attributes
         public readonly Grid Grid;
 
         private readonly Toolbar _Toolbar;
 
+
+        private Vector3? _LastMousePosition;
         private Apartment _CurrentApartment;
-        private int _ControlId;
         private readonly Dictionary<EditorWindowState, StateApartmentBuilder> _States;
         #endregion
 
-        #region service methods
-        void ActivateState(EditorWindowState state)
+        #region public methods
+        
+        public void CreateRoomBegin()
         {
-            foreach (var stateApartmentEditor in _States)
-            {
-                stateApartmentEditor.Value.MouseCallbacks(stateApartmentEditor.Key == state);
-            }
+            ActivateState(EditorWindowState.RoomCreation);
+        }
+        public void CreateRoomEnd(Room room)
+        {
+            _CurrentApartment.Rooms.Add(room);
+            ActivateState(EditorWindowState.Normal);
+            Repaint();
         }
         #endregion
 
@@ -62,12 +69,13 @@ namespace Nox7atra.ApartmentEditor
             var curEvent = Event.current;
             switch (curEvent.type)
             {
-                case EventType.MouseDown:
-                    _ControlId = GUIUtility.GetControlID(FocusType.Passive);
-                    GUIUtility.hotControl = _ControlId;
+                case EventType.MouseDrag:
+                    if (Event.current.button == 1)
+                        DragGrid();
                     break;
-                case EventType.ScrollWheel:
-                    OnScroll(curEvent.delta.y);
+                case EventType.MouseDown:
+                    if (Event.current.button == 1)
+                        _LastMousePosition = null;
                     break;
             }
 
@@ -75,19 +83,34 @@ namespace Nox7atra.ApartmentEditor
             {
                 onKeyEvent(curEvent.type, curEvent);
             }
-            else if (GUIUtility.hotControl == _ControlId && Event.current.rawType == EventType.MouseUp)
+            else if (Event.current.rawType == EventType.MouseUp)
             {
                 if (onKeyEvent != null)
                     onKeyEvent(Event.current.rawType, curEvent);
             }
         }
-
-        void OnScroll(float speed)
+        void DragGrid()
         {
-            Grid.Zoom(speed);
-            Repaint(); 
+            var curMousePosition = Event.current.mousePosition;
+            if (_LastMousePosition.HasValue)
+            {
+                var dv = GUIUtility.GUIToScreenPoint((Vector2)_LastMousePosition)
+                         - GUIUtility.GUIToScreenPoint(curMousePosition);
+                Grid.Move(dv);
+                Repaint();
+            }
+            _LastMousePosition = curMousePosition;
         }
+        #endregion
 
+        #region service methods
+        void ActivateState(EditorWindowState state)
+        {
+            foreach (var stateApartmentEditor in _States)
+            {
+                stateApartmentEditor.Value.SetActive(stateApartmentEditor.Key == state);
+            }
+        }
         #endregion
 
         #region engine methods
@@ -96,8 +119,16 @@ namespace Nox7atra.ApartmentEditor
             KeysEvents();
             Grid.Draw();
             _Toolbar.Draw();
-        }
+            foreach (var stateApartmentEditor in _States)
+            {
+                stateApartmentEditor.Value.Draw();
+            }
+            if (_CurrentApartment != null)
+            {
+                _CurrentApartment.Draw();
+            }
 
+        }
         void OnDestroy()
         {
             foreach (var stateApartmentEditor in _States.Values)
@@ -107,13 +138,13 @@ namespace Nox7atra.ApartmentEditor
         }
         #endregion
 
-
         #region constructors
         public ApartmentEditorWindow()
         {
-            Grid     = new Grid(this);
+            Grid = new Grid(this);
             _Toolbar = new Toolbar(this);
-
+            _CurrentApartment = new Apartment();
+            wantsMouseMove = true;
             _States = new Dictionary<EditorWindowState, StateApartmentBuilder>
             {
                 {EditorWindowState.Normal,       new NormalState(this)},
@@ -122,7 +153,5 @@ namespace Nox7atra.ApartmentEditor
             ActivateState(EditorWindowState.Normal);
         }
         #endregion
-
-     
     }
 }
