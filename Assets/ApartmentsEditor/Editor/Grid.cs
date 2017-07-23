@@ -30,8 +30,14 @@ namespace Nox7atra.ApartmentEditor
         public Vector2 GUIToGrid(Vector3 vec)
         {
             return (new Vector2(
+                       vec.x - _ParentWindow.position.width / 2,
+                       vec.y - _ParentWindow.position.height / 2) + _Offset) ;
+        }
+        public Vector2 GridToGUI(Vector3 vec)
+        {
+            return (new Vector2(
                        vec.x + _ParentWindow.position.width / 2,
-                       -vec.y - _ParentWindow.position.height / 2) - _Offset) ;
+                       vec.y + _ParentWindow.position.height / 2) - _Offset);
         }
         public void Draw()
         {
@@ -67,24 +73,24 @@ namespace Nox7atra.ApartmentEditor
                 Handles.color = new Color(GRID_COLOR.r, GRID_COLOR.g, GRID_COLOR.b,  step0 / 4);
                 
                 Handles.DrawLine(
-                    GUIToGrid(new Vector2(-length, i * DEFAULT_CELL_SIZE)),
-                    GUIToGrid(new Vector2(length, i * DEFAULT_CELL_SIZE))
+                    GridToGUI(new Vector2(-length, i * DEFAULT_CELL_SIZE)),
+                    GridToGUI(new Vector2(length, i * DEFAULT_CELL_SIZE))
                 );
                 Handles.DrawLine(
-                    GUIToGrid(new Vector2(i * DEFAULT_CELL_SIZE, -length)),
-                    GUIToGrid(new Vector2(i * DEFAULT_CELL_SIZE, length))
+                    GridToGUI(new Vector2(i * DEFAULT_CELL_SIZE, -length)),
+                    GridToGUI(new Vector2(i * DEFAULT_CELL_SIZE, length))
                 );
             }
             for (int i = -halfCount; i <= halfCount; i += (int)step0 * 10)
             {
                 Handles.color = new Color(GRID_COLOR.r, GRID_COLOR.g, GRID_COLOR.b,  step0);
                 Handles.DrawLine(
-                    GUIToGrid(new Vector2(-length, i * DEFAULT_CELL_SIZE)),
-                    GUIToGrid(new Vector2(length, i * DEFAULT_CELL_SIZE))
+                    GridToGUI(new Vector2(-length, i * DEFAULT_CELL_SIZE)),
+                    GridToGUI(new Vector2(length, i * DEFAULT_CELL_SIZE))
                 );
                 Handles.DrawLine(
-                    GUIToGrid(new Vector2(i * DEFAULT_CELL_SIZE, -length)),
-                    GUIToGrid(new Vector2(i * DEFAULT_CELL_SIZE, length))
+                    GridToGUI(new Vector2(i * DEFAULT_CELL_SIZE, -length)),
+                    GridToGUI(new Vector2(i * DEFAULT_CELL_SIZE, length))
                 );
             }
         }
@@ -94,10 +100,10 @@ namespace Nox7atra.ApartmentEditor
                 return;
 
             Handles.color = Color.cyan;
-            Handles.DrawLine(GUIToGrid(Vector3.left * DEFAULT_CELL_SIZE), 
-                GUIToGrid(Vector3.right * DEFAULT_CELL_SIZE));
+            Handles.DrawLine(GridToGUI(Vector3.left * DEFAULT_CELL_SIZE),
+                GridToGUI(Vector3.right * DEFAULT_CELL_SIZE));
             Handles.DrawLine(GUIToGrid(Vector3.down * DEFAULT_CELL_SIZE),
-                GUIToGrid(Vector3.up * DEFAULT_CELL_SIZE));
+                GridToGUI(Vector3.up * DEFAULT_CELL_SIZE));
         }
         #endregion
 

@@ -37,18 +37,21 @@ namespace Nox7atra.ApartmentEditor
         #endregion
 
         #region public methods
-        public void Draw(bool isClosed = true)
+        public void Draw(Grid grid, bool isClosed = true)
         {
             int count = isClosed ? _ContourPoints.Count : _ContourPoints.Count - 1;
             for (int i = 0; i < count; i++)
             {
                 Handles.color = Color.cyan;
-                Handles.DrawLine(
-                     _ContourPoints[i],
-                     _ContourPoints[(i + 1) % _ContourPoints.Count]);
+                Handles.DrawLine(grid.GridToGUI(_ContourPoints[i]),
+                     grid.GridToGUI(_ContourPoints[(i + 1) % _ContourPoints.Count]));
                 Handles.color = Color.yellow;
-                Handles.DrawWireDisc(_ContourPoints[i], Vector3.back, SNAPING_RAD);
+                Handles.DrawWireDisc(grid.GridToGUI(_ContourPoints[i]), Vector3.back, SNAPING_RAD);
             }
+        }
+        public bool IsLastPoint(Vector2 point)
+        {
+            return Vector2.Distance(point, _ContourPoints[0]) < SNAPING_RAD;
         }
         #endregion
 

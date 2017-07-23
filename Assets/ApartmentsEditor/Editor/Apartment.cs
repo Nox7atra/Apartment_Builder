@@ -33,11 +33,11 @@ namespace Nox7atra.ApartmentEditor
         #endregion
 
         #region public methods
-        public void Draw()
+        public void Draw(Grid grid)
         {
             for(int i = 0; i < _Rooms.Count; i++)
             {
-                _Rooms[i].Draw();
+                _Rooms[i].Draw(grid);
             }
         }
         #endregion

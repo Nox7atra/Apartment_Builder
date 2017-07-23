@@ -43,7 +43,6 @@ namespace Nox7atra.ApartmentEditor
 
         private readonly Toolbar _Toolbar;
 
-
         private Vector3? _LastMousePosition;
         private Apartment _CurrentApartment;
         private readonly Dictionary<EditorWindowState, StateApartmentBuilder> _States;
@@ -125,7 +124,7 @@ namespace Nox7atra.ApartmentEditor
             }
             if (_CurrentApartment != null)
             {
-                _CurrentApartment.Draw();
+                _CurrentApartment.Draw(Grid);
             }
 
         }

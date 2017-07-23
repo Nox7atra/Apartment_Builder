@@ -37,12 +37,12 @@ namespace Nox7atra.ApartmentEditor
             {
                 Handles.DrawLine(
                     mousePos,
-                    _CurrentRoom.Contour[_CurrentRoom.Contour.Count - 1]
+                    _ParentWindow.Grid.GridToGUI(_CurrentRoom.Contour[_CurrentRoom.Contour.Count - 1])
                     );
             }
-            Handles.Label(mousePos, mousePos.ToString());
+            Handles.Label(mousePos, _ParentWindow.Grid.GUIToGrid(_CurrentMousePosition).ToString());
 
-            _CurrentRoom.Draw(false);
+            _CurrentRoom.Draw(_ParentWindow.Grid, false);
         }
         #endregion
 
@@ -59,17 +59,21 @@ namespace Nox7atra.ApartmentEditor
                     _ParentWindow.Repaint();
                     break;
                 case EventType.MouseDown:
-                    if (_CurrentRoom.Contour.Count > 0 
-                        && Vector2.Distance( _CurrentMousePosition , _CurrentRoom.Contour[0]) < Room.SNAPING_RAD)
+                    if (@event.button == 0)
                     {
-                        if (_CurrentRoom.Contour.Count > 2)
+                        var posToAdd = _ParentWindow.Grid.GUIToGrid(_CurrentMousePosition);
+                        if (_CurrentRoom.Contour.Count > 0
+                            && _CurrentRoom.IsLastPoint(posToAdd))
                         {
-                            _ParentWindow.CreateRoomEnd(_CurrentRoom);
+                            if (_CurrentRoom.Contour.Count > 2)
+                            {
+                                _ParentWindow.CreateRoomEnd(_CurrentRoom);
+                            }
                         }
-                    }
-                    else
-                    {
-                        _CurrentRoom.Contour.Add(_CurrentMousePosition);
+                        else
+                        {
+                            _CurrentRoom.Contour.Add(posToAdd);
+                        }
                     }
                     break;
             }
