@@ -19,6 +19,7 @@ namespace Nox7atra.ApartmentEditor
             }
         }
         #endregion
+
         #region attributes
         readonly EditorWindow _ParentWindow;
 
@@ -30,8 +31,8 @@ namespace Nox7atra.ApartmentEditor
         public Vector2 GUIToGrid(Vector3 vec)
         {
             return (new Vector2(
-                       vec.x - _ParentWindow.position.width / 2,
-                       vec.y - _ParentWindow.position.height / 2) + _Offset) ;
+                       Mathf.RoundToInt(vec.x - _ParentWindow.position.width / 2),
+                       Mathf.RoundToInt(vec.y - _ParentWindow.position.height / 2)) + _Offset) ;
         }
         public Vector2 GridToGUI(Vector3 vec)
         {

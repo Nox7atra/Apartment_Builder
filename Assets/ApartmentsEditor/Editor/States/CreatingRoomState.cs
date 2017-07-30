@@ -35,11 +35,13 @@ namespace Nox7atra.ApartmentEditor
             var mousePos = _CurrentMousePosition;
             if (_CurrentRoom != null && _CurrentRoom.Contour.Count > 0)
             {
+                Handles.color = Color.gray;
                 Handles.DrawLine(
                     mousePos,
                     _ParentWindow.Grid.GridToGUI(_CurrentRoom.Contour[_CurrentRoom.Contour.Count - 1])
                     );
             }
+           
             Handles.Label(mousePos, _ParentWindow.Grid.GUIToGrid(_CurrentMousePosition).ToString());
 
             _CurrentRoom.Draw(_ParentWindow.Grid, false);
@@ -61,7 +63,7 @@ namespace Nox7atra.ApartmentEditor
                 case EventType.MouseDown:
                     if (@event.button == 0)
                     {
-                        var posToAdd = _ParentWindow.Grid.GUIToGrid(_CurrentMousePosition);
+                        var posToAdd = _ParentWindow.Grid.GUIToGrid(@event.mousePosition);
                         if (_CurrentRoom.Contour.Count > 0
                             && _CurrentRoom.IsLastPoint(posToAdd))
                         {

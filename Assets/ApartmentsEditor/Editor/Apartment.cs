@@ -29,16 +29,57 @@ namespace Nox7atra.ApartmentEditor
         #endregion
 
         #region attributes
+        public Vector2 Dimensions;
+
         private List<Room> _Rooms;
         #endregion
 
         #region public methods
         public void Draw(Grid grid)
         {
+            DrawDimensions(grid);
             for(int i = 0; i < _Rooms.Count; i++)
             {
                 _Rooms[i].Draw(grid);
             }
+        }
+        public void MoveRoom(int roomIndex, Vector2 dv)
+        {
+            _Rooms[roomIndex].Move(dv);
+        }
+        public void Move(Vector2 dv)
+        {
+            for(int i = 0; i < _Rooms.Count; i++)
+            {
+                _Rooms[i].Move(dv);
+            }
+        }
+        #endregion
+
+        #region service methods
+        private void DrawDimensions(Grid grid)
+        {
+            Handles.color = Color.green;
+            Handles.DrawLine(
+                grid.GridToGUI(
+                    new Vector3(Dimensions.x / 2, Dimensions.y / 2)),
+                grid.GridToGUI(
+                    new Vector3(Dimensions.x / 2, -Dimensions.y / 2)));
+            Handles.DrawLine(
+                grid.GridToGUI(
+                    new Vector3(Dimensions.x / 2, -Dimensions.y / 2)),
+                grid.GridToGUI(
+                    new Vector3(-Dimensions.x / 2, -Dimensions.y / 2)));
+            Handles.DrawLine(
+                grid.GridToGUI(
+                    new Vector3(-Dimensions.x / 2, -Dimensions.y / 2)),
+                grid.GridToGUI(
+                    new Vector3(-Dimensions.x / 2, Dimensions.y / 2)));
+            Handles.DrawLine(
+                grid.GridToGUI(
+                    new Vector3(-Dimensions.x / 2, Dimensions.y / 2)),
+                grid.GridToGUI(
+                    new Vector3(Dimensions.x / 2, Dimensions.y / 2)));
         }
         #endregion
 
@@ -46,6 +87,7 @@ namespace Nox7atra.ApartmentEditor
         public Apartment()
         {
             _Rooms = new List<Room>();
+            Dimensions = new Vector2(1000, 1000);
         }
         #endregion
     }

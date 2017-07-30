@@ -7,6 +7,13 @@ namespace Nox7atra.ApartmentEditor
     public class Room
     {
         #region properties
+        public Color ContourColor
+        {
+            get
+            {
+                return _ContourColor;
+            }
+        }
         public List<Vector2> Contour
         {
             get
@@ -33,6 +40,7 @@ namespace Nox7atra.ApartmentEditor
 
         #region attributes
         private Type _Type;
+        private Color _ContourColor;
         private List<Vector2> _ContourPoints;
         #endregion
 
@@ -42,11 +50,34 @@ namespace Nox7atra.ApartmentEditor
             int count = isClosed ? _ContourPoints.Count : _ContourPoints.Count - 1;
             for (int i = 0; i < count; i++)
             {
-                Handles.color = Color.cyan;
-                Handles.DrawLine(grid.GridToGUI(_ContourPoints[i]),
-                     grid.GridToGUI(_ContourPoints[(i + 1) % _ContourPoints.Count]));
-                Handles.color = Color.yellow;
-                Handles.DrawWireDisc(grid.GridToGUI(_ContourPoints[i]), Vector3.back, SNAPING_RAD);
+                var p1 = grid.GridToGUI(_ContourPoints[i]);
+                var p2 = grid.GridToGUI(_ContourPoints[(i + 1) % _ContourPoints.Count]);
+
+                Handles.color = _ContourColor;
+                Handles.DrawLine(p1, p2);
+             
+                Handles.color = Color.white;
+                Handles.DrawWireDisc(p1, Vector3.back, SNAPING_RAD);
+                if (ApartmentConfigWindow.Config.IsDrawSizes)
+                {
+                    Handles.color = Color.white;
+                    Handles.Label((p1 + p2) / 2, 
+                        Vector2.Distance(
+                            _ContourPoints[i], 
+                            _ContourPoints[(i + 1) % _ContourPoints.Count]).ToString());
+                }
+                if (ApartmentConfigWindow.Config.IsDrawPositions)
+                {
+                    Handles.color = Color.white;
+                    Handles.Label(p1, _ContourPoints[i].ToString());
+                }
+            }
+        }
+        public void Move(Vector2 dv)
+        {
+            for(int i = 0; i < _ContourPoints.Count; i++)
+            {
+                _ContourPoints[i] += dv;
             }
         }
         public bool IsLastPoint(Vector2 point)
@@ -57,8 +88,9 @@ namespace Nox7atra.ApartmentEditor
 
         #region constructor
         public Room()
-        {
+        { 
             _ContourPoints = new List<Vector2>();
+            _ContourColor = new Color(Random.Range(0.5f, 1), Random.Range(0.5f, 1), Random.Range(0.5f, 1));
         }
         #endregion
         #region constants 

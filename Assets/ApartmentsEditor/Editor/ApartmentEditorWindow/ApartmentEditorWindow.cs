@@ -12,6 +12,8 @@ namespace Nox7atra.ApartmentEditor
         public static void Create()
         {
             var window = GetWindow<ApartmentEditorWindow>("ApartmentBuilder");
+
+            window._ConfigWindow = ApartmentConfigWindow.Create(window);
             window.Show();
         }
         #endregion
@@ -33,19 +35,19 @@ namespace Nox7atra.ApartmentEditor
         {
             get
             {
-                return _CurrentApartment;
+                return _ApartmentManager.CurrentApartment;
             }
         }
         #endregion
-
         #region attributes
-        public readonly Grid Grid;
+        public  readonly Grid Grid;
 
         private readonly Toolbar _Toolbar;
+        private ApartmentConfigWindow _ConfigWindow;
 
-        private Vector3? _LastMousePosition;
-        private Apartment _CurrentApartment;
+        private readonly ApartmentsManager _ApartmentManager;
         private readonly Dictionary<EditorWindowState, StateApartmentBuilder> _States;
+        private Vector3? _LastMousePosition;
         #endregion
 
         #region public methods
@@ -56,7 +58,7 @@ namespace Nox7atra.ApartmentEditor
         }
         public void CreateRoomEnd(Room room)
         {
-            _CurrentApartment.Rooms.Add(room);
+            _ApartmentManager.CurrentApartment.Rooms.Add(room);
             ActivateState(EditorWindowState.Normal);
             Repaint();
         }
@@ -117,15 +119,18 @@ namespace Nox7atra.ApartmentEditor
         {
             KeysEvents();
             Grid.Draw();
+            var apartment = _ApartmentManager.CurrentApartment;
+            if (apartment != null)
+            {
+                apartment.Draw(Grid);
+            }
+
             _Toolbar.Draw();
             foreach (var stateApartmentEditor in _States)
             {
                 stateApartmentEditor.Value.Draw();
             }
-            if (_CurrentApartment != null)
-            {
-                _CurrentApartment.Draw(Grid);
-            }
+           
 
         }
         void OnDestroy()
@@ -142,7 +147,8 @@ namespace Nox7atra.ApartmentEditor
         {
             Grid = new Grid(this);
             _Toolbar = new Toolbar(this);
-            _CurrentApartment = new Apartment();
+
+            _ApartmentManager = new ApartmentsManager();
             wantsMouseMove = true;
             _States = new Dictionary<EditorWindowState, StateApartmentBuilder>
             {
