@@ -11,7 +11,7 @@ namespace Nox7atra.ApartmentEditor
         public static ApartmentConfigWindow Create(ApartmentEditorWindow parent)
         {
             var window = GetWindow<ApartmentConfigWindow>("ApartmentConfig");
-            window._Parent = parent;
+            window._ParentWindow = parent;
             window.Show();
             return window;
         }
@@ -20,20 +20,19 @@ namespace Nox7atra.ApartmentEditor
         #region attributes
         public static ApartmentDrawConfig Config;
 
-        private ApartmentEditorWindow _Parent;
+        private ApartmentEditorWindow _ParentWindow;
         #endregion
         #region engine methods
         void OnGUI()
         {
             EditorGUILayout.BeginVertical();
-            _Parent.CurrentApartment.Dimensions = EditorGUILayout.Vector2Field(
-                "Dimensions", _Parent.CurrentApartment.Dimensions);
-
+            _ParentWindow.CurrentApartment.Dimensions = EditorGUILayout.Vector2Field(
+                "Dimensions", _ParentWindow.CurrentApartment.Dimensions);
             Config.IsDrawPositions = GUILayout.Toggle(Config.IsDrawPositions, "Show positions");
 
             Config.IsDrawSizes = GUILayout.Toggle(Config.IsDrawSizes, "Show sizes");
             EditorGUILayout.EndVertical();
-            _Parent.Repaint();
+            _ParentWindow.Repaint();
         }
         #endregion
         public ApartmentConfigWindow()
