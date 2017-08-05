@@ -42,7 +42,7 @@ namespace Nox7atra.ApartmentEditor
                     );
             }
            
-            Handles.Label(mousePos, _ParentWindow.Grid.GUIToGrid(_CurrentMousePosition).ToString());
+            Handles.Label(mousePos, _ParentWindow.Grid.GUIToGrid(mousePos).ToString());
 
             _CurrentRoom.Draw(_ParentWindow.Grid, false);
         }

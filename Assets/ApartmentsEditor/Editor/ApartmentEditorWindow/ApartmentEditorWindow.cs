@@ -78,6 +78,9 @@ namespace Nox7atra.ApartmentEditor
                     if (Event.current.button == 1)
                         _LastMousePosition = null;
                     break;
+                case EventType.ScrollWheel:
+                    OnScroll(curEvent.delta.y);
+                    break;
             }
 
             if (onKeyEvent != null)
@@ -101,6 +104,11 @@ namespace Nox7atra.ApartmentEditor
                 Repaint();
             }
             _LastMousePosition = curMousePosition;
+        }
+        void OnScroll(float speed)
+        {
+            Grid.Zoom += speed * Grid.Zoom * 0.1f;
+            Repaint();
         }
         #endregion
 

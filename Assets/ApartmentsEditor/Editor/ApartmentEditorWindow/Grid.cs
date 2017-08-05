@@ -18,6 +18,17 @@ namespace Nox7atra.ApartmentEditor
                 _IsDrawCenter = value;
             }
         }
+        public float Zoom
+        {
+            get
+            {
+                return _Zoom;
+            }
+            set
+            {
+                _Zoom = value > MAX_ZOOM_VALUE ? MAX_ZOOM_VALUE : value < MIN_ZOOM_VALUE ? MIN_ZOOM_VALUE : value;
+            }
+        }
         #endregion
 
         #region attributes
@@ -25,34 +36,33 @@ namespace Nox7atra.ApartmentEditor
 
         private Vector2 _Offset;
         private bool _IsDrawCenter;
+
+        private float _Zoom;
         #endregion
 
         #region public methods
         public Vector2 GUIToGrid(Vector3 vec)
         {
-            return (new Vector2(
-                       Mathf.RoundToInt(vec.x - _ParentWindow.position.width / 2),
-                       Mathf.RoundToInt(vec.y - _ParentWindow.position.height / 2)) + _Offset) ;
+            return ((Vector2) vec - new Vector2(_ParentWindow.position.width / 2, _ParentWindow.position.height / 2) ) * _Zoom + _Offset;
         }
         public Vector2 GridToGUI(Vector3 vec)
         {
-            return (new Vector2(
-                       vec.x + _ParentWindow.position.width / 2,
-                       vec.y + _ParentWindow.position.height / 2) - _Offset);
+            return ((Vector2) vec  - _Offset) / _Zoom + new Vector2(_ParentWindow.position.width / 2, _ParentWindow.position.height / 2);
         }
         public void Draw()
         {
+            
             DrawCenter();
             DrawLines();
         }
         public void Recenter()
         {
-            _Offset = Vector2.zero;
+            _Offset = Vector3.zero;
         }
         public void Move(Vector3 dv)
         {
-            var x = _Offset.x + dv.x;
-            var y = _Offset.y + dv.y;
+            var x = _Offset.x + dv.x * _Zoom;
+            var y = _Offset.y + dv.y * _Zoom;
             float halfLength = DEFAULT_CELL_SIZE * CELLS_IN_LINE_COUNT;
             _Offset.x = x > halfLength ? halfLength : x < -halfLength ? -halfLength : x;
             _Offset.y = y > halfLength ? halfLength : y < -halfLength ? -halfLength : y;
@@ -103,15 +113,16 @@ namespace Nox7atra.ApartmentEditor
             Handles.color = Color.cyan;
             Handles.DrawLine(GridToGUI(Vector3.left * DEFAULT_CELL_SIZE),
                 GridToGUI(Vector3.right * DEFAULT_CELL_SIZE));
-            Handles.DrawLine(GUIToGrid(Vector3.down * DEFAULT_CELL_SIZE),
+            Handles.DrawLine(GridToGUI(Vector3.down * DEFAULT_CELL_SIZE),
                 GridToGUI(Vector3.up * DEFAULT_CELL_SIZE));
         }
         #endregion
 
         #region constructor
 
-        public Grid(EditorWindow parentWindow, bool isDrawCenterMark = false)
+        public Grid(EditorWindow parentWindow, bool isDrawCenterMark = true)
         {
+            _Zoom = 0.9f;
             _ParentWindow = parentWindow;
             _IsDrawCenter = isDrawCenterMark;
             Recenter();
@@ -120,6 +131,8 @@ namespace Nox7atra.ApartmentEditor
         #endregion
 
         #region constants
+        const float MIN_ZOOM_VALUE             = 0.2f;
+        const float MAX_ZOOM_VALUE             = 4f;
         const int   CELLS_IN_LINE_COUNT        = 40;
         const float DEFAULT_CELL_SIZE          = 20;
         private const float ZOOM_SPEED         = 0.05f;

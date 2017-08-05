@@ -31,6 +31,8 @@ namespace Nox7atra.ApartmentEditor
             Config.IsDrawPositions = GUILayout.Toggle(Config.IsDrawPositions, "Show positions");
 
             Config.IsDrawSizes = GUILayout.Toggle(Config.IsDrawSizes, "Show sizes");
+
+            _ParentWindow.Grid.Zoom = EditorGUILayout.FloatField("Zoom", _ParentWindow.Grid.Zoom);
             EditorGUILayout.EndVertical();
             _ParentWindow.Repaint();
         }
