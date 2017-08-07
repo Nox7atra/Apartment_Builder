@@ -10,6 +10,8 @@ namespace Nox7atra.ApartmentEditor
         #region attributes
         private Room _SelectedRoom;
 
+        private int _SelectedVertIndex;
+        private bool _IsPositionsShowed;
         private Vector3? _LastMousePosition;
         #endregion
         #region public methods
@@ -18,6 +20,12 @@ namespace Nox7atra.ApartmentEditor
             if (!_IsActive)
                 return;
             DrawSelection();
+        }
+        public override void SetActive(bool enable)
+        {
+            base.SetActive(enable);
+            _LastMousePosition = null;
+            _SelectedVertIndex = -1;
         }
         #endregion
         #region events
@@ -28,45 +36,66 @@ namespace Nox7atra.ApartmentEditor
             switch (type)
             {
                 case EventType.MouseDown:
-                    var mousePos = _ParentWindow.Grid.GUIToGrid(@event.mousePosition);
                     if (Event.current.button == 0)
                     {
-                        if (_ParentWindow.CurrentApartment.Rooms.Count > 0)
+                        var mousePos = _ParentWindow.Grid.GUIToGrid(@event.mousePosition);
+
+                        _SelectedRoom = _ParentWindow.CurrentApartment.Rooms
+                            .FirstOrDefault(x => x.GetContourVertIndex(mousePos) >= 0);
+
+                        if(_SelectedRoom != null)
+                        {
+                            _SelectedVertIndex = _SelectedRoom.GetContourVertIndex(mousePos);
+                            ApartmentConfigWindow.MakeBackup();
+                            ApartmentConfigWindow.Config.IsDrawPositions = true;
+                        }
+                        else
                         {
                             _SelectedRoom = _ParentWindow.CurrentApartment.Rooms
                                 .FirstOrDefault(x => MathUtils.IsPointInsideCountour(x.Contour, mousePos));
-                            _ParentWindow.Repaint();
                         }
                     }
                     _LastMousePosition = @event.mousePosition;
                     break;
-                case EventType.MouseDrag:
+                case EventType.MouseDrag:    
                     if (Event.current.button == 0)
                     {
-                        DragSelectedRoom();
+                        DragSelected();
                     }
                     break;
                 case EventType.MouseUp:
                     if (Event.current.button == 0)
                     {
+                        ApartmentConfigWindow.ApplyBackup();
                         _LastMousePosition = null;
+                        _SelectedVertIndex = -1;
                     }
                     break;
             }
+
+            _ParentWindow.Repaint();
         }
         #endregion
-#region service methods
-        void DragSelectedRoom()
+
+        #region service methods
+        void DragSelected()
         {
             if (_SelectedRoom == null)
                 return;
             var curMousePosition = Event.current.mousePosition;
+
             if (_LastMousePosition.HasValue)
             {
-                var dv = GUIUtility.GUIToScreenPoint((Vector2)_LastMousePosition)
-                         - GUIUtility.GUIToScreenPoint(curMousePosition);
-                _SelectedRoom.Move(-dv);
-                _ParentWindow.Repaint();
+                var dv = (GUIUtility.GUIToScreenPoint((Vector2)_LastMousePosition)
+                     - GUIUtility.GUIToScreenPoint(curMousePosition)) * _ParentWindow.Grid.Zoom;
+                if (_SelectedVertIndex >= 0)
+                {
+                    _SelectedRoom.MoveVert(_SelectedVertIndex, -dv);
+                }
+                else
+                {
+                    _SelectedRoom.Move(-dv);
+                }
             }
             _LastMousePosition = curMousePosition;
         }
@@ -83,7 +112,7 @@ namespace Nox7atra.ApartmentEditor
                 Handles.DrawLine(p1, p2);
             }
         }
-#endregion
+        #endregion
         #region constructors
 
         public NormalState(ApartmentEditorWindow parentWindow) : base(parentWindow)

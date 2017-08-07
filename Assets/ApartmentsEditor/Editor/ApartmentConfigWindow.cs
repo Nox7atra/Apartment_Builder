@@ -20,8 +20,10 @@ namespace Nox7atra.ApartmentEditor
         #region attributes
         public static ApartmentDrawConfig Config;
 
+        private static ApartmentDrawConfig? _ConfigBackup;
         private ApartmentEditorWindow _ParentWindow;
         #endregion
+
         #region engine methods
         void OnGUI()
         {
@@ -31,25 +33,38 @@ namespace Nox7atra.ApartmentEditor
             Config.IsDrawPositions = GUILayout.Toggle(Config.IsDrawPositions, "Show positions");
 
             Config.IsDrawSizes = GUILayout.Toggle(Config.IsDrawSizes, "Show sizes");
-
-            _ParentWindow.Grid.Zoom = EditorGUILayout.FloatField("Zoom", _ParentWindow.Grid.Zoom);
+            
             EditorGUILayout.EndVertical();
             _ParentWindow.Repaint();
         }
         #endregion
+        #region public methods
+        public static void MakeBackup()
+        {
+            _ConfigBackup = Config;
+        }
+        public static void ApplyBackup()
+        {
+            if (_ConfigBackup.HasValue)
+            {
+                Config = _ConfigBackup.Value;
+                _ConfigBackup = null;
+            }
+        }
+        #endregion
+
+        #region construction
         public ApartmentConfigWindow()
         {
             Config = new ApartmentDrawConfig();
+            Config.IsDrawSizes = true;
         }
+        #endregion
     }
-    public class ApartmentDrawConfig
+    public struct ApartmentDrawConfig
     {
         public bool IsDrawSizes;
         public bool IsDrawPositions;
-        public ApartmentDrawConfig()
-        {
-            IsDrawSizes = true;
-            IsDrawPositions = false;
-        }
+   
     }
 }

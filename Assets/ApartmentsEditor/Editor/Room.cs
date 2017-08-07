@@ -68,8 +68,7 @@ namespace Nox7atra.ApartmentEditor
                 }
                 if (ApartmentConfigWindow.Config.IsDrawPositions)
                 {
-                    Handles.color = Color.white;
-                    Handles.Label(p1, _ContourPoints[i].ToString());
+                    Handles.Label(p1 + new Vector2(SNAPING_RAD, SNAPING_RAD), _ContourPoints[i].ToString());
                 }
             }
         }
@@ -83,6 +82,21 @@ namespace Nox7atra.ApartmentEditor
         public bool IsLastPoint(Vector2 point)
         {
             return Vector2.Distance(point, _ContourPoints[0]) < SNAPING_RAD;
+        }
+        public int GetContourVertIndex(Vector2 point)
+        {
+            for(int i = 0; i < _ContourPoints.Count; i++)
+            {
+                if(Vector2.Distance(point, _ContourPoints[i]) < SNAPING_RAD)
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+        public void MoveVert(int index, Vector2 dv)
+        {
+            _ContourPoints[index] += dv;
         }
         #endregion
 

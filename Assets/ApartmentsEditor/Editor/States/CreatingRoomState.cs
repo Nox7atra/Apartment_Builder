@@ -41,15 +41,14 @@ namespace Nox7atra.ApartmentEditor
                     _ParentWindow.Grid.GridToGUI(_CurrentRoom.Contour[_CurrentRoom.Contour.Count - 1])
                     );
             }
-           
-            Handles.Label(mousePos, _ParentWindow.Grid.GUIToGrid(mousePos).ToString());
+
+            DrawMouseLabel(mousePos);
 
             _CurrentRoom.Draw(_ParentWindow.Grid, false);
         }
         #endregion
 
         #region key events
-
         protected override void OnKeyEvent(EventType type, Event @event)
         {
             if (!_IsActive)
@@ -80,7 +79,6 @@ namespace Nox7atra.ApartmentEditor
                     break;
             }
         }
-
         #endregion
 
         #region constructor

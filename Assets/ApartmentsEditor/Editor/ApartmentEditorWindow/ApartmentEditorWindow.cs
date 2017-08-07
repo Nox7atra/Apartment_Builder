@@ -31,6 +31,7 @@ namespace Nox7atra.ApartmentEditor
         #endregion
 
         #region properties
+        [SerializeField]
         public Apartment CurrentApartment
         {
             get
@@ -133,13 +134,12 @@ namespace Nox7atra.ApartmentEditor
                 apartment.Draw(Grid);
             }
 
-            _Toolbar.Draw();
             foreach (var stateApartmentEditor in _States)
             {
                 stateApartmentEditor.Value.Draw();
             }
-           
 
+            _Toolbar.Draw();
         }
         void OnDestroy()
         {

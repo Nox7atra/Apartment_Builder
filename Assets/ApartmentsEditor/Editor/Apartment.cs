@@ -43,17 +43,6 @@ namespace Nox7atra.ApartmentEditor
                 _Rooms[i].Draw(grid);
             }
         }
-        public void MoveRoom(int roomIndex, Vector2 dv)
-        {
-            _Rooms[roomIndex].Move(dv);
-        }
-        public void Move(Vector2 dv)
-        {
-            for(int i = 0; i < _Rooms.Count; i++)
-            {
-                _Rooms[i].Move(dv);
-            }
-        }
         #endregion
 
         #region service methods
