@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 namespace Nox7atra.ApartmentEditor
@@ -42,6 +41,7 @@ namespace Nox7atra.ApartmentEditor
         private Type _Type;
         private Color _ContourColor;
         private List<Vector2> _ContourPoints;
+
         #endregion
 
         #region public methods
@@ -57,7 +57,8 @@ namespace Nox7atra.ApartmentEditor
                 Handles.DrawLine(p1, p2);
              
                 Handles.color = Color.white;
-                Handles.DrawWireDisc(p1, Vector3.back, SNAPING_RAD);
+                float rad = SNAPING_RAD / grid.Zoom;
+                Handles.DrawWireDisc(p1, Vector3.back, rad);
                 if (ApartmentConfigWindow.Config.IsDrawSizes)
                 {
                     Handles.color = Color.white;
@@ -68,13 +69,13 @@ namespace Nox7atra.ApartmentEditor
                 }
                 if (ApartmentConfigWindow.Config.IsDrawPositions)
                 {
-                    Handles.Label(p1 + new Vector2(SNAPING_RAD, SNAPING_RAD), _ContourPoints[i].ToString());
+                    Handles.Label(p1 + new Vector2(SNAPING_RAD , SNAPING_RAD), _ContourPoints[i].RoundCoordsToInt().ToString());
                 }
             }
         }
         public void Move(Vector2 dv)
         {
-            for(int i = 0; i < _ContourPoints.Count; i++)
+            for (int i = 0; i < _ContourPoints.Count; i++)
             {
                 _ContourPoints[i] += dv;
             }
@@ -82,6 +83,13 @@ namespace Nox7atra.ApartmentEditor
         public bool IsLastPoint(Vector2 point)
         {
             return Vector2.Distance(point, _ContourPoints[0]) < SNAPING_RAD;
+        }
+        public void RoundContourPoints()
+        {
+            for(int i = 0; i < _ContourPoints.Count; i++)
+            {
+                _ContourPoints[i] = _ContourPoints[i].RoundCoordsToInt();
+            }
         }
         public int GetContourVertIndex(Vector2 point)
         {
@@ -94,10 +102,9 @@ namespace Nox7atra.ApartmentEditor
             }
             return -1;
         }
-        public void MoveVert(int index, Vector2 dv)
-        {
-            _ContourPoints[index] += dv;
-        }
+        #endregion
+
+        #region service methods
         #endregion
 
         #region constructor
@@ -105,18 +112,23 @@ namespace Nox7atra.ApartmentEditor
         { 
             _ContourPoints = new List<Vector2>();
             _ContourColor = new Color(Random.Range(0.5f, 1), Random.Range(0.5f, 1), Random.Range(0.5f, 1));
+            _Type = Type.None;
+
         }
         #endregion
+
         #region constants 
         public const float SNAPING_RAD = 10f;
         #endregion
+
         #region nested types
         public enum Type
         {
             Kitchen,
             Bathroom,
             Toilet,
-            BathroomAndToilet
+            BathroomAndToilet,
+            None
         }
         #endregion
     }

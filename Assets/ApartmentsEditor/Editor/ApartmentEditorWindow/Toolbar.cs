@@ -17,6 +17,7 @@ namespace Nox7atra.ApartmentEditor
             EditorGUILayout.BeginHorizontal();
             CreateRoomButton();
             RecenterButton();
+            SaveButton();
             EditorGUILayout.EndHorizontal();
         }
         #endregion
@@ -27,6 +28,13 @@ namespace Nox7atra.ApartmentEditor
             if (GUILayout.Button("CreateRoom"))
             {
                 _ParentWindow.CreateRoomBegin();
+            }
+        }
+        public void SaveButton()
+        {
+            if (GUILayout.Button("Save" + (_ParentWindow.ApartmentManager.NeedToSave ? "*" : "")))
+            {
+                _ParentWindow.ApartmentManager.SaveCurrent();
             }
         }
         public void RecenterButton()

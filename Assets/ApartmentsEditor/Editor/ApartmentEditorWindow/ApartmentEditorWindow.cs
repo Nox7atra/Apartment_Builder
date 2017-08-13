@@ -13,7 +13,7 @@ namespace Nox7atra.ApartmentEditor
         {
             var window = GetWindow<ApartmentEditorWindow>("ApartmentBuilder");
 
-            window._ConfigWindow = ApartmentConfigWindow.Create(window);
+            ApartmentConfigWindow.Create(window);
             window.Show();
         }
         #endregion
@@ -31,12 +31,11 @@ namespace Nox7atra.ApartmentEditor
         #endregion
 
         #region properties
-        [SerializeField]
-        public Apartment CurrentApartment
+        public ApartmentsManager ApartmentManager
         {
             get
             {
-                return _ApartmentManager.CurrentApartment;
+                return _ApartmentManager;
             }
         }
         #endregion
@@ -44,7 +43,6 @@ namespace Nox7atra.ApartmentEditor
         public  readonly Grid Grid;
 
         private readonly Toolbar _Toolbar;
-        private ApartmentConfigWindow _ConfigWindow;
 
         private readonly ApartmentsManager _ApartmentManager;
         private readonly Dictionary<EditorWindowState, StateApartmentBuilder> _States;
@@ -61,6 +59,7 @@ namespace Nox7atra.ApartmentEditor
         {
             _ApartmentManager.CurrentApartment.Rooms.Add(room);
             ActivateState(EditorWindowState.Normal);
+            _ApartmentManager.SaveCurrent();
             Repaint();
         }
         #endregion
@@ -140,6 +139,10 @@ namespace Nox7atra.ApartmentEditor
             }
 
             _Toolbar.Draw();
+        }
+        void OnEnable()
+        {
+            _ApartmentManager.Init();
         }
         void OnDestroy()
         {

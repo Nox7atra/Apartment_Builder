@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-
+using System;
 namespace Nox7atra.ApartmentEditor
 {
     public class Apartment
@@ -27,6 +27,7 @@ namespace Nox7atra.ApartmentEditor
             }
         }
         #endregion
+
 
         #region attributes
         public Vector2 Dimensions;

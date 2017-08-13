@@ -28,8 +28,8 @@ namespace Nox7atra.ApartmentEditor
         void OnGUI()
         {
             EditorGUILayout.BeginVertical();
-            _ParentWindow.CurrentApartment.Dimensions = EditorGUILayout.Vector2Field(
-                "Dimensions", _ParentWindow.CurrentApartment.Dimensions);
+            _ParentWindow.ApartmentManager.CurrentApartment.Dimensions = EditorGUILayout.Vector2Field(
+                "Dimensions", _ParentWindow.ApartmentManager.CurrentApartment.Dimensions);
             Config.IsDrawPositions = GUILayout.Toggle(Config.IsDrawPositions, "Show positions");
 
             Config.IsDrawSizes = GUILayout.Toggle(Config.IsDrawSizes, "Show sizes");

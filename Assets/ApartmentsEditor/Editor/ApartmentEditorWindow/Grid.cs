@@ -43,7 +43,8 @@ namespace Nox7atra.ApartmentEditor
         #region public methods
         public Vector2 GUIToGrid(Vector3 vec)
         {
-            return ((Vector2) vec - new Vector2(_ParentWindow.position.width / 2, _ParentWindow.position.height / 2) ) * _Zoom + _Offset;
+            Vector2 newVec = ((Vector2)vec - new Vector2(_ParentWindow.position.width / 2, _ParentWindow.position.height / 2)) * _Zoom + _Offset;
+            return newVec.RoundCoordsToInt();
         }
         public Vector2 GridToGUI(Vector3 vec)
         {

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Apartment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Dimensions>
+    <x>1000</x>
+    <y>1000</y>
+  </Dimensions>
+  <Rooms>
+    <Room>
+      <Contour>
+        <Vector2>
+          <x>16</x>
+          <y>-121</y>
+        </Vector2>
+        <Vector2>
+          <x>116</x>
+          <y>-54</y>
+        </Vector2>
+        <Vector2>
+          <x>-20</x>
+          <y>1</y>
+        </Vector2>
+        <Vector2>
+          <x>-49</x>
+          <y>-76</y>
+        </Vector2>
+      </Contour>
+    </Room>
+  </Rooms>
+</Apartment>
