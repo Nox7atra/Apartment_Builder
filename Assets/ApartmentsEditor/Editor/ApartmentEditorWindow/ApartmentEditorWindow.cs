@@ -12,8 +12,7 @@ namespace Nox7atra.ApartmentEditor
         public static void Create()
         {
             var window = GetWindow<ApartmentEditorWindow>("ApartmentBuilder");
-
-            ApartmentConfigWindow.Create(window);
+            GetWindow<ApartmentConfigWindow>("Config");
             window.Show();
         }
         #endregion

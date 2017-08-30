@@ -8,10 +8,9 @@ namespace Nox7atra.ApartmentEditor
     public class ApartmentConfigWindow : EditorWindow
     {
         #region factory
-        public static ApartmentConfigWindow Create(ApartmentEditorWindow parent)
+        public static ApartmentConfigWindow Create()
         {
             var window = GetWindow<ApartmentConfigWindow>("ApartmentConfig");
-            window._ParentWindow = parent;
             window.Show();
             return window;
         }
@@ -21,21 +20,18 @@ namespace Nox7atra.ApartmentEditor
         public static ApartmentDrawConfig Config;
 
         private static ApartmentDrawConfig? _ConfigBackup;
-        private ApartmentEditorWindow _ParentWindow;
         #endregion
 
         #region engine methods
         void OnGUI()
         {
             EditorGUILayout.BeginVertical();
-            _ParentWindow.ApartmentManager.CurrentApartment.Dimensions = EditorGUILayout.Vector2Field(
-                "Dimensions", _ParentWindow.ApartmentManager.CurrentApartment.Dimensions);
             Config.IsDrawPositions = GUILayout.Toggle(Config.IsDrawPositions, "Show positions");
 
             Config.IsDrawSizes = GUILayout.Toggle(Config.IsDrawSizes, "Show sizes");
-            
+
+            Config.IsDrawSquare = GUILayout.Toggle(Config.IsDrawSquare, "Show Squares");
             EditorGUILayout.EndVertical();
-            _ParentWindow.Repaint();
         }
         #endregion
         #region public methods
@@ -65,6 +61,6 @@ namespace Nox7atra.ApartmentEditor
     {
         public bool IsDrawSizes;
         public bool IsDrawPositions;
-   
+        public bool IsDrawSquare;
     }
 }
