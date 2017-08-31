@@ -50,11 +50,11 @@ namespace Nox7atra.ApartmentEditor
 
         #region public methods
         
-        public void CreateRoomBegin()
+        public void CreateRoomStateBegin()
         {
             ActivateState(EditorWindowState.RoomCreation);
         }
-        public void CreateRoomEnd(Room room)
+        public void CreateRoomStateEnd(Room room)
         {
             _ApartmentManager.CurrentApartment.Rooms.Add(room);
             ActivateState(EditorWindowState.Normal);

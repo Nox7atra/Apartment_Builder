@@ -33,18 +33,19 @@ namespace Nox7atra.ApartmentEditor
             if (!_IsActive)
                 return;
             var mousePos = _CurrentMousePosition;
-            if (_CurrentRoom != null && _CurrentRoom.Contour.Count > 0)
+            if (_CurrentRoom != null && _CurrentRoom.Walls.Count > 0)
             {
                 Handles.color = Color.gray;
+                var walls = _CurrentRoom.Walls;
                 Handles.DrawLine(
                     mousePos,
-                    _ParentWindow.Grid.GridToGUI(_CurrentRoom.Contour[_CurrentRoom.Contour.Count - 1])
-                    );
+                    _ParentWindow.Grid.GridToGUI(walls[walls.Count - 1].End)
+                );
             }
 
             DrawMouseLabel(mousePos);
 
-            _CurrentRoom.Draw(_ParentWindow.Grid, false);
+            _CurrentRoom.Draw(_ParentWindow.Grid);
         }
         #endregion
 
@@ -62,18 +63,9 @@ namespace Nox7atra.ApartmentEditor
                 case EventType.MouseDown:
                     if (@event.button == 0)
                     {
-                        var posToAdd = _ParentWindow.Grid.GUIToGrid(@event.mousePosition);
-                        if (_CurrentRoom.Contour.Count > 0
-                            && _CurrentRoom.IsLastPoint(posToAdd))
+                        if (_CurrentRoom.Add(_ParentWindow.Grid.GUIToGrid(@event.mousePosition)))
                         {
-                            if (_CurrentRoom.Contour.Count > 2)
-                            {
-                                _ParentWindow.CreateRoomEnd(_CurrentRoom);
-                            }
-                        }
-                        else
-                        {
-                            _CurrentRoom.Contour.Add(posToAdd);
+                            _ParentWindow.CreateRoomStateEnd(_CurrentRoom);
                         }
                     }
                     break;

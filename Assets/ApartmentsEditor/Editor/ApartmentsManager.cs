@@ -30,6 +30,7 @@ namespace Nox7atra.ApartmentEditor
         }
         public void SaveCurrent()
         {
+            return;
             XmlSerializer ser = new XmlSerializer(typeof(Apartment));
             StreamWriter writer = new StreamWriter(CreatePath(_CurrentApartmentName));
             ser.Serialize(writer, _CurrentApartment);
@@ -41,6 +42,8 @@ namespace Nox7atra.ApartmentEditor
         #region service methods
         void Load(string name)
         {
+            _CurrentApartment = new Apartment();
+            return;
             _CurrentApartmentName = name;
             XmlSerializer serializer
                 = new XmlSerializer(typeof(Apartment));

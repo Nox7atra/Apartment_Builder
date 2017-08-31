@@ -27,7 +27,7 @@ namespace Nox7atra.ApartmentEditor
         {
             if (GUILayout.Button("CreateRoom"))
             {
-                _ParentWindow.CreateRoomBegin();
+                _ParentWindow.CreateRoomStateBegin();
             }
         }
         public void SaveButton()

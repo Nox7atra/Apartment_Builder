@@ -47,7 +47,8 @@ namespace Nox7atra.ApartmentEditor
                     _ParentWindow.ApartmentManager.NeedToSave = true;
                     break;
                 case SelectionType.Vert:
-                    if (_SelectedRoom.Contour.Count > 3)
+                    /*
+                    if (_SelectedRoom.Walls.Count > 3)
                     {
                         _SelectedRoom.Contour.RemoveAt(_SelectedVertIndex);
                         _SelectedVertIndex = -1;
@@ -56,7 +57,7 @@ namespace Nox7atra.ApartmentEditor
                     else
                     {
                         Debug.LogWarning("You can't delete vertices when it less or equals 3");
-                    }
+                    }*/
                     break;
             }
             _CurrentSelection = SelectionType.None;
@@ -99,7 +100,7 @@ namespace Nox7atra.ApartmentEditor
                 switch (_CurrentSelection)
                 {
                     case SelectionType.Vert:
-                        _SelectedRoom.Contour[_SelectedVertIndex] -= dv;
+                        _SelectedRoom.MoveVert(_SelectedVertIndex, -dv);
                         break;
                     case SelectionType.Room:
                         _SelectedRoom.Move(-dv);
@@ -112,22 +113,21 @@ namespace Nox7atra.ApartmentEditor
         {
             if (_SelectedRoom == null)
                 return;
-            Handles.color = Color.yellow;
+  
             switch (_CurrentSelection)
             {
                 case SelectionType.Vert:
+                    Handles.color = Color.yellow;
                     Handles.DrawWireDisc(
-                        _ParentWindow.Grid.GridToGUI(_SelectedRoom.Contour[_SelectedVertIndex]),
+                        _ParentWindow.Grid.GridToGUI(_SelectedRoom.GetVertPosition(_SelectedVertIndex)),
                         Vector3.back, Room.SNAPING_RAD / _ParentWindow.Grid.Zoom
-                        );
+                    );
                     break;
                 case SelectionType.Room:
-                    var contour = _SelectedRoom.Contour;
-                    for (int i = 0; i < contour.Count; i++)
+                    var walls = _SelectedRoom.Walls;
+                    for (int i = 0; i < walls.Count; i++)
                     {
-                        var p1 = _ParentWindow.Grid.GridToGUI(contour[i]);
-                        var p2 = _ParentWindow.Grid.GridToGUI(contour[(i + 1) % contour.Count]);
-                        Handles.DrawLine(p1, p2);
+                        walls[i].Draw(_ParentWindow.Grid, Color.yellow);
                     }
                     break;
             }
@@ -137,8 +137,8 @@ namespace Nox7atra.ApartmentEditor
             switch (_CurrentSelection)
             {
                 case SelectionType.Room:
-                    _SelectedRoom = _ParentWindow.ApartmentManager.CurrentApartment.Rooms
-                                .FirstOrDefault(x => MathUtils.IsPointInsideCountour(x.Contour, position));
+                   _SelectedRoom = _ParentWindow.ApartmentManager.CurrentApartment.Rooms
+                               .FirstOrDefault(x => MathUtils.IsPointInsideCountour(x.GetContour(), position));
                     if(_SelectedRoom == null)
                     {
                         _CurrentSelection = SelectionType.None;
