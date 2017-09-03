@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Apartment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Dimensions>
+    <x>1000</x>
+    <y>1000</y>
+  </Dimensions>
+  <Rooms>
+    <Room>
+      <Walls>
+        <Wall>
+          <Begin>
+            <x>-308</x>
+            <y>-78</y>
+          </Begin>
+          <End>
+            <x>284</x>
+            <y>-46</y>
+          </End>
+          <_Objects />
+        </Wall>
+        <Wall>
+          <Begin>
+            <x>284</x>
+            <y>-46</y>
+          </Begin>
+          <End>
+            <x>265</x>
+            <y>259</y>
+          </End>
+          <_Objects />
+        </Wall>
+        <Wall>
+          <Begin>
+            <x>265</x>
+            <y>259</y>
+          </Begin>
+          <End>
+            <x>-331</x>
+            <y>253</y>
+          </End>
+          <_Objects />
+        </Wall>
+        <Wall>
+          <Begin>
+            <x>-331</x>
+            <y>253</y>
+          </Begin>
+          <End>
+            <x>-308</x>
+            <y>-78</y>
+          </End>
+          <_Objects />
+        </Wall>
+      </Walls>
+    </Room>
+    <Room>
+      <Walls>
+        <Wall>
+          <Begin>
+            <x>-176</x>
+            <y>-131</y>
+          </Begin>
+          <End>
+            <x>81</x>
+            <y>-121</y>
+          </End>
+          <_Objects />
+        </Wall>
+        <Wall>
+          <Begin>
+            <x>81</x>
+            <y>-121</y>
+          </Begin>
+          <End>
+            <x>79</x>
+            <y>-193</y>
+          </End>
+          <_Objects />
+        </Wall>
+        <Wall>
+          <Begin>
+            <x>79</x>
+            <y>-193</y>
+          </Begin>
+          <End>
+            <x>-170</x>
+            <y>-180</y>
+          </End>
+          <_Objects />
+        </Wall>
+        <Wall>
+          <Begin>
+            <x>-170</x>
+            <y>-180</y>
+          </Begin>
+          <End>
+            <x>-176</x>
+            <y>-131</y>
+          </End>
+          <_Objects />
+        </Wall>
+      </Walls>
+    </Room>
+  </Rooms>
+</Apartment>

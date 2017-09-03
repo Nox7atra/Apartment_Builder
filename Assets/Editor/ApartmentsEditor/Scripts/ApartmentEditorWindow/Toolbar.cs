@@ -7,50 +7,51 @@ namespace Nox7atra.ApartmentEditor
 {
     public class Toolbar
     {
-        #region attributes
-        ApartmentEditorWindow _ParentWindow;
-        #endregion
-
-        #region public methods
+        private readonly ApartmentEditorWindow _ParentWindow;
+        private readonly Skin _CurrentSkin;
         public void Draw()
         {
-            EditorGUILayout.BeginHorizontal();
+            GUILayout.BeginArea(new Rect(0,0, Screen.width / 2, Screen.height));
+            EditorGUILayout.BeginVertical();
             CreateRoomButton();
             RecenterButton();
             SaveButton();
-            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.EndVertical();
+            GUILayout.EndArea();
         }
-        #endregion
 
-        #region buttons
         public void CreateRoomButton()
         {
-            if (GUILayout.Button("CreateRoom"))
+            if (GUILayout.Button(
+                "CR", 
+                SkinManager.Instance.CurrentSkin.ToolbarMiniButtonStyle))
             {
                 _ParentWindow.CreateRoomStateBegin();
             }
         }
         public void SaveButton()
         {
-            if (GUILayout.Button("Save" + (_ParentWindow.ApartmentManager.NeedToSave ? "*" : "")))
+    
+            if (GUILayout.Button(
+                _CurrentSkin.ToolbarIconSave,
+                _CurrentSkin.ToolbarMiniButtonStyle))
             {
                 _ParentWindow.ApartmentManager.SaveCurrent();
             }
         }
         public void RecenterButton()
         {
-            if (GUILayout.Button("Recenter"))
+            if (GUILayout.Button(
+                "R",
+                SkinManager.Instance.CurrentSkin.ToolbarMiniButtonStyle))
             {
                 _ParentWindow.Grid.Recenter();
             }
         }
-        #endregion
-        #region contstruction
         public Toolbar(ApartmentEditorWindow parentWindow)
         {
             _ParentWindow = parentWindow;
+            _CurrentSkin = SkinManager.Instance.CurrentSkin;
         }
-        #endregion
-
     }
 }

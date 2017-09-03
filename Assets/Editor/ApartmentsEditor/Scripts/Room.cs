@@ -17,11 +17,11 @@ namespace Nox7atra.ApartmentEditor
                 return _ContourColor;
             }
         }
-        public ReadOnlyCollection<Wall> Walls
+        public List<Wall> Walls
         {
             get
             {
-                return _Walls.AsReadOnly();
+                return _Walls;
             }
         }
         public float Square
@@ -77,7 +77,7 @@ namespace Nox7atra.ApartmentEditor
                 Handles.color = Color.white;
                 float rad = SNAPING_RAD / grid.Zoom;
                 Handles.DrawWireDisc(p1, Vector3.back, rad);
-                if (ApartmentConfigWindow.Config.IsDrawSizes)
+                if (ApartmentConfig.Current.IsDrawSizes)
                 {
                     Handles.color = Color.white;
                     Handles.Label((p1 + p2) / 2, 
@@ -85,13 +85,13 @@ namespace Nox7atra.ApartmentEditor
                             p1,
                             p2).ToString());
                 }
-                if (ApartmentConfigWindow.Config.IsDrawPositions)
+                if (ApartmentConfig.Current.IsDrawPositions)
                 {
                     Handles.Label(p1 + new Vector2(SNAPING_RAD , SNAPING_RAD), p1.RoundCoordsToInt().ToString());
                 }
                 
             }
-            if (ApartmentConfigWindow.Config.IsDrawSquare)
+            if (ApartmentConfig.Current.IsDrawSquare)
             {
                 Handles.Label(grid.GridToGUI(Centroid), Square.ToString());
             }
@@ -130,7 +130,22 @@ namespace Nox7atra.ApartmentEditor
         public void MoveVert(int index, Vector2 dv)
         {
             _Walls[index].Begin   += dv;
-            _Walls[index - 1].End += dv;
+            if (index > 0)
+                _Walls[index - 1].End += dv;
+            else
+                _Walls[_Walls.Count - 1].End += dv;
+        }
+        public void RemoveVert(int index)
+        {
+            if (index > 0)
+            {
+                _Walls[index - 1].End = _Walls[index].End;
+            }
+            else
+            {
+                _Walls[_Walls.Count - 1].End = _Walls[index].End;
+            }
+            _Walls.RemoveAt(index);
         }
         public bool IsLastPoint(Vector2 point)
         {

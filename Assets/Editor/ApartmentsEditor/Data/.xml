@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Apartment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Dimensions>
+    <x>1000</x>
+    <y>1000</y>
+  </Dimensions>
+  <Rooms>
+    <Room>
+      <Walls>
+        <Wall>
+          <Begin>
+            <x>-162</x>
+            <y>-114</y>
+          </Begin>
+          <End>
+            <x>101</x>
+            <y>-74</y>
+          </End>
+          <_Objects />
+        </Wall>
+        <Wall>
+          <Begin>
+            <x>101</x>
+            <y>-74</y>
+          </Begin>
+          <End>
+            <x>38</x>
+            <y>49</y>
+          </End>
+          <_Objects />
+        </Wall>
+        <Wall>
+          <Begin>
+            <x>38</x>
+            <y>49</y>
+          </Begin>
+          <End>
+            <x>-166</x>
+            <y>73</y>
+          </End>
+          <_Objects />
+        </Wall>
+        <Wall>
+          <Begin>
+            <x>-166</x>
+            <y>73</y>
+          </Begin>
+          <End>
+            <x>-162</x>
+            <y>-114</y>
+          </End>
+          <_Objects />
+        </Wall>
+      </Walls>
+    </Room>
+  </Rooms>
+</Apartment>

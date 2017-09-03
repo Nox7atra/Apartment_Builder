@@ -25,7 +25,7 @@ namespace Nox7atra.ApartmentEditor
 
         public void Destroy()
         {
-            _ParentWindow.onKeyEvent -= OnKeyEvent;
+            _ParentWindow.OnKeyEvent -= OnKeyEvent;
         }
         protected void DrawMouseLabel(Vector2 position)
         {
@@ -42,7 +42,7 @@ namespace Nox7atra.ApartmentEditor
         protected StateApartmentBuilder(ApartmentEditorWindow parentWindow)
         {
             _ParentWindow = parentWindow;
-            _ParentWindow.onKeyEvent += OnKeyEvent;
+            _ParentWindow.OnKeyEvent += OnKeyEvent;
             _IsActive = false;
         }
         #endregion

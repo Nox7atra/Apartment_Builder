@@ -7,29 +7,15 @@ namespace Nox7atra.ApartmentEditor
 {
     public sealed class ApartmentEditorWindow : EditorWindow
     {
-        #region factory
         [MenuItem("Window/ApartmentBuilder")]
         public static void Create()
         {
             var window = GetWindow<ApartmentEditorWindow>("ApartmentBuilder");
-            GetWindow<ApartmentConfigWindow>("Config");
             window.Show();
         }
-        #endregion
 
-        #region nested types
-        public enum EditorWindowState
-        {
-            Normal,
-            RoomCreation
-        }
-        #endregion
+        public event Action<EventType, Event> OnKeyEvent;
 
-        #region callbacks
-        public event Action<EventType, Event> onKeyEvent;
-        #endregion
-
-        #region properties
         public ApartmentsManager ApartmentManager
         {
             get
@@ -37,91 +23,15 @@ namespace Nox7atra.ApartmentEditor
                 return _ApartmentManager;
             }
         }
-        #endregion
-        #region attributes
-        public  readonly Grid Grid;
 
-        private readonly Toolbar _Toolbar;
+        public  Grid Grid;
 
-        private readonly ApartmentsManager _ApartmentManager;
-        private readonly Dictionary<EditorWindowState, StateApartmentBuilder> _States;
+        private Toolbar _Toolbar;
+        private ApartmentsManager _ApartmentManager;
+        private Dictionary<EditorWindowState, StateApartmentBuilder> _States;
         private Vector3? _LastMousePosition;
-        #endregion
 
-        #region public methods
-        
-        public void CreateRoomStateBegin()
-        {
-            ActivateState(EditorWindowState.RoomCreation);
-        }
-        public void CreateRoomStateEnd(Room room)
-        {
-            _ApartmentManager.CurrentApartment.Rooms.Add(room);
-            ActivateState(EditorWindowState.Normal);
-            _ApartmentManager.SaveCurrent();
-            Repaint();
-        }
-        #endregion
 
-        #region keys
-        void KeysEvents()
-        {
-            var curEvent = Event.current;
-            switch (curEvent.type)
-            {
-                case EventType.MouseDrag:
-                    if (Event.current.button == 1)
-                        DragGrid();
-                    break;
-                case EventType.MouseDown:
-                    if (Event.current.button == 1)
-                        _LastMousePosition = null;
-                    break;
-                case EventType.ScrollWheel:
-                    OnScroll(curEvent.delta.y);
-                    break;
-            }
-
-            if (onKeyEvent != null)
-            {
-                onKeyEvent(curEvent.type, curEvent);
-            }
-            else if (Event.current.rawType == EventType.MouseUp)
-            {
-                if (onKeyEvent != null)
-                    onKeyEvent(Event.current.rawType, curEvent);
-            }
-        }
-        void DragGrid()
-        {
-            var curMousePosition = Event.current.mousePosition;
-            if (_LastMousePosition.HasValue)
-            {
-                var dv = GUIUtility.GUIToScreenPoint((Vector2)_LastMousePosition)
-                         - GUIUtility.GUIToScreenPoint(curMousePosition);
-                Grid.Move(dv);
-                Repaint();
-            }
-            _LastMousePosition = curMousePosition;
-        }
-        void OnScroll(float speed)
-        {
-            Grid.Zoom += speed * Grid.Zoom * 0.1f;
-            Repaint();
-        }
-        #endregion
-
-        #region service methods
-        void ActivateState(EditorWindowState state)
-        {
-            foreach (var stateApartmentEditor in _States)
-            {
-                stateApartmentEditor.Value.SetActive(stateApartmentEditor.Key == state);
-            }
-        }
-        #endregion
-
-        #region engine methods
         void OnGUI()
         {
             KeysEvents();
@@ -141,7 +51,18 @@ namespace Nox7atra.ApartmentEditor
         }
         void OnEnable()
         {
-            _ApartmentManager.Init();
+            Grid = new Grid(this);
+            _Toolbar = new Toolbar(this);
+            _ApartmentManager = new ApartmentsManager();
+
+            _States = new Dictionary<EditorWindowState, StateApartmentBuilder>
+            {
+                {EditorWindowState.Normal,       new NormalState(this)},
+                {EditorWindowState.RoomCreation, new CreatingRoomState(this)}
+            };
+            ActivateState(EditorWindowState.Normal);
+
+            wantsMouseMove = true;
         }
         void OnDestroy()
         {
@@ -150,23 +71,78 @@ namespace Nox7atra.ApartmentEditor
                 stateApartmentEditor.Destroy();
             }
         }
-        #endregion
 
-        #region constructors
-        public ApartmentEditorWindow()
+        public void CreateRoomStateBegin()
         {
-            Grid = new Grid(this);
-            _Toolbar = new Toolbar(this);
-
-            _ApartmentManager = new ApartmentsManager();
-            wantsMouseMove = true;
-            _States = new Dictionary<EditorWindowState, StateApartmentBuilder>
-            {
-                {EditorWindowState.Normal,       new NormalState(this)},
-                {EditorWindowState.RoomCreation, new CreatingRoomState(this)}
-            };
-            ActivateState(EditorWindowState.Normal);
+            ActivateState(EditorWindowState.RoomCreation);
         }
-        #endregion
+        public void CreateRoomStateEnd(Room room)
+        {
+            _ApartmentManager.CurrentApartment.Rooms.Add(room);
+            ActivateState(EditorWindowState.Normal);
+            _ApartmentManager.SaveCurrent();
+            Repaint();
+        }
+
+        void KeysEvents()
+        {
+            var curEvent = Event.current;
+            switch (curEvent.type)
+            {
+                case EventType.MouseDrag:
+                    if (Event.current.button == 1)
+                        DragGrid();
+                    break;
+                case EventType.MouseDown:
+                    if (Event.current.button == 1)
+                        _LastMousePosition = null;
+                    break;
+                case EventType.ScrollWheel:
+                    OnScroll(curEvent.delta.y);
+                    break;
+            }
+
+            if (OnKeyEvent != null)
+            {
+                OnKeyEvent(curEvent.type, curEvent);
+            }
+            else if (Event.current.rawType == EventType.MouseUp)
+            {
+                if (OnKeyEvent != null)
+                    OnKeyEvent(Event.current.rawType, curEvent);
+            }
+        }
+        void DragGrid()
+        {
+            var curMousePosition = Event.current.mousePosition;
+            if (_LastMousePosition.HasValue)
+            {
+                var dv = GUIUtility.GUIToScreenPoint((Vector2)_LastMousePosition)
+                         - GUIUtility.GUIToScreenPoint(curMousePosition);
+                Grid.Move(dv);
+                Repaint();
+            }
+            _LastMousePosition = curMousePosition;
+        }
+        void OnScroll(float speed)
+        {
+            Grid.Zoom += speed * Grid.Zoom * 0.1f;
+            Repaint();
+        }
+
+        void ActivateState(EditorWindowState state)
+        {
+            foreach (var stateApartmentEditor in _States)
+            {
+                stateApartmentEditor.Value.SetActive(stateApartmentEditor.Key == state);
+            }
+        }
+        
+     
+        public enum EditorWindowState
+        {
+            Normal,
+            RoomCreation
+        }
     }
 }

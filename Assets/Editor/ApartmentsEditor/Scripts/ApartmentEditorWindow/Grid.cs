@@ -6,18 +6,6 @@ namespace Nox7atra.ApartmentEditor
 {
     public class Grid
     {
-        #region properties
-        public bool IsDrawCenter
-        {
-            get
-            {
-                return _IsDrawCenter;
-            }
-            set
-            {
-                _IsDrawCenter = value;
-            }
-        }
         public float Zoom
         {
             get
@@ -29,16 +17,13 @@ namespace Nox7atra.ApartmentEditor
                 _Zoom = value > MAX_ZOOM_VALUE ? MAX_ZOOM_VALUE : value < MIN_ZOOM_VALUE ? MIN_ZOOM_VALUE : value;
             }
         }
-        #endregion
+        public bool IsDrawCenter;
 
-        #region attributes
-        readonly EditorWindow _ParentWindow;
+        private readonly EditorWindow _ParentWindow;
 
         private Vector2 _Offset;
-        private bool _IsDrawCenter;
-
         private float _Zoom;
-        #endregion
+ 
 
         #region public methods
         public Vector2 GUIToGrid(Vector3 vec)
@@ -108,7 +93,7 @@ namespace Nox7atra.ApartmentEditor
         }
         void DrawCenter()
         {
-            if (!_IsDrawCenter)
+            if (!IsDrawCenter)
                 return;
 
             Handles.color = Color.cyan;
@@ -125,7 +110,7 @@ namespace Nox7atra.ApartmentEditor
         {
             _Zoom = 0.9f;
             _ParentWindow = parentWindow;
-            _IsDrawCenter = isDrawCenterMark;
+            IsDrawCenter = isDrawCenterMark;
             Recenter();
         }
 

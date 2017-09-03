@@ -10,7 +10,6 @@ namespace Nox7atra.ApartmentEditor
         public Room SelectedRoom{ get { return _SelectedRoom; }  }
         public SelectionType CurrentSelection { get { return _CurrentSelection; } }
         public int SelectedVertIndex { get { return _SelectedVertIndex; } }
-        
         #endregion
 
         #region attributes
@@ -47,17 +46,16 @@ namespace Nox7atra.ApartmentEditor
                     _ParentWindow.ApartmentManager.NeedToSave = true;
                     break;
                 case SelectionType.Vert:
-                    /*
                     if (_SelectedRoom.Walls.Count > 3)
                     {
-                        _SelectedRoom.Contour.RemoveAt(_SelectedVertIndex);
+                        _SelectedRoom.RemoveVert(_SelectedVertIndex);
                         _SelectedVertIndex = -1;
                         _ParentWindow.ApartmentManager.NeedToSave = true;
                     }
                     else
                     {
                         Debug.LogWarning("You can't delete vertices when it less or equals 3");
-                    }*/
+                    }
                     break;
             }
             _CurrentSelection = SelectionType.None;
@@ -146,8 +144,8 @@ namespace Nox7atra.ApartmentEditor
                     break;
                 case SelectionType.Vert:
                     _SelectedVertIndex = _SelectedRoom.GetContourVertIndex(position);
-                    ApartmentConfigWindow.MakeBackup();
-                    ApartmentConfigWindow.Config.IsDrawPositions = true;
+                    ApartmentConfig.MakeBackup();
+                    ApartmentConfig.Current.IsDrawPositions = true;
                     break;
             }  
         }
@@ -173,7 +171,7 @@ namespace Nox7atra.ApartmentEditor
                     MoveSelected();
                     break;
                 case EventType.MouseUp:
-                    ApartmentConfigWindow.ApplyBackup();
+                    ApartmentConfig.ApplyBackup();
                     if(_SelectedRoom != null)
                         _SelectedRoom.RoundContourPoints();
                     _LastMousePosition = null;
