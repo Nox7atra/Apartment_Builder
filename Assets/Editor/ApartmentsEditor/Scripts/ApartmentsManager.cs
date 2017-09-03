@@ -43,6 +43,7 @@ namespace Nox7atra.ApartmentEditor
             }
             catch (Exception e)
             {
+                UnityEngine.Debug.Log(e.Message);
                 CurrentApartment = new Apartment();
             }
         }

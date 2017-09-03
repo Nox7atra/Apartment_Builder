@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Nox7atra.ApartmentEditor;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEditor;
 
 namespace Nox7atra.ApartmentEditor

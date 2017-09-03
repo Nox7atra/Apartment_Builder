@@ -4,7 +4,7 @@ using UnityEngine;
 using System;
 namespace Nox7atra.ApartmentEditor
 {
-    public class Apartment
+    public class Apartment : ScriptableObject
     {
         #region properties
         public List<Room> Rooms
@@ -27,7 +27,6 @@ namespace Nox7atra.ApartmentEditor
             }
         }
         #endregion
-
 
         #region attributes
         public Vector2 Dimensions;

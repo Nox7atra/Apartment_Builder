@@ -13,8 +13,8 @@ namespace Nox7atra.ApartmentEditor
         {
             GUILayout.BeginArea(new Rect(0,0, Screen.width / 2, Screen.height));
             EditorGUILayout.BeginVertical();
-            CreateRoomButton();
             RecenterButton();
+            CreateRoomButton();
             SaveButton();
             EditorGUILayout.EndVertical();
             GUILayout.EndArea();
@@ -22,28 +22,33 @@ namespace Nox7atra.ApartmentEditor
 
         public void CreateRoomButton()
         {
-            if (GUILayout.Button(
-                "CR", 
-                SkinManager.Instance.CurrentSkin.ToolbarMiniButtonStyle))
+            if (EditorUIUtils.ButtonWithFallback(
+                    _CurrentSkin.IconCreateRoom,
+                    "Create Room",
+                    _CurrentSkin.MiniButtonStyle
+                ))
             {
                 _ParentWindow.CreateRoomStateBegin();
             }
         }
         public void SaveButton()
         {
-    
-            if (GUILayout.Button(
-                _CurrentSkin.ToolbarIconSave,
-                _CurrentSkin.ToolbarMiniButtonStyle))
+            if (EditorUIUtils.ButtonWithFallback(
+                    _CurrentSkin.IconSave, 
+                    "Save", 
+                    _CurrentSkin.MiniButtonStyle
+                ))
             {
                 _ParentWindow.ApartmentManager.SaveCurrent();
             }
         }
         public void RecenterButton()
         {
-            if (GUILayout.Button(
-                "R",
-                SkinManager.Instance.CurrentSkin.ToolbarMiniButtonStyle))
+            if (EditorUIUtils.ButtonWithFallback(
+                    _CurrentSkin.IconRecenter,
+                    "Recenter",
+                    _CurrentSkin.MiniButtonStyle
+                ))
             {
                 _ParentWindow.Grid.Recenter();
             }
