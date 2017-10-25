@@ -11,7 +11,7 @@ namespace Nox7atra.ApartmentEditor
         private readonly Skin _CurrentSkin;
         public void Draw()
         {
-            GUILayout.BeginArea(new Rect(0,0, Screen.width / 2, Screen.height));
+            GUILayout.BeginArea(new Rect(0,0, Screen.width / 2f, Screen.height));
             EditorGUILayout.BeginVertical();
             RecenterButton();
             CreateRoomButton();
@@ -39,7 +39,7 @@ namespace Nox7atra.ApartmentEditor
                     _CurrentSkin.MiniButtonStyle
                 ))
             {
-                _ParentWindow.ApartmentManager.SaveCurrent();
+                //TODO: Make implementation 
             }
         }
         public void RecenterButton()

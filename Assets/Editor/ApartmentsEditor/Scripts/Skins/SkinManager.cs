@@ -21,14 +21,7 @@ namespace Nox7atra.ApartmentEditor
         }
         public static SkinManager Instance
         {
-            get
-            {
-                if (_Instance == null)
-                {
-                    _Instance = new SkinManager();
-                }
-                return _Instance;
-            }
+            get { return _Instance ?? (_Instance = new SkinManager()); }
         }
         private static SkinManager _Instance;
     }

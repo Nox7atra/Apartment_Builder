@@ -2,6 +2,8 @@
 using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
+using UnityEditor;
+using UnityEngine;
 
 namespace Nox7atra.ApartmentEditor
 {
@@ -9,45 +11,20 @@ namespace Nox7atra.ApartmentEditor
     {
         public Apartment CurrentApartment { get; private set; }
 
-        private string _CurrentApartmentName;
         public bool NeedToSave;
+
     
-        public void SaveCurrent()
+        private ApartmentsManager()
         {
-            XmlSerializer ser = new XmlSerializer(typeof(Apartment));
-            StreamWriter writer = new StreamWriter(CreatePath(_CurrentApartmentName));
-            ser.Serialize(writer, CurrentApartment);
-            writer.Close();
-            NeedToSave = false;
+            CurrentApartment = Apartment.Create();
         }
-        void Load(string name)
+
+        public const string DataPath = "Assets/Editor/ApartmentsEditor/Data/";
+
+        private static ApartmentsManager _Instance;
+        public static ApartmentsManager Instance
         {
-            _CurrentApartmentName = name;
-            XmlSerializer serializer
-                = new XmlSerializer(typeof(Apartment));
-            FileStream fs = new FileStream(CreatePath(name), FileMode.Open);
-            XmlReader reader = XmlReader.Create(fs);
-            CurrentApartment = (Apartment)serializer.Deserialize(reader);
-            fs.Close();
-            NeedToSave = false;
+            get { return _Instance ?? (_Instance = new ApartmentsManager()); }
         }
-        string CreatePath(string name)
-        {
-            return DataPath + name + ".xml";
-        }
-        public ApartmentsManager()
-        {
-            try
-            {
-                Load("test");
-            }
-            catch (Exception e)
-            {
-                UnityEngine.Debug.Log(e.Message);
-                CurrentApartment = new Apartment();
-            }
-        }
-       
-        const string DataPath = "Assets/ApartmentsEditor/Data/";
     }
 }

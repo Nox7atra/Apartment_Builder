@@ -6,23 +6,17 @@ namespace Nox7atra.ApartmentEditor
 {
     public class NormalState : StateApartmentBuilder
     {
-        #region properties
         public Room SelectedRoom{ get { return _SelectedRoom; }  }
         public SelectionType CurrentSelection { get { return _CurrentSelection; } }
         public int SelectedVertIndex { get { return _SelectedVertIndex; } }
-        #endregion
-
-        #region attributes
+   
         private Room _SelectedRoom;
         private SelectionType _CurrentSelection;
         private int _SelectedVertIndex;
 
-        private bool _IsPositionsShowed;
         private Vector3? _LastMousePosition;
         private NormalStateHotkeys _Hotkeys;
-        #endregion
 
-        #region public methods
         public override void Draw()
         {
             if (!_IsActive)
@@ -40,17 +34,17 @@ namespace Nox7atra.ApartmentEditor
             switch (_CurrentSelection)
             {
                 case SelectionType.Room:
-                    _ParentWindow.ApartmentManager.CurrentApartment.Rooms.Remove(_SelectedRoom);
-                    _ParentWindow.ApartmentManager.SaveCurrent();
+                    ApartmentsManager.Instance.CurrentApartment.Rooms.Remove(_SelectedRoom);
+                    Room.DestroyImmediate(_SelectedRoom, true);
                     _SelectedRoom = null;
-                    _ParentWindow.ApartmentManager.NeedToSave = true;
+                    ApartmentsManager.Instance.NeedToSave = true;
                     break;
                 case SelectionType.Vert:
                     if (_SelectedRoom.Walls.Count > 3)
                     {
                         _SelectedRoom.RemoveVert(_SelectedVertIndex);
                         _SelectedVertIndex = -1;
-                        _ParentWindow.ApartmentManager.NeedToSave = true;
+                        ApartmentsManager.Instance.NeedToSave = true;
                     }
                     else
                     {
@@ -60,9 +54,7 @@ namespace Nox7atra.ApartmentEditor
             }
             _CurrentSelection = SelectionType.None;
         }
-        #endregion
-
-        #region events
+ 
         protected override void OnKeyEvent(EventType type, Event @event)
         {
             if (!_IsActive)
@@ -79,15 +71,13 @@ namespace Nox7atra.ApartmentEditor
             }
             _ParentWindow.Repaint();
         }
-        #endregion
 
-        #region service methods
         void MoveSelected()
         {
             if (_CurrentSelection == SelectionType.None)
                 return;
 
-            _ParentWindow.ApartmentManager.NeedToSave = true;
+            ApartmentsManager.Instance.NeedToSave = true;
 
             var curMousePosition = Event.current.mousePosition;
 
@@ -135,7 +125,7 @@ namespace Nox7atra.ApartmentEditor
             switch (_CurrentSelection)
             {
                 case SelectionType.Room:
-                   _SelectedRoom = _ParentWindow.ApartmentManager.CurrentApartment.Rooms
+                    _SelectedRoom = ApartmentsManager.Instance.CurrentApartment.Rooms
                                .FirstOrDefault(x => MathUtils.IsPointInsideCountour(x.GetContour(), position));
                     if(_SelectedRoom == null)
                     {
@@ -147,7 +137,11 @@ namespace Nox7atra.ApartmentEditor
                     ApartmentConfig.MakeBackup();
                     ApartmentConfig.Current.IsDrawPositions = true;
                     break;
-            }  
+            }
+            if (_SelectedRoom)
+            {
+                Selection.activeObject = _SelectedRoom;
+            }
         }
         void OnLeftMouse(EventType type, Event @event)
         {
@@ -158,7 +152,7 @@ namespace Nox7atra.ApartmentEditor
 
                     var mousePos = _ParentWindow.Grid.GUIToGrid(@event.mousePosition);
 
-                    _SelectedRoom = _ParentWindow.ApartmentManager.CurrentApartment.Rooms
+                    _SelectedRoom = ApartmentsManager.Instance.CurrentApartment.Rooms
                         .FirstOrDefault(x => x.GetContourVertIndex(mousePos) >= 0);
 
                     _CurrentSelection = _SelectedRoom == null ? SelectionType.Room : SelectionType.Vert;
@@ -178,22 +172,17 @@ namespace Nox7atra.ApartmentEditor
                     break;
             }
         }
-        #endregion
-
-        #region nested types
+ 
         public enum SelectionType
         {
             Vert,
             Room,
             None
         }
-        #endregion
-
-        #region constructors
+    
         public NormalState(ApartmentEditorWindow parentWindow) : base(parentWindow)
         {
             _Hotkeys = new NormalStateHotkeys(this);
         }
-        #endregion
     }
 }

@@ -16,18 +16,11 @@ namespace Nox7atra.ApartmentEditor
 
         public event Action<EventType, Event> OnKeyEvent;
 
-        public ApartmentsManager ApartmentManager
-        {
-            get
-            {
-                return _ApartmentManager;
-            }
-        }
+
 
         public  Grid Grid;
 
         private Toolbar _Toolbar;
-        private ApartmentsManager _ApartmentManager;
         private Dictionary<EditorWindowState, StateApartmentBuilder> _States;
         private Vector3? _LastMousePosition;
 
@@ -36,7 +29,7 @@ namespace Nox7atra.ApartmentEditor
         {
             KeysEvents();
             Grid.Draw();
-            var apartment = _ApartmentManager.CurrentApartment;
+            var apartment = ApartmentsManager.Instance.CurrentApartment;
             if (apartment != null)
             {
                 apartment.Draw(Grid);
@@ -53,7 +46,6 @@ namespace Nox7atra.ApartmentEditor
         {
             Grid = new Grid(this);
             _Toolbar = new Toolbar(this);
-            _ApartmentManager = new ApartmentsManager();
 
             _States = new Dictionary<EditorWindowState, StateApartmentBuilder>
             {
@@ -78,9 +70,8 @@ namespace Nox7atra.ApartmentEditor
         }
         public void CreateRoomStateEnd(Room room)
         {
-            _ApartmentManager.CurrentApartment.Rooms.Add(room);
+            ApartmentsManager.Instance.CurrentApartment.Rooms.Add(room);
             ActivateState(EditorWindowState.Normal);
-            _ApartmentManager.SaveCurrent();
             Repaint();
         }
 

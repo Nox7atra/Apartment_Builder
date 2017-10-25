@@ -20,7 +20,7 @@ namespace Nox7atra.ApartmentEditor
             base.SetActive(enable);
             if (enable)
             {
-                _CurrentRoom = new Room();
+                _CurrentRoom = Room.Create();
             }
             else
             {

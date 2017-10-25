@@ -88,7 +88,7 @@ namespace Nox7atra.ApartmentEditor
 
             if (contour.Count < 3)
             {
-                return inside;
+                return false;
             }
 
             Vector2 oldPoint = new Vector2(contour[contour.Count - 1].x, contour[contour.Count - 1].y);

@@ -1,22 +1,29 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Nox7atra.ApartmentEditor
 {
-    public class Room
+    [Serializable]
+    public class Room : ScriptableObject
     {
+        //factory
+        public static Room Create()
+        {
+            Room room =  CreateInstance<Room>();
+            AssetDatabase.AddObjectToAsset(room, ApartmentsManager.Instance.CurrentApartment);
+            room.ContourColor = new Color(Random.Range(0.5f, 1), Random.Range(0.5f, 1), Random.Range(0.5f, 1));
+            EditorUtility.SetDirty(ApartmentsManager.Instance.CurrentApartment);
+            room._Walls = new List<Wall>();
+            AssetDatabase.SaveAssets();
+            return room;
+        }
         public const float SNAPING_RAD = 10f;
 
-        public Color ContourColor
-        {
-            get
-            {
-                return _ContourColor;
-            }
-        }
+
         public List<Wall> Walls
         {
             get
@@ -60,9 +67,9 @@ namespace Nox7atra.ApartmentEditor
                 return centroid / (3 * signedArea);
             }
         }
-   
-        private Type _Type;
-        private Color _ContourColor;
+
+        public Color ContourColor;
+        [SerializeField]
         private List<Wall> _Walls;
 
         public void Draw(Grid grid)
@@ -72,7 +79,7 @@ namespace Nox7atra.ApartmentEditor
                 var p1 = grid.GridToGUI(_Walls[i].Begin);
                 var p2 = grid.GridToGUI(_Walls[i].End);
 
-                _Walls[i].Draw(grid, _ContourColor);
+                _Walls[i].Draw(grid, ContourColor);
              
                 Handles.color = Color.white;
                 float rad = SNAPING_RAD / grid.Zoom;
@@ -178,12 +185,7 @@ namespace Nox7atra.ApartmentEditor
         {
             return _Walls.Select(x => x.Begin).ToList();
         }
-        public Room()
-        {
-            _Walls = new List<Wall>();
-            _ContourColor = new Color(Random.Range(0.5f, 1), Random.Range(0.5f, 1), Random.Range(0.5f, 1));
-            _Type = Type.None;
-        }
+       
         public enum Type
         {
             Kitchen,
@@ -193,10 +195,14 @@ namespace Nox7atra.ApartmentEditor
             None
         }
     }
+    [Serializable]
     public class Wall
     {
+        [SerializeField]
         public Vector2 Begin;
+        [SerializeField]
         public Vector2 End;
+        [SerializeField]
         public List<WallObject> _Objects;
         public void Move(Vector2 dv)
         {
@@ -219,18 +225,25 @@ namespace Nox7atra.ApartmentEditor
             _Objects = new List<WallObject>();
         }
     }
+    [Serializable]
     public abstract class WallObject
     {
+        [SerializeField]
         public float WallPosition;  //from 0 to 1
+        [SerializeField]
         public float Width;
+        [SerializeField]
         public float Height;
     }
+    [Serializable]
     public class Door : WallObject
     {
 
     }
+    [Serializable]
     public class Window : WallObject
     {
+        [SerializeField]
         public float DistanceFromFloor;
     }
 }
