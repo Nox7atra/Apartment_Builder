@@ -2,11 +2,7 @@
 using System.Collections.Generic;
 
 namespace Nox7atra.ApartmentEditor
-{
-    public class test
-    {
-        
-    }
+{ 
     public class CyclicalList<T> : List<T>
     {
         public new T this[int index]

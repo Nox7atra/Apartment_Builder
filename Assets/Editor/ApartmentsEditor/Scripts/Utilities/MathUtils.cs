@@ -6,6 +6,32 @@ namespace Nox7atra.ApartmentEditor
 {
     public static class MathUtils
     {
+        //If result null has no intersection
+        public static List<Vector2> MergeContours(List<Vector2> contour1, List<Vector2> contour2)
+        {
+            List<Vector2> result = null;
+            for (int i = 0, count1 = contour1.Count; i < count1; i++)
+            {
+                for (int j = 0, count2 = contour2.Count; j < count2; j++)
+                {
+                    MathUtils.IsPointInsideCountour(contour1, contour2[i]);
+                }
+            }
+            return result;
+        }
+        public static bool IsContourClockwise(List<Vector2> contour)
+        {
+            float sign = 0;
+
+            for (int i = 0; i < contour.Count; i++)
+            {
+                Vector2 point1 = contour[i],
+                    point2 = contour[(i + 1) % contour.Count];
+                sign += (point2.x - point1.x) * (point2.y + point1.y);
+            }
+
+            return sign < 0;
+        }
         public static bool IsPointInsideLineSegment(Vector2 point, Vector2 linePoint1, Vector2 linePoint2)
         {
             return Vector3.Distance(linePoint1, linePoint2) + float.Epsilon
@@ -34,8 +60,9 @@ namespace Nox7atra.ApartmentEditor
                 linePoint1.y + (linePoint2.y - linePoint1.y) * t,
                 linePoint1.z + (linePoint2.z - linePoint1.z) * t);
         }
-        public static bool IsLinesIntersects(Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4)
+        public static Vector2? LinesIntersection(Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4)
         {
+            Vector2? result = null;
 
             Vector2 a = p2 - p1;
             Vector2 b = p3 - p4;
@@ -60,7 +87,6 @@ namespace Nox7atra.ApartmentEditor
                     if (alphaNumerator < 0 || alphaNumerator > alphaDenominator)
                     {
                         doIntersect = false;
-
                     }
                 }
                 else if (alphaNumerator > 0 || alphaNumerator < alphaDenominator)
@@ -79,7 +105,12 @@ namespace Nox7atra.ApartmentEditor
                 }
             }
 
-            return doIntersect;
+            if (doIntersect)
+            {
+
+                result = p1 + alphaNumerator * (p2 - p1) / alphaDenominator;
+            }
+            return result;
         }
         public static bool IsPointInsideCountour(List<Vector2> contour, Vector2 point)
         {
@@ -118,6 +149,17 @@ namespace Nox7atra.ApartmentEditor
             }
 
             return inside;
+        }
+
+        public static List<Vector2> ReorderContour(List<Vector2> contour, Vector2 firstItem)
+        {
+            List<Vector2> result = new List<Vector2>();
+            int offset = contour.IndexOf(firstItem);
+            for (int i = 0; i < contour.Count; i++)
+            {
+                result.Add(contour[(i + offset) % contour.Count]);
+            }
+            return result;
         }
     }
 }
