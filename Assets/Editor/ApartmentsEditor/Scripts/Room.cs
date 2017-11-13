@@ -23,7 +23,6 @@ namespace Nox7atra.ApartmentEditor
         }
         public const float SNAPING_RAD = 10f;
 
-
         public List<Wall> Walls
         {
             get
@@ -31,6 +30,8 @@ namespace Nox7atra.ApartmentEditor
                 return _Walls;
             }
         }
+
+       
         public float Square
         {
             get
@@ -204,6 +205,15 @@ namespace Nox7atra.ApartmentEditor
         public Vector2 End;
         [SerializeField]
         public List<WallObject> _Objects;
+
+        public Vector3 Center
+        {
+            get { return (End - Begin).XYtoXYZ() / 2;  }
+        }
+        public float Rotation
+        {
+            get { return Vector2.Angle(Vector2.right, End - Begin); }
+        }
         public void Move(Vector2 dv)
         {
             Begin += dv;

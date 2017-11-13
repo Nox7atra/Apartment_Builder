@@ -16,6 +16,7 @@ namespace Nox7atra.ApartmentEditor
             RecenterButton();
             CreateRoomButton();
             SaveButton();
+            GenerateMeshButton();
             EditorGUILayout.EndVertical();
             GUILayout.EndArea();
         }
@@ -51,6 +52,16 @@ namespace Nox7atra.ApartmentEditor
                 ))
             {
                 _ParentWindow.Grid.Recenter();
+            }
+        }
+        public void GenerateMeshButton()
+        {
+            if (GUILayout.Button(
+                "G",
+                _CurrentSkin.MiniButtonStyle
+            ))
+            {
+                MeshBuilder.GenerateApartmentMesh(ApartmentsManager.Instance.CurrentApartment);
             }
         }
         public Toolbar(ApartmentEditorWindow parentWindow)

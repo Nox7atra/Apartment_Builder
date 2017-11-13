@@ -12,7 +12,6 @@ namespace Nox7atra.ApartmentEditor
         {
             switch (@event.keyCode)
             {
-        
                 case KeyCode.Delete:
                     Delete();
                     break;
