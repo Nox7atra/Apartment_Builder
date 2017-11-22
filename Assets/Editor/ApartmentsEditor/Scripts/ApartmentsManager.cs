@@ -1,24 +1,43 @@
 ﻿using System;
+using System.CodeDom;
 using System.IO;
 using System.Xml;
-using System.Xml.Serialization;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Nox7atra.ApartmentEditor
 {
     public class ApartmentsManager
     {
-        public Apartment CurrentApartment { get; private set; }
+        private Apartment _CurrentApartment;
 
-        public bool NeedToSave;
+        private List<Apartment> _Apartments;
 
+        public Apartment CurrentApartment
+        {
+            get
+            {
+                if (_CurrentApartment == null)
+                {
+                    _CurrentApartment = Apartment.Create("test");
+                }
+                return _CurrentApartment;
+            }
+        }
         private ApartmentsManager()
         {
-            CurrentApartment = Apartment.Create();
+            var objects = AssetDatabase.LoadAllAssetsAtPath(PathsConfig.Instance.PathToApartments);
+            _Apartments = new List<Apartment>(objects.Length);
+            foreach (Object obj in objects)
+            {
+                var apartment = obj as Apartment;
+                if(apartment)
+                    _Apartments.Add(apartment);
+            }
         }
-
-        public const string DataPath = "Assets/Editor/ApartmentsEditor/Data/";
 
         private static ApartmentsManager _Instance;
         public static ApartmentsManager Instance

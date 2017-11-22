@@ -14,7 +14,7 @@ namespace Nox7atra.ApartmentEditor
         public override void SetActive(bool enable)
         {
             base.SetActive(enable);
-            _CurrentRoom = enable ? Room.Create() : null;
+            _CurrentRoom = enable ? Room.Create(ApartmentsManager.Instance.CurrentApartment) : null;
             if (enable)
             {
                 Undo.RegisterCreatedObjectUndo(_CurrentRoom, "Room Created");
@@ -54,15 +54,23 @@ namespace Nox7atra.ApartmentEditor
                     _ParentWindow.Repaint();
                     break;
                 case EventType.MouseDown:
-                    if (@event.button == 0)
+                    var position = _ParentWindow.Grid.GUIToGrid(@event.mousePosition);
+                    if (@event.button == 0 && ApartmentsManager.Instance.CurrentApartment.Dimensions.Contains(position))
                     {
                         Undo.RegisterCompleteObjectUndo(_CurrentRoom, "Add Room point");
-                        if (!_CurrentRoom.Add(_ParentWindow.Grid.GUIToGrid(@event.mousePosition)))
+                        if (!_CurrentRoom.Add(position))
                         {
-                            Debug.Log("Clear");
                             Undo.ClearAll();
                             _ParentWindow.CreateRoomStateEnd(_CurrentRoom);
                         }
+                    }
+                    break;
+                case EventType.KeyDown:
+                    if (@event.keyCode == KeyCode.Escape)
+                    {
+                        Object.DestroyImmediate(_CurrentRoom, true);
+                        AssetDatabase.SaveAssets();
+                        _ParentWindow.ActivateState(ApartmentEditorWindow.EditorWindowState.Normal);
                     }
                     break;
             }

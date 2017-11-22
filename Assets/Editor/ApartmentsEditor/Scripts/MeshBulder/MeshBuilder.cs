@@ -6,7 +6,7 @@ namespace Nox7atra.ApartmentEditor
 {
     public static class MeshBuilder
     {
-        
+        private const float MeasurmentK = 100;
         public static GameObject GenerateApartmentMesh(Apartment apartment)
         {
             GameObject go = new GameObject(apartment.name);
@@ -30,18 +30,18 @@ namespace Nox7atra.ApartmentEditor
                 var contour = room.GetContour();
                 for (var j = 0; j < contour.Count; j++)
                 {
-                    contour[j] = contour[j] / 100;
-                    Debug.Log(contour[j]);
+                    contour[j] = contour[j] / MeasurmentK;
                 }
 
+                float height = apartment.Height / MeasurmentK;
                 foreach (var wall in room.Walls)
                 {
-                    GameObject wallGO = GenerateWall(wall, triangulator, maxDimension, apartment.Height);
+                    GameObject wallGO = GenerateWall(wall, triangulator, maxDimension, height, apartment.WallMaterial);
                     wallGO.transform.SetParent(roomGo.transform);
                 }
-                GameObject floorGO = GenerateFloorRoof(contour, triangulator, apartment.Height, maxDimension, true);
+                GameObject floorGO = GenerateFloorRoof(contour, triangulator, height, maxDimension, true, apartment.FloorMaterial);
                 contour.Reverse();
-                GameObject roofGO = GenerateFloorRoof(contour, triangulator, apartment.Height, maxDimension, false);
+                GameObject roofGO = GenerateFloorRoof(contour, triangulator, height, maxDimension, false, apartment.FloorMaterial);
                 roofGO.transform.SetParent(roomGo.transform);
                 floorGO.transform.SetParent(roomGo.transform);
 
@@ -50,7 +50,7 @@ namespace Nox7atra.ApartmentEditor
             return go;
         }
 
-        private static GameObject GenerateFloorRoof(List<Vector2> roomContour, Triangulator triangulator, float apartmentHeight, Vector2 maxDimensions, bool isFloor)
+        private static GameObject GenerateFloorRoof(List<Vector2> roomContour, Triangulator triangulator, float apartmentHeight, Vector2 maxDimensions, bool isFloor, Material floorMat)
         {
             GameObject go = new GameObject(isFloor ? "floor" : "roof");
             MeshFilter mf = go.AddComponent<MeshFilter>();
@@ -72,16 +72,16 @@ namespace Nox7atra.ApartmentEditor
             
             mf.sharedMesh.uv = MathUtils.CreatePlaneUVs(mf.sharedMesh, maxDimensions);
             mf.sharedMesh.RecalculateNormals();
-            
+            mr.sharedMaterial = floorMat;
             return go;
         }
-        private static GameObject GenerateWall(Wall wall, Triangulator triangulator, Vector2 maxDimensions, float apartmentHeight)
+        private static GameObject GenerateWall(Wall wall, Triangulator triangulator, Vector2 maxDimensions, float apartmentHeight, Material wallMat)
         {
             GameObject wallGO = new GameObject("wall");
             MeshFilter wallMf = wallGO.AddComponent<MeshFilter>();
             MeshRenderer wallMr = wallGO.AddComponent<MeshRenderer>();
 
-            float length = Vector2.Distance(wall.Begin, wall.End) / 100;
+            float length = Vector2.Distance(wall.Begin, wall.End) / MeasurmentK;
             List<Vector2> wallContour = new List<Vector2>
             {
                 new Vector2(-length / 2, -apartmentHeight / 2),
@@ -93,7 +93,8 @@ namespace Nox7atra.ApartmentEditor
             wallMf.sharedMesh = triangulator.CreateMesh(wallContour);
             wallMf.sharedMesh.RecalculateNormals();
             wallMf.sharedMesh.uv = MathUtils.CreatePlaneUVs(wallMf.sharedMesh, maxDimensions);
-            wallGO.transform.position = wall.Center.XYtoXYZ() / 100 + Vector3.up * apartmentHeight / 2;
+            wallMr.sharedMaterial = wallMat;
+            wallGO.transform.position = wall.Center.XYtoXYZ() / MeasurmentK + Vector3.up * apartmentHeight / 2;
             wallGO.transform.rotation = Quaternion.Euler(0, wall.Rotation, 0);
             return wallGO;
         }

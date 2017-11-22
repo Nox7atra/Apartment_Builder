@@ -15,7 +15,6 @@ namespace Nox7atra.ApartmentEditor
             EditorGUILayout.BeginVertical();
             RecenterButton();
             CreateRoomButton();
-            SaveButton();
             GenerateMeshButton();
             EditorGUILayout.EndVertical();
             GUILayout.EndArea();
@@ -32,17 +31,7 @@ namespace Nox7atra.ApartmentEditor
                 _ParentWindow.CreateRoomStateBegin();
             }
         }
-        public void SaveButton()
-        {
-            if (EditorUIUtils.ButtonWithFallback(
-                    _CurrentSkin.IconSave, 
-                    "Save", 
-                    _CurrentSkin.MiniButtonStyle
-                ))
-            {
-               
-            }
-        }
+
         public void RecenterButton()
         {
             if (EditorUIUtils.ButtonWithFallback(

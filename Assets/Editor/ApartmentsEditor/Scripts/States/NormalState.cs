@@ -36,8 +36,6 @@ namespace Nox7atra.ApartmentEditor
                     ApartmentsManager.Instance.CurrentApartment.Rooms.Remove(_SelectedRoom);
                     UnityEngine.Object.DestroyImmediate(_SelectedRoom, true);
                     _SelectedRoom = null;
-
-                   
                     break;
                 case SelectionType.Vert:
                     if (_SelectedRoom.Walls.Count > 3)
@@ -45,7 +43,6 @@ namespace Nox7atra.ApartmentEditor
                         Undo.RegisterCompleteObjectUndo(_SelectedRoom, "Vert Removed");
                         _SelectedRoom.RemoveVert(_SelectedVertIndex);
                         _SelectedVertIndex = -1;
-                        ApartmentsManager.Instance.NeedToSave = true;
                     }
                     else
                     {
@@ -74,12 +71,10 @@ namespace Nox7atra.ApartmentEditor
             _ParentWindow.Repaint();
         }
 
-        void MoveSelected()
+        private void MoveSelected()
         {
-            if (_CurrentSelection == SelectionType.None)
+            if (_CurrentSelection == SelectionType.None )
                 return;
-            
-            ApartmentsManager.Instance.NeedToSave = true;
 
             var curMousePosition = Event.current.mousePosition;
     
@@ -87,19 +82,25 @@ namespace Nox7atra.ApartmentEditor
             {
                 var dv = (GUIUtility.GUIToScreenPoint((Vector2)_LastMousePosition)
                      - GUIUtility.GUIToScreenPoint(curMousePosition)) * _ParentWindow.Grid.Zoom;
+                var dimensions = ApartmentsManager.Instance.CurrentApartment.Dimensions;
                 switch (_CurrentSelection)
                 {
                     case SelectionType.Vert:
                         _SelectedRoom.MoveVert(_SelectedVertIndex, -dv);
+                        if(!_SelectedRoom.IsVertInsideRect(_SelectedVertIndex, dimensions))
+                            _SelectedRoom.MoveVert(_SelectedVertIndex, dv);
                         break;
                     case SelectionType.Room:
                         _SelectedRoom.Move(-dv);
+                        if (!_SelectedRoom.IsInsideRect(dimensions))
+                            _SelectedRoom.Move(dv);
                         break;
                 }
             }
             _LastMousePosition = curMousePosition;
         }
-        void DrawSelection()
+
+        private void DrawSelection()
         {
             if (_SelectedRoom == null)
                 return;
@@ -122,7 +123,8 @@ namespace Nox7atra.ApartmentEditor
                     break;
             }
         }
-        void SetupSelection(Vector2 position)
+
+        private void SetupSelection(Vector2 position)
         {
             switch (_CurrentSelection)
             {
@@ -143,6 +145,10 @@ namespace Nox7atra.ApartmentEditor
             if (_SelectedRoom)
             {
                 Selection.activeObject = _SelectedRoom;
+            }
+            else
+            {
+                Selection.activeObject = ApartmentsManager.Instance.CurrentApartment;
             }
         }
         void OnLeftMouse(EventType type, Event @event)
@@ -169,7 +175,10 @@ namespace Nox7atra.ApartmentEditor
                     break;
                 case EventType.MouseUp:
                     ApartmentConfig.ApplyBackup();
-       
+                    if (_SelectedRoom != null)
+                    {
+                        _SelectedRoom.RoundContourPoints();
+                    }
                     _LastMousePosition = null;
                     break;
             }

@@ -21,11 +21,18 @@ namespace Nox7atra.ApartmentEditor
 
         public void DrawContourPositions()
         {
+            var dimension = _ThisRoom.ParentApartment.Dimensions;
             for (int i = 0; i < _ThisRoom.Walls.Count; i++)
             {
-                _ThisRoom.Walls[i].End = EditorGUILayout.Vector2Field("Point " + i,
+                var newPosition = EditorGUILayout.Vector2Field("Point " + i,
                     _ThisRoom.Walls[i].End);
-                _ThisRoom.Walls[(i + 1) % _ThisRoom.Walls.Count].Begin = _ThisRoom.Walls[i].End;
+
+                if (dimension.Contains(newPosition))
+                {
+                    _ThisRoom.Walls[i].End = newPosition;
+                    _ThisRoom.Walls[(i + 1) % _ThisRoom.Walls.Count].Begin = _ThisRoom.Walls[i].End;
+                }
+
             }
         }
     }

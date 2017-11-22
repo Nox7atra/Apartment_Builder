@@ -23,7 +23,7 @@ namespace Nox7atra.ApartmentEditor
         private Vector3? _LastMousePosition;
 
 
-        void OnGUI()
+        private void OnGUI()
         {
             KeysEvents();
             Grid.Draw();
@@ -40,7 +40,8 @@ namespace Nox7atra.ApartmentEditor
 
             _Toolbar.Draw();
         }
-        void OnEnable()
+
+        private void OnEnable()
         {
             Grid = new Grid(this);
             _Toolbar = new Toolbar(this);
@@ -54,7 +55,8 @@ namespace Nox7atra.ApartmentEditor
 
             wantsMouseMove = true;
         }
-        void OnDestroy()
+
+        private void OnDestroy()
         {
             foreach (var stateApartmentEditor in _States.Values)
             {
@@ -73,17 +75,17 @@ namespace Nox7atra.ApartmentEditor
             Repaint();
         }
 
-        void KeysEvents()
+        private void KeysEvents()
         {
             var curEvent = Event.current;
             switch (curEvent.type)
             {
                 case EventType.MouseDrag:
-                    if (Event.current.button == 1)
+                    if (curEvent.button == 1)
                         DragGrid();
                     break;
                 case EventType.MouseDown:
-                    if (Event.current.button == 1)
+                    if (curEvent.button == 1)
                         _LastMousePosition = null;
                     break;
                 case EventType.ScrollWheel:
@@ -101,7 +103,8 @@ namespace Nox7atra.ApartmentEditor
                     OnKeyEvent(Event.current.rawType, curEvent);
             }
         }
-        void DragGrid()
+
+        private void DragGrid()
         {
             var curMousePosition = Event.current.mousePosition;
             if (_LastMousePosition.HasValue)
@@ -113,13 +116,14 @@ namespace Nox7atra.ApartmentEditor
             }
             _LastMousePosition = curMousePosition;
         }
-        void OnScroll(float speed)
+
+        private void OnScroll(float speed)
         {
             Grid.Zoom += speed * Grid.Zoom * 0.1f;
             Repaint();
         }
 
-        void ActivateState(EditorWindowState state)
+        public void ActivateState(EditorWindowState state)
         {
             foreach (var stateApartmentEditor in _States)
             {

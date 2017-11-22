@@ -12,10 +12,11 @@ namespace Nox7atra.ApartmentEditor
     {
         public const float SNAPING_RAD = 10f;
         //factory
-        public static Room Create()
+        public static Room Create(Apartment parent)
         {
             Room room =  CreateInstance<Room>();
             AssetDatabase.AddObjectToAsset(room, ApartmentsManager.Instance.CurrentApartment);
+            room._ParentApartment = parent;
             room.ContourColor = new Color(Random.Range(0.5f, 1), Random.Range(0.5f, 1), Random.Range(0.5f, 1));
             EditorUtility.SetDirty(ApartmentsManager.Instance.CurrentApartment);
             room._Walls = new List<Wall>();
@@ -24,6 +25,9 @@ namespace Nox7atra.ApartmentEditor
         }
         //data
         public Color ContourColor;
+
+        [SerializeField]
+        private Apartment _ParentApartment;
 
         [SerializeField]
         private List<Wall> _Walls;
@@ -37,7 +41,11 @@ namespace Nox7atra.ApartmentEditor
                 return _Walls;
             }
         }
-        
+
+        public Apartment ParentApartment
+        {
+            get { return _ParentApartment; }
+        }
         public float Square
         {
             get
@@ -53,6 +61,7 @@ namespace Nox7atra.ApartmentEditor
                 return Mathf.Abs(result);
             }
         }
+
         public Vector2 Centroid
         {
             get
@@ -78,12 +87,12 @@ namespace Nox7atra.ApartmentEditor
 
         public void Draw(Grid grid)
         {
-            for (int i = 0; i < _Walls.Count; i++)
+            foreach (Wall wall in _Walls)
             {
-                var p1 = _Walls[i].Begin;
-                var p2 = _Walls[i].End;
+                var p1 = wall.Begin;
+                var p2 = wall.End;
 
-                _Walls[i].Draw(grid, ContourColor);
+                wall.Draw(grid, ContourColor);
              
                 Handles.color = Color.white;
                 float rad = SNAPING_RAD / grid.Zoom;
@@ -100,7 +109,6 @@ namespace Nox7atra.ApartmentEditor
                 {
                     Handles.Label(grid.GridToGUI(p1) + new Vector2(SNAPING_RAD , SNAPING_RAD), p1.RoundCoordsToInt().ToString());
                 }
-                
             }
             if (ApartmentConfig.Current.IsDrawSquare)
             {
@@ -127,9 +135,9 @@ namespace Nox7atra.ApartmentEditor
         }
         public void Move(Vector2 dv)
         {
-            for (int i = 0; i < _Walls.Count; i++)
+            foreach (Wall wall in _Walls)
             {
-                _Walls[i].Move(dv);
+                wall.Move(dv);
             }
         }
         public void MoveVert(int index, Vector2 dv)
@@ -140,6 +148,7 @@ namespace Nox7atra.ApartmentEditor
             else
                 _Walls[_Walls.Count - 1].End += dv;
         }
+
         public void RemoveVert(int index)
         {
             if (index > 0)
@@ -152,22 +161,21 @@ namespace Nox7atra.ApartmentEditor
             }
             _Walls.RemoveAt(index);
         }
-        public bool IsLastPoint(Vector2 point)
-        {
-            return Vector2.Distance(point, _Walls[0].Begin) < SNAPING_RAD;
-        }
+      
         public void RoundContourPoints()
         {
-            for(int i = 0; i < _Walls.Count; i++)
+            foreach (var wall in _Walls)
             {
-                _Walls[i].Begin = _Walls[i].Begin.RoundCoordsToInt();
-                _Walls[i].End = _Walls[i].End.RoundCoordsToInt();
+                wall.Begin = wall.Begin.RoundCoordsToInt();
+                wall.End = wall.End.RoundCoordsToInt();
             }
         }
+
         public Vector2 GetVertPosition(int index)
         {
             return _Walls[index].Begin;
         }
+
         public int GetContourVertIndex(Vector2 point)
         {
             for(int i = 0; i < _Walls.Count; i++)
@@ -179,6 +187,7 @@ namespace Nox7atra.ApartmentEditor
             }
             return -1;
         }
+
         public List<Vector2> GetContour()
         {
             return _Walls.Select(x => x.Begin).ToList();
@@ -192,10 +201,26 @@ namespace Nox7atra.ApartmentEditor
                 _Walls.Reverse();
                 foreach (var wall in _Walls)
                 {
-                   wall.Reverse();
+                    wall.Reverse();
                 }
             }
         }
+
+        public bool IsVertInsideRect(int vertNum, Rect rect)
+        {
+            return rect.Contains(_Walls[vertNum].Begin);
+        }
+
+        public bool IsInsideRect(Rect rect)
+        {
+            return _Walls.All(wall => rect.Contains(wall.Begin));
+        }
+
+        public bool IsLastPoint(Vector2 point)
+        {
+            return Vector2.Distance(point, _Walls[0].Begin) < SNAPING_RAD;
+        }
+    
         public enum Type
         {
             Kitchen,

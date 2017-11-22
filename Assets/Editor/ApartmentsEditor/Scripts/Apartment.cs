@@ -1,34 +1,36 @@
 ﻿using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-using System;
-using JetBrains.Annotations;
+using System.IO;
 
 namespace Nox7atra.ApartmentEditor
 {
     public class Apartment : ScriptableObject
     {
         //factory
-        public static Apartment Create()
+        public static Apartment Create(string name)
         {
-            var path = ApartmentsManager.DataPath + "test.asset";
-            Apartment apartment = AssetDatabase.LoadAssetAtPath<Apartment>(path);
+            var fullpath = Path.Combine(PathsConfig.Instance.PathToApartments,"test.asset");
+            Apartment apartment = AssetDatabase.LoadAssetAtPath<Apartment>(fullpath);
 
             if (apartment == null)
             {
                 apartment = CreateInstance<Apartment>();
                 apartment._Rooms = new List<Room>();
                 apartment.Dimensions = new Rect(-Vector2.one * 500, Vector2.one * 1000);
-                AssetDatabase.CreateAsset(apartment, path);
+                AssetDatabase.CreateAsset(apartment, fullpath);
             }
             return apartment;
         }
 
         public float Height;
         public Rect Dimensions;
-
+        public Material WallMaterial;
+        public Material FloorMaterial;
         [SerializeField]
         private List<Room> _Rooms;
+
+       
         public List<Room> Rooms
         {
             get
@@ -83,5 +85,14 @@ namespace Nox7atra.ApartmentEditor
                     new Vector3(Dimensions.width / 2, Dimensions.height / 2)));
         }
 
+        public bool IsApartmentInRect(Rect rect)
+        {
+            foreach (var room in _Rooms)
+            {
+                if (!room.IsInsideRect(rect))
+                    return false;
+            }
+            return true;
+        }
     }
 }

@@ -11,7 +11,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91af5c0efcc7cea4a9c5d710859ce37f, type: 3}
   m_Name: test
   m_EditorClassIdentifier: 
-  Height: 2
+  Height: 200
   Dimensions:
     serializedVersion: 2
     x: -500
@@ -19,8 +19,8 @@ MonoBehaviour:
     width: 1000
     height: 1000
   _Rooms:
-  - {fileID: 114749440065570106}
---- !u!114 &114174255407794074
+  - {fileID: 114944899793446708}
+--- !u!114 &114944899793446708
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -31,26 +31,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a52e267f180e5fb4b9966e3ef152b2c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ContourColor: {r: 0.61674446, g: 0.7121668, b: 0.6975486, a: 1}
-  _Walls: []
---- !u!114 &114749440065570106
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a52e267f180e5fb4b9966e3ef152b2c7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ContourColor: {r: 0.63673985, g: 0.7231451, b: 0.83916795, a: 1}
+  ContourColor: {r: 0.79685163, g: 0.56531554, b: 0.56505644, a: 1}
+  _ParentApartment: {fileID: 11400000}
   _Walls:
-  - Begin: {x: 11, y: -80}
-    End: {x: -88, y: -34}
-  - Begin: {x: -88, y: -34}
-    End: {x: -25, y: 87}
-  - Begin: {x: -25, y: 87}
-    End: {x: 101, y: 37}
-  - Begin: {x: 101, y: 37}
-    End: {x: 11, y: -80}
+  - Begin: {x: -127, y: -333}
+    End: {x: 177, y: 37}
+  - Begin: {x: 177, y: 37}
+    End: {x: -260, y: -2}
+  - Begin: {x: -260, y: -2}
+    End: {x: -266, y: -223}
+  - Begin: {x: -266, y: -223}
+    End: {x: -127, y: -333}
