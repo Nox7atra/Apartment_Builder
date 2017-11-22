@@ -13,7 +13,6 @@ namespace Nox7atra.ApartmentEditor
 
         public bool NeedToSave;
 
-    
         private ApartmentsManager()
         {
             CurrentApartment = Apartment.Create();

@@ -1,14 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
-using UnityEngine;
-
+﻿
 namespace Nox7atra.ApartmentEditor
 {
     public class ApartmentConfig
     {
         public static ApartmentDrawConfig Current;
-
         private static ApartmentDrawConfig? _Backup;
         public static void MakeBackup()
         {
@@ -25,8 +20,10 @@ namespace Nox7atra.ApartmentEditor
     }
     public struct ApartmentDrawConfig
     {
+        public int UnitsInMeters;
         public bool IsDrawSizes;
         public bool IsDrawPositions;
         public bool IsDrawSquare;
+
     }
 }

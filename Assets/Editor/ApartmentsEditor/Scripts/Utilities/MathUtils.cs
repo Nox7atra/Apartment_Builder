@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 namespace Nox7atra.ApartmentEditor
@@ -161,5 +163,96 @@ namespace Nox7atra.ApartmentEditor
             }
             return result;
         }
+        public static Vector2[] CreatePlaneUVs(Mesh mesh, Vector2 maxDimensions)
+        {
+            try
+            {
+                Vector3[] verts = mesh.vertices;
+                Vector2[] uvs = new Vector2[verts.Length];
+                Vector3 minPoint = GetPointWithMinCords(verts);
+                Vector3 maxPoint = GetPointWithMaxCords(verts);
+                for (int i = 0; i < uvs.Length; i++)
+                {
+                    uvs[i] = GetPlaneUVPoint(minPoint, maxPoint, verts[i], maxDimensions);
+                }
+
+                return uvs;
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError(e.Message);
+                throw e;
+            }
+        }
+        private static Vector2 GetPlaneUVPoint(Vector3 min, Vector3 max, Vector3 vert, Vector2 maxDimensions)
+        {
+            Vector2 uv;
+            if (min.x == max.x)
+            {
+                uv = new Vector2(
+                    1 - (vert.y - max.y) / (min.y - max.y) * (max.x - min.x) / maxDimensions.x,
+                    1 - (vert.z - max.z) / (min.z - max.z) * (max.y - min.y) / maxDimensions.y);
+            }
+            else if (min.y == max.y)
+            {
+                uv = new Vector2(
+                    1 - (vert.x - max.x) / (min.x - max.x) * (max.x - min.x) / maxDimensions.x,
+                    1 - (vert.z - max.z) / (min.z - max.z) * (max.z - min.z) / maxDimensions.y);
+            }
+            else
+            {
+                uv = new Vector2(
+                    1 - (vert.x - max.x) / (min.x - max.x) * (max.x - min.x) / maxDimensions.x,
+                    1 - (vert.y - max.y) / (min.y - max.y) * (max.y - min.y) / maxDimensions.y);
+            }
+            return uv;
+        }
+        private static Vector3 GetPointWithMinCords(Vector3[] points)
+        {
+            Vector3 minPoint = new Vector3(
+                float.MaxValue,
+                float.MaxValue,
+                float.MaxValue);
+            for (int i = 0; i < points.Length; i++)
+            {
+                if (points[i].x < minPoint.x)
+                {
+                    minPoint.x = points[i].x;
+                }
+                if (points[i].y < minPoint.y)
+                {
+                    minPoint.y = points[i].y;
+                }
+                if (points[i].z < minPoint.z)
+                {
+                    minPoint.z = points[i].z;
+                }
+            }
+            return minPoint;
+        }
+        private static Vector3 GetPointWithMaxCords(Vector3[] points)
+        {
+            Vector3 maxPoint = new Vector3(
+                float.MinValue,
+                float.MinValue,
+                float.MinValue);
+            for (int i = 0; i < points.Length; i++)
+            {
+                if (points[i].x > maxPoint.x)
+                {
+                    maxPoint.x = points[i].x;
+                }
+                if (points[i].y > maxPoint.y)
+                {
+                    maxPoint.y = points[i].y;
+                }
+                if (points[i].z > maxPoint.z)
+                {
+                    maxPoint.z = points[i].z;
+                }
+            }
+            return maxPoint;
+        }
+     
     }
 }

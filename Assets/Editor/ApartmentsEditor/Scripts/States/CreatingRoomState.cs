@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using Nox7atra.ApartmentEditor;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEditor;
 
 namespace Nox7atra.ApartmentEditor
@@ -18,13 +14,10 @@ namespace Nox7atra.ApartmentEditor
         public override void SetActive(bool enable)
         {
             base.SetActive(enable);
+            _CurrentRoom = enable ? Room.Create() : null;
             if (enable)
             {
-                _CurrentRoom = Room.Create();
-            }
-            else
-            {
-                _CurrentRoom = null;
+                Undo.RegisterCreatedObjectUndo(_CurrentRoom, "Room Created");
             }
         }
 
@@ -63,8 +56,11 @@ namespace Nox7atra.ApartmentEditor
                 case EventType.MouseDown:
                     if (@event.button == 0)
                     {
-                        if (_CurrentRoom.Add(_ParentWindow.Grid.GUIToGrid(@event.mousePosition)))
+                        Undo.RegisterCompleteObjectUndo(_CurrentRoom, "Add Room point");
+                        if (!_CurrentRoom.Add(_ParentWindow.Grid.GUIToGrid(@event.mousePosition)))
                         {
+                            Debug.Log("Clear");
+                            Undo.ClearAll();
                             _ParentWindow.CreateRoomStateEnd(_CurrentRoom);
                         }
                     }

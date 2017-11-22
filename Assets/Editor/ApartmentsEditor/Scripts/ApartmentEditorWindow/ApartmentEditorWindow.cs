@@ -16,8 +16,6 @@ namespace Nox7atra.ApartmentEditor
 
         public event Action<EventType, Event> OnKeyEvent;
 
-
-
         public  Grid Grid;
 
         private Toolbar _Toolbar;

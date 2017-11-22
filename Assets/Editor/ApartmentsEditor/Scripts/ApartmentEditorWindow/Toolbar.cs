@@ -40,7 +40,7 @@ namespace Nox7atra.ApartmentEditor
                     _CurrentSkin.MiniButtonStyle
                 ))
             {
-                //TODO: Make implementation 
+               
             }
         }
         public void RecenterButton()

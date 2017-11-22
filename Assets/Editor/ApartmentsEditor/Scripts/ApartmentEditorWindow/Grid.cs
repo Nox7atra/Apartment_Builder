@@ -120,7 +120,6 @@ namespace Nox7atra.ApartmentEditor
         const float MAX_ZOOM_VALUE             = 4f;
         const int   CELLS_IN_LINE_COUNT        = 40;
         const float DEFAULT_CELL_SIZE          = 20;
-        private const float ZOOM_SPEED         = 0.05f;
         private static readonly Color GRID_COLOR = new Color(0.3f, 0.3f, 0.3f);
         #endregion
     }

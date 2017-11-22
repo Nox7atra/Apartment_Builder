@@ -18,11 +18,17 @@ namespace Nox7atra.ApartmentEditor
             {
                 apartment = CreateInstance<Apartment>();
                 apartment._Rooms = new List<Room>();
-                apartment.Dimensions = new Vector2(1000,1000);
+                apartment.Dimensions = new Rect(-Vector2.one * 500, Vector2.one * 1000);
                 AssetDatabase.CreateAsset(apartment, path);
             }
             return apartment;
         }
+
+        public float Height;
+        public Rect Dimensions;
+
+        [SerializeField]
+        private List<Room> _Rooms;
         public List<Room> Rooms
         {
             get
@@ -30,31 +36,26 @@ namespace Nox7atra.ApartmentEditor
                 return _Rooms;
             }
         }
+
         public float Square
         {
             get
             {
                 float result = 0;
-                for (int i = 0; i < _Rooms.Count; i++)
+                foreach (Room room in _Rooms)
                 {
-                    result += _Rooms[i].Square;
+                    result += room.Square;
                 }
                 return result;
             }
         }
 
-        public Vector2 Dimensions;
-
-        [SerializeField]
-        private List<Room> _Rooms;
-
-        private string _Name;
         public void Draw(Grid grid)
         {
             DrawDimensions(grid);
-            for(int i = 0; i < _Rooms.Count; i++)
+            foreach (Room room in _Rooms)
             {
-                _Rooms[i].Draw(grid);
+                room.Draw(grid);
             }
         }
         private void DrawDimensions(Grid grid)
@@ -62,24 +63,24 @@ namespace Nox7atra.ApartmentEditor
             Handles.color = Color.green;
             Handles.DrawLine(
                 grid.GridToGUI(
-                    new Vector3(Dimensions.x / 2, Dimensions.y / 2)),
+                    new Vector3(Dimensions.width / 2, Dimensions.height/ 2)),
                 grid.GridToGUI(
-                    new Vector3(Dimensions.x / 2, -Dimensions.y / 2)));
+                    new Vector3(Dimensions.width / 2, -Dimensions.height / 2)));
             Handles.DrawLine(
                 grid.GridToGUI(
-                    new Vector3(Dimensions.x / 2, -Dimensions.y / 2)),
+                    new Vector3(Dimensions.width / 2, -Dimensions.height / 2)),
                 grid.GridToGUI(
-                    new Vector3(-Dimensions.x / 2, -Dimensions.y / 2)));
+                    new Vector3(-Dimensions.width / 2, -Dimensions.height / 2)));
             Handles.DrawLine(
                 grid.GridToGUI(
-                    new Vector3(-Dimensions.x / 2, -Dimensions.y / 2)),
+                    new Vector3(-Dimensions.width / 2, -Dimensions.height / 2)),
                 grid.GridToGUI(
-                    new Vector3(-Dimensions.x / 2, Dimensions.y / 2)));
+                    new Vector3(-Dimensions.width / 2, Dimensions.height / 2)));
             Handles.DrawLine(
                 grid.GridToGUI(
-                    new Vector3(-Dimensions.x / 2, Dimensions.y / 2)),
+                    new Vector3(-Dimensions.width / 2, Dimensions.height / 2)),
                 grid.GridToGUI(
-                    new Vector3(Dimensions.x / 2, Dimensions.y / 2)));
+                    new Vector3(Dimensions.width / 2, Dimensions.height / 2)));
         }
 
     }

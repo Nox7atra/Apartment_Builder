@@ -10,6 +10,7 @@ namespace Nox7atra.ApartmentEditor
     [Serializable]
     public class Room : ScriptableObject
     {
+        public const float SNAPING_RAD = 10f;
         //factory
         public static Room Create()
         {
@@ -21,17 +22,22 @@ namespace Nox7atra.ApartmentEditor
             AssetDatabase.SaveAssets();
             return room;
         }
-        public const float SNAPING_RAD = 10f;
+        //data
+        public Color ContourColor;
 
+        [SerializeField]
+        private List<Wall> _Walls;
+        
+        //properties
         public List<Wall> Walls
         {
             get
             {
+                
                 return _Walls;
             }
         }
-
-       
+        
         public float Square
         {
             get
@@ -69,33 +75,30 @@ namespace Nox7atra.ApartmentEditor
             }
         }
 
-        public Color ContourColor;
-        [SerializeField]
-        private List<Wall> _Walls;
 
         public void Draw(Grid grid)
         {
             for (int i = 0; i < _Walls.Count; i++)
             {
-                var p1 = grid.GridToGUI(_Walls[i].Begin);
-                var p2 = grid.GridToGUI(_Walls[i].End);
+                var p1 = _Walls[i].Begin;
+                var p2 = _Walls[i].End;
 
                 _Walls[i].Draw(grid, ContourColor);
              
                 Handles.color = Color.white;
                 float rad = SNAPING_RAD / grid.Zoom;
-                Handles.DrawWireDisc(p1, Vector3.back, rad);
+                Handles.DrawWireDisc(grid.GridToGUI(p1), Vector3.back, rad);
                 if (ApartmentConfig.Current.IsDrawSizes)
                 {
                     Handles.color = Color.white;
-                    Handles.Label((p1 + p2) / 2, 
+                    Handles.Label(grid.GridToGUI((p1 + p2) / 2), 
                         Vector2.Distance(
                             p1,
                             p2).ToString());
                 }
                 if (ApartmentConfig.Current.IsDrawPositions)
                 {
-                    Handles.Label(p1 + new Vector2(SNAPING_RAD , SNAPING_RAD), p1.RoundCoordsToInt().ToString());
+                    Handles.Label(grid.GridToGUI(p1) + new Vector2(SNAPING_RAD , SNAPING_RAD), p1.RoundCoordsToInt().ToString());
                 }
                 
             }
@@ -107,7 +110,6 @@ namespace Nox7atra.ApartmentEditor
 
         public bool Add(Vector2 point)
         {
-            
             var wallsCount = _Walls.Count;
             if(wallsCount > 0)
             {
@@ -115,18 +117,13 @@ namespace Nox7atra.ApartmentEditor
                 if (IsLastPoint(point))
                 {
                     _Walls[wallsCount - 1].End = _Walls[0].Begin;
-                    return true;
-                }
-                else
-                {
-                    _Walls.Add(new Wall(point));
+                    
+                    return false;
                 }
             }
-            else
-            {
-                _Walls.Add(new Wall(point));
-            }
-            return false;
+            Undo.RecordObject(this, "Add Room point");
+            _Walls.Add(new Wall(point));
+            return true;
         }
         public void Move(Vector2 dv)
         {
@@ -186,7 +183,19 @@ namespace Nox7atra.ApartmentEditor
         {
             return _Walls.Select(x => x.Begin).ToList();
         }
-       
+
+        public void MakeClockwiseOrientation()
+        {
+            var contour = GetContour();
+            if (MathUtils.IsContourClockwise(contour))
+            {
+                _Walls.Reverse();
+                foreach (var wall in _Walls)
+                {
+                   wall.Reverse();
+                }
+            }
+        }
         public enum Type
         {
             Kitchen,
@@ -206,13 +215,23 @@ namespace Nox7atra.ApartmentEditor
         [SerializeField]
         public List<WallObject> _Objects;
 
-        public Vector3 Center
+        public void Reverse()
         {
-            get { return (End - Begin).XYtoXYZ() / 2;  }
+            var tmp = Begin;
+            Begin = End;
+            End = tmp;
+            foreach (WallObject obj in _Objects)
+            {
+                obj.Reverse();
+            }
+        }
+        public Vector2 Center
+        {
+            get { return (End + Begin) / 2;  }
         }
         public float Rotation
         {
-            get { return Vector2.Angle(Vector2.right, End - Begin); }
+            get { return -Vector2.SignedAngle(Vector2.right, End - Begin); }
         }
         public void Move(Vector2 dv)
         {
@@ -244,6 +263,11 @@ namespace Nox7atra.ApartmentEditor
         public float Width;
         [SerializeField]
         public float Height;
+
+        public void Reverse()
+        {
+            WallPosition = 1 - WallPosition;
+        }
     }
     [Serializable]
     public class Door : WallObject

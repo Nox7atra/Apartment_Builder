@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using UnityEditor;
 using UnityEngine;
 namespace Nox7atra.ApartmentEditor
@@ -16,7 +15,7 @@ namespace Nox7atra.ApartmentEditor
 
         private Vector3? _LastMousePosition;
         private NormalStateHotkeys _Hotkeys;
-
+        private Apartment _CurrentApartment;
         public override void Draw()
         {
             if (!_IsActive)
@@ -35,13 +34,15 @@ namespace Nox7atra.ApartmentEditor
             {
                 case SelectionType.Room:
                     ApartmentsManager.Instance.CurrentApartment.Rooms.Remove(_SelectedRoom);
-                    Room.DestroyImmediate(_SelectedRoom, true);
+                    UnityEngine.Object.DestroyImmediate(_SelectedRoom, true);
                     _SelectedRoom = null;
-                    ApartmentsManager.Instance.NeedToSave = true;
+
+                   
                     break;
                 case SelectionType.Vert:
                     if (_SelectedRoom.Walls.Count > 3)
                     {
+                        Undo.RegisterCompleteObjectUndo(_SelectedRoom, "Vert Removed");
                         _SelectedRoom.RemoveVert(_SelectedVertIndex);
                         _SelectedVertIndex = -1;
                         ApartmentsManager.Instance.NeedToSave = true;
@@ -52,6 +53,7 @@ namespace Nox7atra.ApartmentEditor
                     }
                     break;
             }
+            AssetDatabase.SaveAssets();
             _CurrentSelection = SelectionType.None;
         }
  
@@ -76,11 +78,11 @@ namespace Nox7atra.ApartmentEditor
         {
             if (_CurrentSelection == SelectionType.None)
                 return;
-
+            
             ApartmentsManager.Instance.NeedToSave = true;
 
             var curMousePosition = Event.current.mousePosition;
-
+    
             if (_LastMousePosition.HasValue)
             {
                 var dv = (GUIUtility.GUIToScreenPoint((Vector2)_LastMousePosition)
@@ -154,11 +156,12 @@ namespace Nox7atra.ApartmentEditor
 
                     _SelectedRoom = ApartmentsManager.Instance.CurrentApartment.Rooms
                         .FirstOrDefault(x => x.GetContourVertIndex(mousePos) >= 0);
-
+                   
                     _CurrentSelection = _SelectedRoom == null ? SelectionType.Room : SelectionType.Vert;
 
                     SetupSelection(mousePos);
-                    
+                    if (_SelectedRoom)
+                        Undo.RegisterCompleteObjectUndo(_SelectedRoom, "Room position changed");
                     _LastMousePosition = @event.mousePosition;
                     break;
                 case EventType.MouseDrag:
@@ -166,8 +169,7 @@ namespace Nox7atra.ApartmentEditor
                     break;
                 case EventType.MouseUp:
                     ApartmentConfig.ApplyBackup();
-                    if(_SelectedRoom != null)
-                        _SelectedRoom.RoundContourPoints();
+       
                     _LastMousePosition = null;
                     break;
             }
