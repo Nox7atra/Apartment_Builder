@@ -32,6 +32,7 @@ namespace Foxsys.ApartmentEditor
             {
                 ClipEar(isClockwisePolygon);
             }
+
             for (int i = 0; i < _CountourIndexes.Count; i++)
             {
                 _Tris.Add(_CountourIndexes[i]);
@@ -45,7 +46,7 @@ namespace Foxsys.ApartmentEditor
 
         private void ClipEar(bool isClockwisePolygon)
         {
-            var ear = _Ears.Last;
+            var ear = _Ears.First;
             int index = ear.Value;
             var posInContour = _CountourIndexes.FindIndex(x => x == ear.Value);
 
@@ -57,11 +58,9 @@ namespace Foxsys.ApartmentEditor
 
             _Ears.Remove(ear);
             _CountourIndexes.Remove(ear.Value);
-
-            for (int i = 0; i < _CountourIndexes.Count; i++)
-            {
-                ValidateVert(_CountourIndexes[i], isClockwisePolygon);
-            }
+            
+            ValidateVert(first, isClockwisePolygon);
+            ValidateVert(last, isClockwisePolygon);
         }
         private void CreateEars()
         {
@@ -88,13 +87,11 @@ namespace Foxsys.ApartmentEditor
                 if (_Polygon[i] == _Polygon[firstIndex] || _Polygon[i] == _Polygon[index] || _Polygon[i] == _Polygon[lastIndex])
                     continue;
 
-                isEar = !MathUtils.IsPointInsideCountour(new List<Vector2>
-                    {
+                isEar = !MathUtils.IsPointInsideTriangle(
                         _Polygon[firstIndex],
                         _Polygon[index],
-                        _Polygon[lastIndex]
-                    },
-                    _Polygon[i]);
+                        _Polygon[lastIndex],
+                        _Polygon[i]);
                 if (!isEar)
                     break;
             }
@@ -118,11 +115,11 @@ namespace Foxsys.ApartmentEditor
             if (holes != null)
             {
                 holes.Sort((item1, item2) => item2.OrderByDescending(i => i.x).FirstOrDefault().x.CompareTo(item1.OrderByDescending(j => j.x).FirstOrDefault().x));
-                for (int i = 0; i < holes.Count; i++)
+                foreach (List<Vector2> hole in holes)
                 {
                     Vector2? maxXpoint = null;
                     float maxX = float.MinValue;
-                    List<Vector2> holeVerts = holes[i];
+                    List<Vector2> holeVerts = hole;
 
                     bool isHoleClockwise = MathUtils.IsContourClockwise(holeVerts);
 
@@ -222,14 +219,22 @@ namespace Foxsys.ApartmentEditor
         }
         private void ValidateVert(int index, bool isClockwisePolygon)
         {
+            bool isEar = IsEar(index);
             if (!_Ears.Contains(index))
             {
                 if (IsVertConvex(index, isClockwisePolygon))
                 {
-                    if (IsEar(index))
+                    if (isEar)
                     {
                         _Ears.AddLast(index % _Polygon.Count);
                     }
+                }
+            }
+            else
+            {
+                if (!isEar)
+                {
+                    _Ears.Remove(index);
                 }
             }
         }
@@ -246,11 +251,11 @@ namespace Foxsys.ApartmentEditor
         private bool IsVertConvex(int vertNum, bool isClockwisePolygon)
         {
             int index = _CountourIndexes.FindIndex(x => x == vertNum);
-            Vector2 point1 = _Polygon[_CountourIndexes[index - 1]],
-                point2 = _Polygon[_CountourIndexes[index]],
-                point3 = _Polygon[_CountourIndexes[index + 1]];
-             return ((point1.x * (point2.y - point3.y) + point2.x * (point3.y - point1.y) +
-                              point3.x * (point1.y - point2.y)) <= 0) ^ isClockwisePolygon;
+            Vector2 point1 = _Polygon[_CountourIndexes[index - 1]] / 1000,
+                point2 = _Polygon[_CountourIndexes[index]] / 1000,
+                point3 = _Polygon[_CountourIndexes[index + 1]] / 1000;
+             return (point1.x * (point2.y - point3.y) - point1.y * (point2.x - point3.x) +
+                             (point2.x * point3.y - point3.x * point2.y) <= 0) ^ isClockwisePolygon;
         }
 
     }
