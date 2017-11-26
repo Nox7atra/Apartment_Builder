@@ -26,13 +26,16 @@ namespace Foxsys.ApartmentEditor
         //data
         public Color ContourColor;
 
-        public float WallThikness;
+        public float WallThickness;
+
         [SerializeField]
         private Apartment _ParentApartment;
 
         [SerializeField]
         private List<Wall> _Walls;
-        
+
+        [SerializeField]
+        public List<WallObject> _Objects;
         //properties
         public List<Wall> Walls
         {
@@ -94,7 +97,6 @@ namespace Foxsys.ApartmentEditor
                 var p2 = wall.End;
 
                 wall.Draw(grid, ContourColor);
-
                 Handles.color = Color.white;
                 float rad = SNAPING_RAD / grid.Zoom;
                 Handles.DrawWireDisc(grid.GridToGUI(p1), Vector3.back, rad);
@@ -109,6 +111,17 @@ namespace Foxsys.ApartmentEditor
                 if (ApartmentConfig.Current.IsDrawPositions)
                 {
                     Handles.Label(grid.GridToGUI(p1) + new Vector2(SNAPING_RAD , SNAPING_RAD), p1.RoundCoordsToInt().ToString());
+                }
+            }
+            if (WallThickness > 0)
+            {
+                var contour = GetContourWithThickness();
+                for (int i = 0, count = contour.Count; i < contour.Count; i++)
+                {
+                    Handles.color = ContourColor / 1.5f;
+                    Vector2 p1 = grid.GridToGUI(contour[i]), p2 = grid.GridToGUI(contour[(i + 1) % count]);
+                    Handles.DrawLine(grid.GridToGUI(_Walls[i].End), p1);
+                    Handles.DrawLine(p1, p2);
                 }
             }
             if (ApartmentConfig.Current.IsDrawSquare)
@@ -194,6 +207,23 @@ namespace Foxsys.ApartmentEditor
             return _Walls.Select(x => x.Begin).ToList();
         }
 
+        public List<Vector2> GetContourWithThickness()
+        {
+            List<Vector2> contour = new List<Vector2>(_Walls.Count);
+            for (int i = 0, count = _Walls.Count; i < count; i++)
+            {
+                Wall wall1 = _Walls[i], wall2 = _Walls[(i + 1) % count];
+                Vector2 p1 = wall1.Begin - wall1.Normal * WallThickness,
+                    p2 = wall1.End - wall1.Normal * WallThickness,
+                    p3 = wall2.Begin - wall2.Normal * WallThickness,
+                    p4 = wall2.End - wall2.Normal * WallThickness;
+
+                var intersection = MathUtils.LinesInterseciton(p1, p2, p3, p4);
+                if (intersection.HasValue)
+                    contour.Add(intersection.Value);
+            }
+            return contour;
+        }
         public void MakeClockwiseOrientation()
         {
             var contour = GetContour();
@@ -238,18 +268,13 @@ namespace Foxsys.ApartmentEditor
         public Vector2 Begin;
         [SerializeField]
         public Vector2 End;
-        [SerializeField]
-        public List<WallObject> _Objects;
 
         public void Reverse()
         {
             var tmp = Begin;
             Begin = End;
             End = tmp;
-            foreach (WallObject obj in _Objects)
-            {
-                obj.Reverse();
-            }
+
         }
         public Vector2 Center
         {
@@ -274,13 +299,12 @@ namespace Foxsys.ApartmentEditor
         }
         public Wall()
         {
-            _Objects = new List<WallObject>();
+
         }
         public Wall(Vector2 point)
         {
             Begin = point;
             End   = point;
-            _Objects = new List<WallObject>();
         }
     }
     [Serializable]

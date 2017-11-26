@@ -26,6 +26,7 @@ namespace Foxsys.ApartmentEditor
         public override void SetActive(bool enable)
         {
             base.SetActive(enable);
+            _CurrentSelection = SelectionType.None;
             _LastMousePosition = null;
             _SelectedVertIndex = -1;
         }

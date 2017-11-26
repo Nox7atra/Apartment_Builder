@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Name: test
   m_EditorClassIdentifier: 
   Height: 200
-  WallThickness: 15
   Dimensions:
     serializedVersion: 2
     x: -500
@@ -21,8 +20,10 @@ MonoBehaviour:
     height: 1000
   WallMaterial: {fileID: 2100000, guid: ec83012e30c32734fbb8ed4b886a2c85, type: 2}
   FloorMaterial: {fileID: 2100000, guid: ec83012e30c32734fbb8ed4b886a2c85, type: 2}
+  IsGenerateOutside: 1
   _Rooms:
   - {fileID: 114531579895963752}
+  - {fileID: 114879037998033808}
 --- !u!114 &114531579895963752
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -35,16 +36,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ContourColor: {r: 0.9885807, g: 0.94749933, b: 0.591822, a: 1}
+  WallThickness: 10
   _ParentApartment: {fileID: 11400000}
   _Walls:
-  - Begin: {x: 155, y: 50}
-    End: {x: 250, y: 50}
-  - Begin: {x: 250, y: 50}
-    End: {x: 250, y: -80}
-  - Begin: {x: 250, y: -80}
-    End: {x: 155, y: -80}
-  - Begin: {x: 155, y: -80}
-    End: {x: 155, y: 50}
+  - Begin: {x: 155, y: 47}
+    End: {x: 249, y: 46}
+  - Begin: {x: 249, y: 46}
+    End: {x: 249, y: -84}
+  - Begin: {x: 249, y: -84}
+    End: {x: 150, y: -86}
+  - Begin: {x: 150, y: -86}
+    End: {x: 155, y: 47}
 --- !u!114 &114879037998033808
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -57,5 +59,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ContourColor: {r: 0.9393561, g: 0.7538972, b: 0.8796158, a: 1}
+  WallThickness: 12.45
   _ParentApartment: {fileID: 11400000}
-  _Walls: []
+  _Walls:
+  - Begin: {x: -23, y: -113}
+    End: {x: -165, y: -79}
+  - Begin: {x: -165, y: -79}
+    End: {x: -124, y: 126}
+  - Begin: {x: -124, y: 126}
+    End: {x: -13, y: 182}
+  - Begin: {x: -13, y: 182}
+    End: {x: 16, y: 134}
+  - Begin: {x: 16, y: 134}
+    End: {x: 11, y: 89}
+  - Begin: {x: 11, y: 89}
+    End: {x: 89, y: 80}
+  - Begin: {x: 89, y: 80}
+    End: {x: -13, y: -13}
+  - Begin: {x: -13, y: -13}
+    End: {x: 87, y: -113}
+  - Begin: {x: 87, y: -113}
+    End: {x: -23, y: -113}

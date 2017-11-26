@@ -168,7 +168,7 @@ namespace Foxsys.ApartmentEditor
             for (int i = 0; i < _Polygon.Count; i++)
             {
                 Vector2 p1 = _Polygon[i], p2 = _Polygon[(i + 1) % _Polygon.Count];
-                var intersection = MathUtils.LinesIntersection(p1, p2, vert, new Vector2(100000, vert.y));
+                var intersection = MathUtils.LineSegmentsIntersection(p1, p2, vert, new Vector2(100000, vert.y));
                 if (intersection.HasValue)
                 {
                     float distance = Vector2.Distance(vert, intersection.Value);

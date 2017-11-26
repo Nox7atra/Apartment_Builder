@@ -24,10 +24,11 @@ namespace Foxsys.ApartmentEditor
         }
 
         public float Height;
-        public float WallThickness;
         public Rect Dimensions;
         public Material WallMaterial;
         public Material FloorMaterial;
+
+        public bool IsGenerateOutside;
         [SerializeField]
         private List<Room> _Rooms;
 
@@ -58,7 +59,7 @@ namespace Foxsys.ApartmentEditor
             DrawDimensions(grid);
             foreach (Room room in _Rooms)
             {
-                room.Draw(grid, WallThickness);
+                room.Draw(grid);
             }
         }
         private void DrawDimensions(Grid grid)

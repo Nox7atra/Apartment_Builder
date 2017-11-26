@@ -62,7 +62,7 @@ namespace Foxsys.ApartmentEditor
                 linePoint1.y + (linePoint2.y - linePoint1.y) * t,
                 linePoint1.z + (linePoint2.z - linePoint1.z) * t);
         }
-        public static Vector2? LinesIntersection(Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4)
+        public static Vector2? LineSegmentsIntersection(Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4)
         {
             Vector2? result = null;
 
@@ -113,6 +113,21 @@ namespace Foxsys.ApartmentEditor
                 result = p1 + alphaNumerator * (p2 - p1) / alphaDenominator;
             }
             return result;
+        }
+        public static Vector2? LinesInterseciton(Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4)
+        {
+            float A1 = p2.y - p1.y, A2 = p4.y - p3.y, B1 = p1.x - p2.x, B2 = p3.x - p4.x;
+            float det = A1 * B2 - B1 * A2;
+
+            if (det == 0)
+                return null;
+
+            float C1 = A1 * p1.x + B1 * p1.y, C2 = A2 * p3.x + B2 * p3.y;
+
+            return new Vector2(
+                (B2 * C1 - B1 * C2) / det,
+                (A1 * C2 - A2 * C1) / det
+            );
         }
         public static bool IsPointInsideCountour(List<Vector2> contour, Vector2 point)
         {

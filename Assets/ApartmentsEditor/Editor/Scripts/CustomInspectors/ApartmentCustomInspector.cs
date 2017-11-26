@@ -21,7 +21,6 @@ namespace Foxsys.ApartmentEditor
         public override void OnInspectorGUI()
         {
             _ThisApartment.Height = EditorGUILayout.FloatField("Height (cm)", _ThisApartment.Height);
-            _ThisApartment.WallThickness = EditorGUILayout.FloatField("WallThikness (cm)", _ThisApartment.WallThickness);
 
             var dimensions = EditorGUILayout.Vector2Field("Dimensions (cm)", _Dimensions.size).RoundCoordsToInt();
             _ThisApartment.FloorMaterial =
@@ -29,6 +28,7 @@ namespace Foxsys.ApartmentEditor
             _ThisApartment.WallMaterial =
                 (Material) EditorGUILayout.ObjectField("Wall Material", _ThisApartment.WallMaterial, typeof(Material), false);
 
+            _ThisApartment.IsGenerateOutside = EditorGUILayout.Toggle("Generate outside (Directional Light)", _ThisApartment.IsGenerateOutside);
             GenerateButton();
 
             var dimensionsRect = new Rect(-dimensions.x / 2, -dimensions.y / 2, dimensions.x, dimensions.y);
