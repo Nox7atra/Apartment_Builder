@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Name: Paths
   m_EditorClassIdentifier: 
   PathToApartments: Assets/ApartmentsEditor/Editor/Data/Apartments/
-  PathToModels: Assets/ApartmentsEditor/Editor/ApartmentsEditor/Data/Models/
+  PathToModels: Assets/ApartmentsEditor/Editor/Data/Models/
   PathToSkins: Assets/ApartmentsEditor/Editor/Skins/

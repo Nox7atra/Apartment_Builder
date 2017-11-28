@@ -33,13 +33,17 @@ namespace Foxsys.ApartmentEditor
                 ClipEar(isClockwisePolygon);
             }
 
-            for (int i = 0; i < _CountourIndexes.Count; i++)
+            foreach (int vertIndex in _CountourIndexes)
             {
-                _Tris.Add(_CountourIndexes[i]);
+                _Tris.Add(vertIndex);
             }
-            Mesh mesh = new Mesh();
-            mesh.vertices = Array.ConvertAll(_Polygon.ToArray(), x => (Vector3) x );
-            mesh.triangles = _Tris.ToArray();
+
+            var mesh = new Mesh
+            {
+                vertices = Array.ConvertAll(_Polygon.ToArray(), x => (Vector3) x),
+                triangles = _Tris.ToArray()
+            };
+
             mesh.RecalculateNormals();
             return mesh;
         }
@@ -58,7 +62,7 @@ namespace Foxsys.ApartmentEditor
 
             _Ears.Remove(ear);
             _CountourIndexes.Remove(ear.Value);
-            
+
             ValidateVert(first, isClockwisePolygon);
             ValidateVert(last, isClockwisePolygon);
         }
@@ -79,19 +83,18 @@ namespace Foxsys.ApartmentEditor
             bool isEar = true;
             
             int indexInContour = _CountourIndexes.FindIndex(x => x == index);
-            for (int i = 0; i < _CountourIndexes.Count; i++)
+            foreach (int curIndex in _CountourIndexes)
             {
                 int firstIndex = _CountourIndexes[indexInContour - 1];
                 int lastIndex = _CountourIndexes[indexInContour + 1];
-
-                if (_Polygon[i] == _Polygon[firstIndex] || _Polygon[i] == _Polygon[index] || _Polygon[i] == _Polygon[lastIndex])
+                if (_Polygon[curIndex] == _Polygon[firstIndex] || _Polygon[curIndex] == _Polygon[index] || _Polygon[curIndex] == _Polygon[lastIndex])
                     continue;
 
                 isEar = !MathUtils.IsPointInsideTriangle(
-                        _Polygon[firstIndex],
-                        _Polygon[index],
-                        _Polygon[lastIndex],
-                        _Polygon[i]);
+                    _Polygon[firstIndex],
+                    _Polygon[index],
+                    _Polygon[lastIndex],
+                    _Polygon[curIndex]);
                 if (!isEar)
                     break;
             }
@@ -103,13 +106,13 @@ namespace Foxsys.ApartmentEditor
             _Polygon = new CyclicalList<Vector2>();
             _CountourIndexes = new CyclicalList<int>();
 
-            
             for (int i = 0; i < contour.Count; i++)
             {
                 _Polygon.Add(contour[i]);
 
                 _CountourIndexes.Add(i);
             }
+
             bool isClockwisePolygon = MathUtils.IsContourClockwise(contour);
 
             if (holes != null)

@@ -43,7 +43,7 @@ namespace Foxsys.ApartmentEditor
             Vector2 maxDimension = room.ParentApartment.Dimensions.size;
             GameObject roomGO = new GameObject(inside ? "Room" : "Outside");
 
-            float height = inside ? apartment.Height : apartment.Height + room.WallThickness;
+            float height = inside ? apartment.Height : apartment.Height * 1.1f;
             room.MakeClockwiseOrientation();
 
             var wallContour =  inside ? room.GetContourWithThickness() : room.GetContour();
@@ -67,9 +67,7 @@ namespace Foxsys.ApartmentEditor
 
             Vector3 centroid = room.Centroid.XYtoXYZ();
 
-
             GameObject floorGO = GenerateFloorRoof(wallContour, triangulator, centroid, maxDimension, apartment.FloorMaterial);
-          
            
             GameObject roofGO = PrepareRoof(floorGO, height);
 

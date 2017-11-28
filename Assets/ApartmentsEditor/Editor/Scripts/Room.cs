@@ -10,14 +10,14 @@ namespace Foxsys.ApartmentEditor
     [Serializable]
     public class Room : ScriptableObject
     {
-        public const float SNAPING_RAD = 10f;
+        public const float SNAPING_RAD = 6f;
         //factory
         public static Room Create(Apartment parent)
         {
             Room room =  CreateInstance<Room>();
             AssetDatabase.AddObjectToAsset(room, ApartmentsManager.Instance.CurrentApartment);
             room._ParentApartment = parent;
-            room.ContourColor = new Color(Random.Range(0.5f, 1), Random.Range(0.5f, 1), Random.Range(0.5f, 1));
+            room.ContourColor = Color.HSVToRGB(Random.Range(0f, 1f), 0.8f, 1f);
             EditorUtility.SetDirty(ApartmentsManager.Instance.CurrentApartment);
             room._Walls = new List<Wall>();
             AssetDatabase.SaveAssets();
@@ -91,6 +91,7 @@ namespace Foxsys.ApartmentEditor
 
         public void Draw(Grid grid)
         {
+            int k = 0;
             foreach (Wall wall in _Walls)
             {
                 var p1 = wall.Begin;
@@ -100,6 +101,9 @@ namespace Foxsys.ApartmentEditor
                 Handles.color = Color.white;
                 float rad = SNAPING_RAD / grid.Zoom;
                 Handles.DrawWireDisc(grid.GridToGUI(p1), Vector3.back, rad);
+
+                Handles.Label(grid.GridToGUI(p2) - Vector2.down * 10, k.ToString());
+                k++;
                 if (ApartmentConfig.Current.IsDrawSizes)
                 {
                     Handles.color = Color.white;
@@ -118,7 +122,7 @@ namespace Foxsys.ApartmentEditor
                 var contour = GetContourWithThickness();
                 for (int i = 0, count = contour.Count; i < contour.Count; i++)
                 {
-                    Handles.color = ContourColor / 1.5f;
+                    Handles.color = new Color(ContourColor.r, ContourColor.g, ContourColor.b, 0.3f);
                     Vector2 p1 = grid.GridToGUI(contour[i]), p2 = grid.GridToGUI(contour[(i + 1) % count]);
                     Handles.DrawLine(grid.GridToGUI(_Walls[i].End), p1);
                     Handles.DrawLine(p1, p2);

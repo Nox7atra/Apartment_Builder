@@ -22,9 +22,8 @@ MonoBehaviour:
   FloorMaterial: {fileID: 2100000, guid: ec83012e30c32734fbb8ed4b886a2c85, type: 2}
   IsGenerateOutside: 1
   _Rooms:
-  - {fileID: 114531579895963752}
-  - {fileID: 114879037998033808}
---- !u!114 &114531579895963752
+  - {fileID: 114041149776662826}
+--- !u!114 &114041149776662826
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -35,19 +34,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a52e267f180e5fb4b9966e3ef152b2c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ContourColor: {r: 0.9885807, g: 0.94749933, b: 0.591822, a: 1}
+  ContourColor: {r: 1, g: 0.19999999, b: 0.7390617, a: 1}
   WallThickness: 10
   _ParentApartment: {fileID: 11400000}
   _Walls:
-  - Begin: {x: 155, y: 47}
-    End: {x: 249, y: 46}
-  - Begin: {x: 249, y: 46}
-    End: {x: 249, y: -84}
-  - Begin: {x: 249, y: -84}
-    End: {x: 150, y: -86}
-  - Begin: {x: 150, y: -86}
-    End: {x: 155, y: 47}
---- !u!114 &114879037998033808
+  - Begin: {x: -198, y: -88}
+    End: {x: -97, y: -107}
+  - Begin: {x: -97, y: -107}
+    End: {x: -18, y: -187}
+  - Begin: {x: -18, y: -187}
+    End: {x: 180, y: -167}
+  - Begin: {x: 180, y: -167}
+    End: {x: 345, y: -126}
+  - Begin: {x: 345, y: -126}
+    End: {x: 290, y: -405}
+  - Begin: {x: 290, y: -405}
+    End: {x: 98, y: -413}
+  - Begin: {x: 98, y: -413}
+    End: {x: -94, y: -393}
+  - Begin: {x: -94, y: -393}
+    End: {x: -238, y: -233}
+  - Begin: {x: -238, y: -233}
+    End: {x: -198, y: -88}
+--- !u!114 &114115723784906992
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -58,25 +67,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a52e267f180e5fb4b9966e3ef152b2c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ContourColor: {r: 0.9393561, g: 0.7538972, b: 0.8796158, a: 1}
-  WallThickness: 12.45
+  ContourColor: {r: 0.19999999, g: 1, b: 0.6166668, a: 1}
+  WallThickness: 0
+  _ParentApartment: {fileID: 11400000}
+  _Walls: []
+--- !u!114 &114933858334937954
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a52e267f180e5fb4b9966e3ef152b2c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ContourColor: {r: 0.46483237, g: 0.5, b: 0.25, a: 1}
+  WallThickness: 0
   _ParentApartment: {fileID: 11400000}
   _Walls:
-  - Begin: {x: -23, y: -113}
-    End: {x: -165, y: -79}
-  - Begin: {x: -165, y: -79}
-    End: {x: -124, y: 126}
-  - Begin: {x: -124, y: 126}
-    End: {x: -13, y: 182}
-  - Begin: {x: -13, y: 182}
-    End: {x: 16, y: 134}
-  - Begin: {x: 16, y: 134}
-    End: {x: 11, y: 89}
-  - Begin: {x: 11, y: 89}
-    End: {x: 89, y: 80}
-  - Begin: {x: 89, y: 80}
-    End: {x: -13, y: -13}
-  - Begin: {x: -13, y: -13}
-    End: {x: 87, y: -113}
-  - Begin: {x: 87, y: -113}
-    End: {x: -23, y: -113}
+  - Begin: {x: -18, y: -236}
+    End: {x: -18, y: -236}
