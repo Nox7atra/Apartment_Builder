@@ -15,6 +15,14 @@ namespace Foxsys.ApartmentEditor
             EditorGUILayout.BeginVertical();
             RecenterButton();
             CreateRoomButton();
+            if (EditorUIUtils.ButtonWithFallback(
+                null,
+                "ad",
+                _CurrentSkin.MiniButtonStyle
+            ))
+            { 
+                _ParentWindow.AddObjectStateBegin(Door.CreateInstance<Door>());
+            }
             EditorGUILayout.EndVertical();
             GUILayout.EndArea();
         }

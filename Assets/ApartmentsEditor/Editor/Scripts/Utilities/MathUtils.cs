@@ -44,8 +44,8 @@ namespace Foxsys.ApartmentEditor
         }
         public static bool IsPointInsideLineSegment(Vector2 point, Vector2 linePoint1, Vector2 linePoint2)
         {
-            return Vector3.Distance(linePoint1, linePoint2) + 0.1f
-                <= Vector3.Distance(point, linePoint1)
+            return Vector3.Distance(linePoint1, linePoint2) + float.Epsilon
+                >= Vector3.Distance(point, linePoint1)
                 + Vector3.Distance(point, linePoint2);
         }
         public static float DistanceFromPointToLine(Vector2 point, Vector2 linePoint1, Vector2 linePoint2)

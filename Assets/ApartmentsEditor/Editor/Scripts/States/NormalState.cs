@@ -10,14 +10,10 @@ namespace Foxsys.ApartmentEditor
         private int _SelectedVertIndex;
 
         private Vector2? _LastMousePosition;
-    #endregion
-        public override void Draw()
-        {
-            if (!_IsActive)
-                return;
-            ApartmentsManager.Instance.CurrentApartment.SelectedRoom = Selection.activeObject as Room;
-            DrawSelection();
-        }
+        #endregion
+
+        #region activation
+
         public override void SetActive(bool enable)
         {
             base.SetActive(enable);
@@ -25,6 +21,11 @@ namespace Foxsys.ApartmentEditor
             _LastMousePosition = null;
             _SelectedVertIndex = -1;
         }
+
+        #endregion
+
+        #region service methods
+
         public void DeleteSelected()
         {
 
@@ -51,32 +52,11 @@ namespace Foxsys.ApartmentEditor
             AssetDatabase.SaveAssets();
             _CurrentSelection = SelectionType.None;
         }
- 
-        protected override void OnKeyEvent(EventType type, Vector2 mousePosition, KeyCode keyCode)
-        {
-            if (!_IsActive)
-                return;
-
-            if (Event.current.button == 0)
-            {
-                OnLeftMouse(type, mousePosition);
-            }
-
-            if(type == EventType.KeyDown)
-            {
-                 _Hotkeys.Use(keyCode, true);
-            }
-            if (type == EventType.KeyUp)
-            {
-                _Hotkeys.Use(keyCode, false);
-            }
-            _ParentWindow.Repaint();
-        }
 
         private void MoveSelected(Vector2 mousePositon)
         {
 
-            if (_CurrentSelection == SelectionType.None )
+            if (_CurrentSelection == SelectionType.None)
                 return;
             var apartment = ApartmentsManager.Instance.CurrentApartment;
             if (_LastMousePosition.HasValue)
@@ -108,32 +88,7 @@ namespace Foxsys.ApartmentEditor
             }
             _LastMousePosition = mousePositon;
         }
-        
-        private void DrawSelection()
-        {
-            var selectedRoom = ApartmentsManager.Instance.CurrentApartment.SelectedRoom;
-            if (selectedRoom == null 
-                || Selection.activeObject != selectedRoom)
-                return;
 
-            switch (_CurrentSelection)
-            {
-                case SelectionType.Vert:
-                    Handles.color = Color.yellow;
-                    Handles.DrawWireDisc(
-                        _ParentWindow.Grid.GridToGUI(selectedRoom.GetVertPosition(_SelectedVertIndex)),
-                        Vector3.back, Room.SNAPING_RAD / _ParentWindow.Grid.Zoom
-                    );
-                    break;
-                case SelectionType.Room:
-                    var walls = selectedRoom.Walls;
-                    foreach (Wall wall in walls)
-                    {
-                        wall.Draw(_ParentWindow.Grid, Color.yellow);
-                    }
-                    break;
-            }
-        }
 
         private void SetupSelection(Vector2 position)
         {
@@ -143,7 +98,7 @@ namespace Foxsys.ApartmentEditor
                 case SelectionType.Room:
                     apartment.SelectedRoom = apartment.Rooms
                                .FirstOrDefault(x => x.IsPointInside(position));
-                    if(apartment.SelectedRoom == null)
+                    if (apartment.SelectedRoom == null)
                     {
                         _CurrentSelection = SelectionType.None;
                     }
@@ -163,6 +118,68 @@ namespace Foxsys.ApartmentEditor
                 Selection.activeObject = apartment;
             }
         }
+        #endregion
+
+        #region drawing
+
+        public override void Draw()
+        {
+            if (!_IsActive)
+                return;
+            ApartmentsManager.Instance.CurrentApartment.SelectedRoom = Selection.activeObject as Room;
+            DrawSelection();
+        }
+
+        private void DrawSelection()
+        {
+            var selectedRoom = ApartmentsManager.Instance.CurrentApartment.SelectedRoom;
+            if (selectedRoom == null
+                || Selection.activeObject != selectedRoom)
+                return;
+
+            switch (_CurrentSelection)
+            {
+                case SelectionType.Vert:
+                    Handles.color = Color.yellow;
+                    Handles.DrawWireDisc(
+                        _ParentWindow.Grid.GridToGUI(selectedRoom.GetVertPosition(_SelectedVertIndex)),
+                        Vector3.back, Room.SnapingRad / _ParentWindow.Grid.Zoom
+                    );
+                    break;
+                case SelectionType.Room:
+                    var walls = selectedRoom.Walls;
+                    foreach (Wall wall in walls)
+                    {
+                        wall.Draw(_ParentWindow.Grid, Color.yellow);
+                    }
+                    break;
+            }
+        }
+        #endregion
+
+
+        #region key events
+
+        protected override void OnKeyEvent(EventType type, Vector2 mousePosition, KeyCode keyCode)
+        {
+            if (!_IsActive)
+                return;
+
+            if (Event.current.button == 0)
+            {
+                OnLeftMouse(type, mousePosition);
+            }
+
+            if (type == EventType.KeyDown)
+            {
+                _Hotkeys.Use(keyCode, true);
+            }
+            if (type == EventType.KeyUp)
+            {
+                _Hotkeys.Use(keyCode, false);
+            }
+            _ParentWindow.Repaint();
+        }
         private void OnLeftMouse(EventType type, Vector2 mousePosition)
         {
             var apartment = ApartmentsManager.Instance.CurrentApartment;
@@ -175,7 +192,7 @@ namespace Foxsys.ApartmentEditor
 
                     apartment.SelectedRoom = apartment.Rooms
                         .FirstOrDefault(x => x.GetContourVertIndex(mousePos) >= 0);
-                   
+
                     _CurrentSelection = apartment.SelectedRoom == null ? SelectionType.Room : SelectionType.Vert;
 
                     SetupSelection(mousePos);
@@ -196,7 +213,9 @@ namespace Foxsys.ApartmentEditor
                     break;
             }
         }
- 
+
+        #endregion
+
         public enum SelectionType
         {
             Vert,

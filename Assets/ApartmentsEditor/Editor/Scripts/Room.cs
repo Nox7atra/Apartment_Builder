@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -10,20 +11,25 @@ namespace Foxsys.ApartmentEditor
     [Serializable]
     public class Room : ScriptableObject
     {
-        public const float SNAPING_RAD = 6f;
-        //factory
+        #region factory
+
         public static Room Create(Apartment parent)
         {
-            Room room =  CreateInstance<Room>();
-            AssetDatabase.AddObjectToAsset(room, ApartmentsManager.Instance.CurrentApartment);
+            Room room = CreateInstance<Room>();
+            room.name = "Room_" + GUID.Generate();
+            AssetDatabase.AddObjectToAsset(room, parent);
             room._ParentApartment = parent;
             room.ContourColor = Color.HSVToRGB(Random.Range(0f, 1f), 0.8f, 1f);
-            EditorUtility.SetDirty(ApartmentsManager.Instance.CurrentApartment);
+            EditorUtility.SetDirty(parent);
             room._Walls = new List<Wall>();
             AssetDatabase.SaveAssets();
             return room;
         }
-        //data
+
+        #endregion
+
+        #region fields
+
         public Color ContourColor;
 
         public float WallThickness;
@@ -34,14 +40,15 @@ namespace Foxsys.ApartmentEditor
         [SerializeField]
         private List<Wall> _Walls;
 
-        [SerializeField]
-        public List<WallObject> _Objects;
-        //properties
+        #endregion
+
+        #region properties
+
         public List<Wall> Walls
         {
             get
             {
-                
+
                 return _Walls;
             }
         }
@@ -72,7 +79,7 @@ namespace Foxsys.ApartmentEditor
             {
                 Vector2 centroid = new Vector2();
                 float signedArea = 0;
-                for(int i = 0; i < _Walls.Count; i++)
+                for (int i = 0; i < _Walls.Count; i++)
                 {
                     Wall wall = _Walls[i];
                     float x0 = wall.Begin.x;
@@ -88,62 +95,20 @@ namespace Foxsys.ApartmentEditor
             }
         }
 
+        #endregion
 
-        public void Draw(Grid grid)
-        {
-            int k = 0;
-            foreach (Wall wall in _Walls)
-            {
-                var p1 = wall.Begin;
-                var p2 = wall.End;
-
-                wall.Draw(grid, ContourColor);
-                Handles.color = Color.white;
-                float rad = SNAPING_RAD / grid.Zoom;
-                Handles.DrawWireDisc(grid.GridToGUI(p1), Vector3.back, rad);
-
-                Handles.Label(grid.GridToGUI(p2) - Vector2.down * 10, k.ToString());
-                k++;
-                if (ApartmentConfig.Current.IsDrawSizes)
-                {
-                    Handles.color = Color.white;
-                    Handles.Label(grid.GridToGUI((p1 + p2) / 2), 
-                        Vector2.Distance(
-                            p1,
-                            p2).ToString());
-                }
-                if (ApartmentConfig.Current.IsDrawPositions)
-                {
-                    Handles.Label(grid.GridToGUI(p1) + new Vector2(SNAPING_RAD , SNAPING_RAD), p1.RoundCoordsToInt().ToString());
-                }
-            }
-            if (WallThickness > 0)
-            {
-                var contour = GetContourWithThickness();
-                for (int i = 0, count = contour.Count; i < contour.Count; i++)
-                {
-                    Handles.color = new Color(ContourColor.r, ContourColor.g, ContourColor.b, 0.3f);
-                    Vector2 p1 = grid.GridToGUI(contour[i]), p2 = grid.GridToGUI(contour[(i + 1) % count]);
-                    Handles.DrawLine(grid.GridToGUI(_Walls[i].End), p1);
-                    Handles.DrawLine(p1, p2);
-                }
-            }
-            if (ApartmentConfig.Current.IsDrawSquare)
-            {
-                Handles.Label(grid.GridToGUI(Centroid), Square.ToString());
-            }
-        }
+        #region service methods
 
         public bool Add(Vector2 point)
         {
             var wallsCount = _Walls.Count;
-            if(wallsCount > 0)
+            if (wallsCount > 0)
             {
                 _Walls[wallsCount - 1].End = point;
                 if (IsLastPoint(point))
                 {
                     _Walls[wallsCount - 1].End = _Walls[0].Begin;
-                    
+
                     return false;
                 }
             }
@@ -160,7 +125,7 @@ namespace Foxsys.ApartmentEditor
         }
         public void MoveVertTo(int index, Vector2 position)
         {
-            _Walls[index].Begin  = position;
+            _Walls[index].Begin = position;
             if (index > 0)
                 _Walls[index - 1].End = position;
             else
@@ -179,7 +144,7 @@ namespace Foxsys.ApartmentEditor
             }
             _Walls.RemoveAt(index);
         }
-      
+
         public void RoundContourPoints()
         {
             foreach (var wall in _Walls)
@@ -196,9 +161,9 @@ namespace Foxsys.ApartmentEditor
 
         public int GetContourVertIndex(Vector2 point)
         {
-            for(int i = 0; i < _Walls.Count; i++)
+            for (int i = 0; i < _Walls.Count; i++)
             {
-                if(Vector2.Distance(point, _Walls[i].Begin) < SNAPING_RAD)
+                if (Vector2.Distance(point, _Walls[i].Begin) < SnapingRad)
                 {
                     return i;
                 }
@@ -273,9 +238,62 @@ namespace Foxsys.ApartmentEditor
 
         public bool IsLastPoint(Vector2 point)
         {
-            return Vector2.Distance(point, _Walls[0].Begin) < SNAPING_RAD;
+            return Vector2.Distance(point, _Walls[0].Begin) < SnapingRad;
         }
-    
+
+        #endregion
+
+
+        #region drawing
+
+        public void Draw(Grid grid)
+        {
+            int k = 0;
+            foreach (Wall wall in _Walls)
+            {
+                var p1 = wall.Begin;
+                var p2 = wall.End;
+
+                wall.Draw(grid, ContourColor);
+                Handles.color = Color.white;
+                float rad = SnapingRad / grid.Zoom;
+                Handles.DrawWireDisc(grid.GridToGUI(p1), Vector3.back, rad);
+
+                Handles.Label(grid.GridToGUI(p2) - Vector2.down * 10, k.ToString());
+                k++;
+                if (ApartmentConfig.Current.IsDrawSizes)
+                {
+                    Handles.color = Color.white;
+                    Handles.Label(grid.GridToGUI((p1 + p2) / 2),
+                        Vector2.Distance(
+                            p1,
+                            p2).ToString());
+                }
+                if (ApartmentConfig.Current.IsDrawPositions)
+                {
+                    Handles.Label(grid.GridToGUI(p1) + new Vector2(SnapingRad, SnapingRad), p1.RoundCoordsToInt().ToString());
+                }
+            }
+            if (WallThickness > 0)
+            {
+                var contour = GetContourWithThickness();
+                for (int i = 0, count = contour.Count; i < contour.Count; i++)
+                {
+                    Handles.color = new Color(ContourColor.r, ContourColor.g, ContourColor.b, 0.3f);
+                    Vector2 p1 = grid.GridToGUI(contour[i]), p2 = grid.GridToGUI(contour[(i + 1) % count]);
+                    Handles.DrawLine(grid.GridToGUI(_Walls[i].End), p1);
+                    Handles.DrawLine(p1, p2);
+                }
+            }
+            if (ApartmentConfig.Current.IsDrawSquare)
+            {
+                Handles.Label(grid.GridToGUI(Centroid), Square.ToString());
+            }
+        }
+
+        #endregion
+
+        public const float SnapingRad = 6f;
         public enum Type
         {
             Kitchen,
@@ -288,63 +306,101 @@ namespace Foxsys.ApartmentEditor
     [Serializable]
     public class Wall
     {
+        #region fields
+
         [SerializeField]
         public Vector2 Begin;
         [SerializeField]
         public Vector2 End;
+        [SerializeField]
+        public List<WallObject> _Objects;
 
-        public void Reverse()
-        {
-            var tmp = Begin;
-            Begin = End;
-            End = tmp;
+        #endregion
 
-        }
+        #region properties
+
         public Vector2 Center
         {
-            get { return (End + Begin) / 2;  }
+            get { return (End + Begin) / 2; }
         }
-        public Vector2 Normal { get { return new Vector2(Begin.y - End.y, End.x - Begin.x).normalized;} }
-        public Vector2 Tangent { get { return new Vector2(Begin.x - End.x , Begin.y - End.y).normalized; } }
+        public Vector2 Normal { get { return new Vector2(Begin.y - End.y, End.x - Begin.x).normalized; } }
+        public Vector2 Tangent { get { return new Vector2(Begin.x - End.x, Begin.y - End.y).normalized; } }
         public float Length { get { return Vector2.Distance(Begin, End); } }
         public float Rotation
         {
             get { return -Vector2.SignedAngle(Vector2.right, End - Begin); }
         }
+
+        #endregion
+
+        #region service methods
+       
+        public void Reverse()
+        {
+            var tmp = Begin;
+            Begin = End;
+            End = tmp;
+        }
+
         public void Move(Vector2 dv)
         {
             Begin += dv;
             End += dv;
         }
+
+        public bool IsPointOnWall(Vector2 point)
+        {
+            return MathUtils.IsPointInsideLineSegment(point, Begin, End);
+        }
+
+        public float GetPositionWallObjectFromPoint(Vector2 point)
+        {
+            return Vector2.Distance(Begin, point) / Length;
+        }
+        #endregion
+
+        #region drawing
+
         public void Draw(Grid grid, Color color)
         {
             Handles.color = color;
             Handles.DrawLine(grid.GridToGUI(Begin), grid.GridToGUI(End));
         }
+
+        public void DrawWallObject(Grid grid, WallObject wallObj, float wallObjPosition)
+        {
+            Handles.color = Color.magenta;
+            Vector2 begin = grid.GridToGUI(Begin), end = grid.GridToGUI(End);
+            Vector2 center = Vector2.Lerp(begin, end, wallObjPosition);
+            Handles.DrawWireDisc(center, Vector3.back, 6 / grid.Zoom);
+            Handles.DrawLine(center + Tangent * wallObj.Width / 2, center - Tangent * wallObj.Width / 2);
+            Handles.DrawLine(center + Tangent * wallObj.Width / 2, center - Tangent * wallObj.Width / 2);
+        }
+
+        #endregion
+
+
         public Wall()
         {
-
+            _Objects = new List<WallObject>();
         }
-        public Wall(Vector2 point)
+        public Wall(Vector2 point) : this()
         {
             Begin = point;
             End   = point;
         }
     }
     [Serializable]
-    public abstract class WallObject
+    public abstract class WallObject : ScriptableObject
     {
-        [SerializeField]
-        public float WallPosition;  //from 0 to 1
+        #region fields
+
         [SerializeField]
         public float Width;
         [SerializeField]
         public float Height;
 
-        public void Reverse()
-        {
-            WallPosition = 1 - WallPosition;
-        }
+        #endregion
     }
     [Serializable]
     public class Door : WallObject

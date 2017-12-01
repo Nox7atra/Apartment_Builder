@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using UnityEditor;
 using UnityEngine;
 
 namespace Foxsys.ApartmentEditor
@@ -7,9 +9,12 @@ namespace Foxsys.ApartmentEditor
     public static class MeshBuilder
     {
         private const float MeasurmentK = 100;
+
+        private static string _ApartmentName;
         public static GameObject GenerateApartmentMesh(Apartment apartment)
         {
-            GameObject go = new GameObject(apartment.name);
+            _ApartmentName = apartment.name;
+            GameObject go = new GameObject(_ApartmentName);
 
             var rooms = GenerateRooms(apartment, new EarCuttingTriangulator());
 
@@ -41,7 +46,7 @@ namespace Foxsys.ApartmentEditor
         {
             var apartment = room.ParentApartment;
             Vector2 maxDimension = room.ParentApartment.Dimensions.size;
-            GameObject roomGO = new GameObject(inside ? "Room" : "Outside");
+            GameObject roomGO = new GameObject(room.name);
 
             float height = inside ? apartment.Height : apartment.Height * 1.1f;
             room.MakeClockwiseOrientation();
@@ -61,16 +66,19 @@ namespace Foxsys.ApartmentEditor
                     triangulator,
                     maxDimension,
                     height,
-                    apartment.WallMaterial);
+                    apartment.WallMaterial,
+                    j);
+
+                SaveMesh(wallGO.GetComponent<MeshFilter>().sharedMesh, room.name, inside);
                 wallGO.transform.SetParent(roomGO.transform);
             }
 
             Vector3 centroid = room.Centroid.XYtoXYZ();
 
             GameObject floorGO = GenerateFloorRoof(wallContour, triangulator, centroid, maxDimension, apartment.FloorMaterial);
-           
+            SaveMesh(floorGO.GetComponent<MeshFilter>().sharedMesh, room.name, inside);
             GameObject roofGO = PrepareRoof(floorGO, height);
-
+            SaveMesh(roofGO.GetComponent<MeshFilter>().sharedMesh, room.name, inside);
             if (!inside)
                 GameObject.DestroyImmediate(floorGO);
             else 
@@ -86,7 +94,7 @@ namespace Foxsys.ApartmentEditor
             roofGO.transform.position += Vector3.up * apartmentHeight / MeasurmentK;
             var mf = roofGO.GetComponent<MeshFilter>();
             var mesh = Object.Instantiate(mf.sharedMesh);
-            mf.sharedMesh = mesh;
+     
 
             var tris = mesh.triangles;
             for (int i = 0; i < tris.Length; i+=3)
@@ -97,27 +105,36 @@ namespace Foxsys.ApartmentEditor
             }
             mesh.triangles = tris;
             mesh.RecalculateNormals();
+            mesh.name = roofGO.name;
+            mf.sharedMesh = mesh;
             return roofGO;
         }
-        private static GameObject GenerateFloorRoof(List<Vector2> roomContour, Triangulator triangulator, Vector3 centroid, Vector2 maxDimensions, Material floorMat)
+        private static GameObject GenerateFloorRoof(
+            List<Vector2> roomContour, 
+            Triangulator triangulator, 
+            Vector3 centroid, 
+            Vector2 maxDimensions,
+            Material floorMat)
         {
-            GameObject go = new GameObject("floor" );
+            GameObject go = new GameObject("floor");
             MeshFilter mf = go.AddComponent<MeshFilter>();
             MeshRenderer mr = go.AddComponent<MeshRenderer>();
 
             go.transform.position = centroid / MeasurmentK;
-            
-            mf.sharedMesh = triangulator.CreateMesh(roomContour, null);
-            var verts = mf.sharedMesh.vertices;
+
+            var mesh = triangulator.CreateMesh(roomContour, null);
+            var verts = mesh.vertices;
 
             for (int i = 0; i < verts.Length; i++)
             {
                 verts[i] = (centroid  - new Vector3(verts[i].x, verts[i].z, verts[i].y)) / MeasurmentK;
             }
-            mf.sharedMesh.vertices = verts;
-            
-            mf.sharedMesh.uv = MathUtils.CreatePlaneUVs(mf.sharedMesh, maxDimensions);
-            mf.sharedMesh.RecalculateNormals();
+            mesh.vertices = verts;
+
+            mesh.uv = MathUtils.CreatePlaneUVs(mesh, maxDimensions);
+            mesh.RecalculateNormals();
+            mesh.name = go.name;
+            mf.sharedMesh = mesh;
             mr.sharedMaterial = floorMat;
             go.transform.rotation = Quaternion.Euler(0, 180, 0);
             return go;
@@ -129,31 +146,45 @@ namespace Foxsys.ApartmentEditor
             Triangulator triangulator,
             Vector2 maxDimensions, 
             float apartmentHeight,
-            Material wallMat)
+            Material wallMat,
+            int index)
         {
-            GameObject wallGO = new GameObject("wall");
+            GameObject wallGO = new GameObject("wall" + index);
             MeshFilter wallMf = wallGO.AddComponent<MeshFilter>();
             MeshRenderer wallMr = wallGO.AddComponent<MeshRenderer>();
 
             float wallLength = (Vector2.Distance(begin, end) / 2) / MeasurmentK;
-            float wallHeigth = apartmentHeight / MeasurmentK / 2;
+            float wallHeight = apartmentHeight / MeasurmentK / 2;
             List<Vector2> wallContour = new List<Vector2>
             {
-                new Vector2(-wallLength, -wallHeigth),
-                new Vector2(-wallLength,  wallHeigth),
-                new Vector2( wallLength,  wallHeigth),
-                new Vector2( wallLength, -wallHeigth)
+                new Vector2(-wallLength, -wallHeight),
+                new Vector2(-wallLength,  wallHeight),
+                new Vector2( wallLength,  wallHeight),
+                new Vector2( wallLength, -wallHeight)
             };
-
-            wallMf.sharedMesh = triangulator.CreateMesh(wallContour);
-            wallMf.sharedMesh.RecalculateNormals();
-            wallMf.sharedMesh.uv = MathUtils.CreatePlaneUVs(wallMf.sharedMesh, maxDimensions);
+            var mesh = triangulator.CreateMesh(wallContour);
+            mesh.RecalculateNormals();
+            mesh.uv = MathUtils.CreatePlaneUVs(mesh, maxDimensions);
+            mesh.name = wallGO.name;
+            wallMf.sharedMesh = mesh;
             wallMr.sharedMaterial = wallMat;
 
             var transform = wallGO.transform;
             transform.rotation = Quaternion.Euler(0, -Vector2.SignedAngle(Vector2.right, end - begin), 0);
             transform.position = (center + Vector3.up * apartmentHeight / 2) / MeasurmentK;
             return wallGO;
+        }
+
+        private static void SaveMesh(Mesh mesh, string roomName, bool isIndide)
+        {
+            var path = Path.Combine(PathsConfig.Instance.PathToModels, _ApartmentName);
+            path = Path.Combine(path, isIndide? roomName : roomName + "/Outside/");
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+            path = Path.Combine(path, mesh.name + ".asset");
+            AssetDatabase.CreateAsset(mesh,path);
         }
     }
 }

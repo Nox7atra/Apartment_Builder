@@ -7,62 +7,40 @@ namespace Foxsys.ApartmentEditor
 {
     public sealed class ApartmentEditorWindow : EditorWindow
     {
+        #region factory
         [MenuItem("Window/ApartmentBuilder/OpenEditor")]
         public static void Create()
         {
             var window = GetWindow<ApartmentEditorWindow>("ApartmentBuilder");
             window.Show();
         }
+        #endregion
 
+        #region events
         public event Action<EventType, Vector2, KeyCode> OnKeyEvent;
+        #endregion
+        
+        #region fields
 
-        public  Grid Grid;
+        public Grid Grid;
 
         private Toolbar _Toolbar;
         private Dictionary<EditorWindowState, StateApartmentBuilder> _States;
         private Vector3? _LastMousePosition;
 
+        #endregion
 
-        private void OnGUI()
+        #region object to add state
+
+        public void AddObjectStateBegin(WallObject obj)
         {
-            KeysEvents();
-            Grid.Draw();
-            var apartment = ApartmentsManager.Instance.CurrentApartment;
-            if (apartment != null)
-            {
-                apartment.Draw(Grid);
-            }
-
-            foreach (var stateApartmentEditor in _States)
-            {
-                stateApartmentEditor.Value.Draw();
-            }
-
-            _Toolbar.Draw();
+            ((AddObjectState) _States[EditorWindowState.ObjectAdding]).ObjectToAdd = obj;
+            ActivateState(EditorWindowState.ObjectAdding);
         }
 
-        private void OnEnable()
-        {
-            Grid = new Grid(this);
-            _Toolbar = new Toolbar(this);
+        #endregion
 
-            _States = new Dictionary<EditorWindowState, StateApartmentBuilder>
-            {
-                {EditorWindowState.Normal,       new NormalState(this)},
-                {EditorWindowState.RoomCreation, new CreatingRoomState(this)}
-            };
-            ActivateState(EditorWindowState.Normal);
-
-            wantsMouseMove = true;
-        }
-
-        private void OnDestroy()
-        {
-            foreach (var stateApartmentEditor in _States.Values)
-            {
-                stateApartmentEditor.Destroy();
-            }
-        }
+        #region creating room state
 
         public void CreateRoomStateBegin()
         {
@@ -75,6 +53,10 @@ namespace Foxsys.ApartmentEditor
             ActivateState(EditorWindowState.Normal);
             Repaint();
         }
+
+        #endregion
+
+        #region key events
 
         private void KeysEvents()
         {
@@ -102,7 +84,6 @@ namespace Foxsys.ApartmentEditor
             }
 
         }
-
         private void DragGrid()
         {
             var curMousePosition = Event.current.mousePosition;
@@ -121,6 +102,9 @@ namespace Foxsys.ApartmentEditor
             Grid.Zoom += speed * Grid.Zoom * 0.1f;
             Repaint();
         }
+        #endregion
+
+        #region activation
 
         public void ActivateState(EditorWindowState state)
         {
@@ -129,12 +113,58 @@ namespace Foxsys.ApartmentEditor
                 stateApartmentEditor.Value.SetActive(stateApartmentEditor.Key == state);
             }
         }
-        
-     
+
+        #endregion
+
+        #region engine methods
+
+        private void OnDestroy()
+        {
+            foreach (var stateApartmentEditor in _States.Values)
+            {
+                stateApartmentEditor.Destroy();
+            }
+        }
+        private void OnEnable()
+        {
+            Grid = new Grid(this);
+            _Toolbar = new Toolbar(this);
+
+            _States = new Dictionary<EditorWindowState, StateApartmentBuilder>
+            {
+                {EditorWindowState.Normal,       new NormalState(this)},
+                {EditorWindowState.RoomCreation, new CreatingRoomState(this)},
+                {EditorWindowState.ObjectAdding, new AddObjectState(this) }
+            };
+            ActivateState(EditorWindowState.Normal);
+
+            wantsMouseMove = true;
+        }
+
+        private void OnGUI()
+        {
+            KeysEvents();
+            Grid.Draw();
+            var apartment = ApartmentsManager.Instance.CurrentApartment;
+            if (apartment != null)
+            {
+                apartment.Draw(Grid);
+            }
+
+            foreach (var stateApartmentEditor in _States)
+            {
+                stateApartmentEditor.Value.Draw();
+            }
+
+            _Toolbar.Draw();
+        }
+        #endregion
+
         public enum EditorWindowState
         {
             Normal,
-            RoomCreation
+            RoomCreation,
+            ObjectAdding
         }
     }
 }

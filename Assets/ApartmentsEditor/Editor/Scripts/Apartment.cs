@@ -8,7 +8,7 @@ namespace Foxsys.ApartmentEditor
 {
     public class Apartment : ScriptableObject
     {
-        //factory
+        #region factory
         public static Apartment Create(string name)
         {
             var fullpath = Path.Combine(PathsConfig.Instance.PathToApartments,"test.asset");
@@ -23,8 +23,9 @@ namespace Foxsys.ApartmentEditor
             }
             return apartment;
         }
+        #endregion
 
-        private Room _SelectedRoom;
+        #region fields
 
         public float Height;
 
@@ -32,14 +33,19 @@ namespace Foxsys.ApartmentEditor
         public Material FloorMaterial;
 
         public bool IsGenerateOutside;
-        
+
         [SerializeField]
         private List<Room> _Rooms;
         [SerializeField]
         private Rect _Dimensions;
 
         private Vector2[] _DimensionsPoints = new Vector2[4];
-       
+
+        private Room _SelectedRoom;
+
+        #endregion
+
+        #region properties
         public List<Room> Rooms
         {
             get
@@ -80,7 +86,7 @@ namespace Foxsys.ApartmentEditor
             set
             {
                 _SelectedRoom = value;
-                int index = _Rooms.FindIndex(x => x ==_SelectedRoom);
+                int index = _Rooms.FindIndex(x => x == _SelectedRoom);
                 if (index > 0)
                 {
                     var room = _Rooms[index];
@@ -89,6 +95,9 @@ namespace Foxsys.ApartmentEditor
                 }
             }
         }
+
+        #endregion
+
         public void Draw(Grid grid)
         {
             DrawDimensions(grid);
@@ -120,7 +129,7 @@ namespace Foxsys.ApartmentEditor
                     if (distance < minDistance)
                     {
                         var projection = MathUtils.PointProjectionToOnLine(point, wall.Begin, wall.End);
-                        if (!MathUtils.IsPointInsideLineSegment(projection, wall.Begin, wall.End))
+                        if (wall.IsPointOnWall(point))
                         {
                             result = projection;
                             minDistance = distance;
@@ -140,11 +149,25 @@ namespace Foxsys.ApartmentEditor
             }
             return result;
         }
-        public Room PointInsideRooms(Vector2 point, Room excudeRoom = null)
+
+        public List<Wall> GetWallsWithPoint(Vector2 point)
+        {
+            List<Wall> result = new List<Wall>();
+            foreach (var room in Rooms)
+            {
+                foreach (Wall wall in room.Walls)
+                {
+                    if(wall.IsPointOnWall(point))
+                        result.Add(wall);
+                }
+            }
+            return result;
+        }
+        public Room PointInsideRooms(Vector2 point, Room excludeRoom = null)
         {
             foreach (var room in _Rooms)
             {
-                if(excudeRoom != room && room.IsPointInside(point))
+                if(excludeRoom != room && room.IsPointInside(point))
                 {
                     return room;
                 }
