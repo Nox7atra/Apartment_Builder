@@ -20,6 +20,8 @@ namespace Foxsys.ApartmentEditor
 
         public override void OnInspectorGUI()
         {
+            var oldName = _ThisApartment.name;
+            _ThisApartment.name = EditorGUILayout.TextField(_ThisApartment.name);
             OpenBlueprint();
             _ThisApartment.Height = EditorGUILayout.FloatField("Height (cm)", _ThisApartment.Height);
 
@@ -38,6 +40,13 @@ namespace Foxsys.ApartmentEditor
                 _Dimensions = dimensionsRect;
 
             _ThisApartment.Dimensions = _Dimensions;
+
+            if (oldName != _ThisApartment.name)
+            {
+                string assetPath = AssetDatabase.GetAssetPath(_ThisApartment.GetInstanceID());
+                AssetDatabase.RenameAsset(assetPath, _ThisApartment.name);
+                AssetDatabase.SaveAssets();
+            }
         }
 
         private void OpenBlueprint()

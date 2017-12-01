@@ -15,10 +15,15 @@ namespace Foxsys.ApartmentEditor
         }
         public override void OnInspectorGUI()
         {
+            var oldName = _ThisRoom.name;
             _ThisRoom.name = EditorGUILayout.TextField(_ThisRoom.name);
             _ThisRoom.ContourColor = EditorGUILayout.ColorField(_ThisRoom.ContourColor);
             _ThisRoom.WallThickness = EditorGUILayout.FloatField("WallThikness (cm)", _ThisRoom.WallThickness);
             DrawContourPositions();
+            if (oldName != _ThisRoom.name)
+            {
+                AssetDatabase.SaveAssets();
+            }
         }
 
         public void DrawContourPositions()

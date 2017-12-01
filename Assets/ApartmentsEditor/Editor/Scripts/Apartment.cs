@@ -9,9 +9,9 @@ namespace Foxsys.ApartmentEditor
     public class Apartment : ScriptableObject
     {
         #region factory
-        public static Apartment Create(string name)
+        public static Apartment CreateOrGet(string name)
         {
-            var fullpath = Path.Combine(PathsConfig.Instance.PathToApartments,"test.asset");
+            var fullpath = Path.Combine(PathsConfig.Instance.PathToApartments, name + ".asset");
             Apartment apartment = AssetDatabase.LoadAssetAtPath<Apartment>(fullpath);
 
             if (apartment == null)

@@ -18,7 +18,7 @@ namespace Foxsys.ApartmentEditor
                 if (_CurrentApartment == null)
                 {
                     Refresh();
-                    _CurrentApartment = _Apartments.Count > 0 ? _Apartments[0] : Apartment.Create("test");
+                    _CurrentApartment = _Apartments.Count > 0 ? _Apartments[0] : Apartment.CreateOrGet("test");
                 }
                 return _CurrentApartment;
             }
