@@ -11,19 +11,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91af5c0efcc7cea4a9c5d710859ce37f, type: 3}
   m_Name: test
   m_EditorClassIdentifier: 
-  Height: 200
-  Dimensions:
-    serializedVersion: 2
-    x: -500
-    y: -500
-    width: 1000
-    height: 1000
+  Height: 273
   WallMaterial: {fileID: 2100000, guid: ec83012e30c32734fbb8ed4b886a2c85, type: 2}
   FloorMaterial: {fileID: 2100000, guid: ec83012e30c32734fbb8ed4b886a2c85, type: 2}
-  IsGenerateOutside: 1
+  IsGenerateOutside: 0
   _Rooms:
-  - {fileID: 114041149776662826}
---- !u!114 &114041149776662826
+  - {fileID: 114257284576356298}
+  - {fileID: 114791345628020530}
+  - {fileID: 114923276743467044}
+  - {fileID: 114672848149673726}
+--- !u!114 &114257284576356298
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -34,29 +31,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a52e267f180e5fb4b9966e3ef152b2c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ContourColor: {r: 1, g: 0.19999999, b: 0.7390617, a: 1}
-  WallThickness: 10
+  ContourColor: {r: 0.19999999, g: 1, b: 0.9770504, a: 1}
+  WallThickness: 39.98
   _ParentApartment: {fileID: 11400000}
   _Walls:
-  - Begin: {x: -198, y: -88}
-    End: {x: -97, y: -107}
-  - Begin: {x: -97, y: -107}
-    End: {x: -18, y: -187}
-  - Begin: {x: -18, y: -187}
-    End: {x: 180, y: -167}
-  - Begin: {x: 180, y: -167}
-    End: {x: 345, y: -126}
-  - Begin: {x: 345, y: -126}
-    End: {x: 290, y: -405}
-  - Begin: {x: 290, y: -405}
-    End: {x: 98, y: -413}
-  - Begin: {x: 98, y: -413}
-    End: {x: -94, y: -393}
-  - Begin: {x: -94, y: -393}
-    End: {x: -238, y: -233}
-  - Begin: {x: -238, y: -233}
-    End: {x: -198, y: -88}
---- !u!114 &114115723784906992
+  - Begin: {x: 357, y: 101}
+    End: {x: 186, y: 70}
+  - Begin: {x: 186, y: 70}
+    End: {x: 82, y: 190}
+  - Begin: {x: 82, y: 190}
+    End: {x: 370, y: 290}
+  - Begin: {x: 370, y: 290}
+    End: {x: 357, y: 101}
+--- !u!114 &114672848149673726
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -67,24 +54,61 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a52e267f180e5fb4b9966e3ef152b2c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ContourColor: {r: 0.19999999, g: 1, b: 0.6166668, a: 1}
-  WallThickness: 0
-  _ParentApartment: {fileID: 11400000}
-  _Walls: []
---- !u!114 &114933858334937954
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a52e267f180e5fb4b9966e3ef152b2c7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ContourColor: {r: 0.46483237, g: 0.5, b: 0.25, a: 1}
-  WallThickness: 0
+  ContourColor: {r: 0.27294958, g: 0.19999999, b: 1, a: 1}
+  WallThickness: 53.03
   _ParentApartment: {fileID: 11400000}
   _Walls:
-  - Begin: {x: -18, y: -236}
-    End: {x: -18, y: -236}
+  - Begin: {x: 294, y: -468}
+    End: {x: -325, y: -148}
+  - Begin: {x: -325, y: -148}
+    End: {x: -498, y: 98}
+  - Begin: {x: -498, y: 98}
+    End: {x: 387, y: -184}
+  - Begin: {x: 387, y: -184}
+    End: {x: 294, y: -468}
+--- !u!114 &114791345628020530
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a52e267f180e5fb4b9966e3ef152b2c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ContourColor: {r: 0.31329545, g: 1, b: 0.19999999, a: 1}
+  WallThickness: 23.07
+  _ParentApartment: {fileID: 11400000}
+  _Walls:
+  - Begin: {x: -314, y: 237}
+    End: {x: -500, y: 319}
+  - Begin: {x: -500, y: 319}
+    End: {x: -474, y: 498}
+  - Begin: {x: -474, y: 498}
+    End: {x: -166, y: 453}
+  - Begin: {x: -166, y: 453}
+    End: {x: -314, y: 237}
+--- !u!114 &114923276743467044
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a52e267f180e5fb4b9966e3ef152b2c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ContourColor: {r: 0.19999999, g: 1, b: 0.94580615, a: 1}
+  WallThickness: 23.36
+  _ParentApartment: {fileID: 11400000}
+  _Walls:
+  - Begin: {x: -152, y: 459}
+    End: {x: 401, y: -178}
+  - Begin: {x: 401, y: -178}
+    End: {x: -484, y: 104}
+  - Begin: {x: -484, y: 104}
+    End: {x: -300, y: 243}
+  - Begin: {x: -300, y: 243}
+    End: {x: -152, y: 459}

@@ -7,6 +7,27 @@ namespace Foxsys.ApartmentEditor
 {
     public static class ExtentionMethods
     {
+        public static Vector2 Clamp(this Rect rect, Vector2 point)
+        {
+            Vector2 result = point;
+            if (point.x > rect.width / 2)
+            {
+                result.x = rect.width / 2;
+            }
+            if (point.x < -rect.width / 2)
+            {
+                result.x = -rect.width / 2;
+            }
+            if (point.y > rect.height / 2)
+            {
+                result.y = rect.height / 2;
+            }
+            if (point.y < -rect.height / 2)
+            {
+                result.y = -rect.height / 2;
+            }
+            return result;
+        }
         public static Vector2 RoundCoordsToInt(this Vector2 vec)
         {
             return new Vector2(Mathf.RoundToInt(vec.x), Mathf.RoundToInt(vec.y));

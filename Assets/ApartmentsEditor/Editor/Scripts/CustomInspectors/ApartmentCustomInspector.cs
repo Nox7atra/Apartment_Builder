@@ -20,6 +20,7 @@ namespace Foxsys.ApartmentEditor
 
         public override void OnInspectorGUI()
         {
+            OpenBlueprint();
             _ThisApartment.Height = EditorGUILayout.FloatField("Height (cm)", _ThisApartment.Height);
 
             var dimensions = EditorGUILayout.Vector2Field("Dimensions (cm)", _Dimensions.size).RoundCoordsToInt();
@@ -39,6 +40,16 @@ namespace Foxsys.ApartmentEditor
             _ThisApartment.Dimensions = _Dimensions;
         }
 
+        private void OpenBlueprint()
+        {
+            if (GUILayout.Button(
+                "Open in Builder"
+            ))
+            {
+                ApartmentsManager.Instance.SelectApartment(_ThisApartment);
+                ApartmentEditorWindow.Create();
+            }
+        }
         private void GenerateButton()
         {
             if (GUILayout.Button(

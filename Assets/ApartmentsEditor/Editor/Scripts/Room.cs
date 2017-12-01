@@ -158,13 +158,13 @@ namespace Foxsys.ApartmentEditor
                 wall.Move(dv);
             }
         }
-        public void MoveVert(int index, Vector2 dv)
+        public void MoveVertTo(int index, Vector2 position)
         {
-            _Walls[index].Begin   += dv;
+            _Walls[index].Begin  = position;
             if (index > 0)
-                _Walls[index - 1].End += dv;
+                _Walls[index - 1].End = position;
             else
-                _Walls[_Walls.Count - 1].End += dv;
+                _Walls[_Walls.Count - 1].End = position;
         }
 
         public void RemoveVert(int index)
@@ -228,6 +228,22 @@ namespace Foxsys.ApartmentEditor
             }
             return contour;
         }
+
+        public Vector2 GetNearestPointOnContour(Vector2 point)
+        {
+            Vector2 result = new Vector2();
+            float minDistance = float.MaxValue;
+            foreach (var wall in _Walls)
+            {
+                float distance = MathUtils.DistanceFromPointToLine(point, wall.Begin, wall.End);
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    result = MathUtils.PointProjectionToOnLine(point, wall.Begin, wall.End);
+                }
+            }
+            return result;
+        }
         public void MakeClockwiseOrientation()
         {
             var contour = GetContour();
@@ -246,6 +262,10 @@ namespace Foxsys.ApartmentEditor
             return rect.Contains(_Walls[vertNum].Begin);
         }
 
+        public bool IsPointInside(Vector2 point)
+        {
+            return MathUtils.IsPointInsideCountour(GetContour(), point);
+        }
         public bool IsInsideRect(Rect rect)
         {
             return _Walls.All(wall => rect.Contains(wall.Begin));

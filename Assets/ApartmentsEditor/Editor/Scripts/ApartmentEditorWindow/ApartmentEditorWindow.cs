@@ -12,10 +12,9 @@ namespace Foxsys.ApartmentEditor
         {
             var window = GetWindow<ApartmentEditorWindow>("ApartmentBuilder");
             window.Show();
-            ApartmentsManagerWindow.Create();
         }
 
-        public event Action<EventType, Event> OnKeyEvent;
+        public event Action<EventType, Vector2, KeyCode> OnKeyEvent;
 
         public  Grid Grid;
 
@@ -80,6 +79,7 @@ namespace Foxsys.ApartmentEditor
         private void KeysEvents()
         {
             var curEvent = Event.current;
+            var mousePosition = curEvent.mousePosition;
             switch (curEvent.type)
             {
                 case EventType.MouseDrag:
@@ -93,17 +93,14 @@ namespace Foxsys.ApartmentEditor
                 case EventType.ScrollWheel:
                     OnScroll(curEvent.delta.y);
                     break;
+
             }
 
             if (OnKeyEvent != null)
             {
-                OnKeyEvent(curEvent.type, curEvent);
+                OnKeyEvent(curEvent.type, mousePosition, curEvent.keyCode);
             }
-            else if (Event.current.rawType == EventType.MouseUp)
-            {
-                if (OnKeyEvent != null)
-                    OnKeyEvent(Event.current.rawType, curEvent);
-            }
+
         }
 
         private void DragGrid()

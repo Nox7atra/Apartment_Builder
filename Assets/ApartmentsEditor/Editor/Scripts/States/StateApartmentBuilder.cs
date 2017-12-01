@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using JetBrains.Annotations;
+using UnityEngine;
 using UnityEditor;
 
 namespace Foxsys.ApartmentEditor
@@ -7,7 +8,8 @@ namespace Foxsys.ApartmentEditor
     {
         protected bool _IsActive;
         protected ApartmentEditorWindow _ParentWindow;
-     
+
+        protected StateHotkeys _Hotkeys;
         public void SaveCurrentApartment()
         {
         }
@@ -26,7 +28,7 @@ namespace Foxsys.ApartmentEditor
         }
         public abstract void Draw();
 
-        protected abstract void OnKeyEvent(EventType type, Event @event);
+        protected abstract void OnKeyEvent(EventType type, Vector2 mousePosition, KeyCode code);
 
         protected StateApartmentBuilder(ApartmentEditorWindow parentWindow)
         {

@@ -5,6 +5,19 @@ namespace Foxsys.ApartmentEditor
 {
     public abstract class StateHotkeys
     {
-        public abstract void Use(Event @event);
+        #region properties
+
+        public bool IsProjectionHotkeyPressed{get { return _IsProjectionHotkeyPressed; }}
+        #endregion
+        private bool _IsProjectionHotkeyPressed;
+        public virtual void Use(KeyCode keyCode, bool isKeyDown)
+        {
+            switch (keyCode)
+            {
+                case KeyCode.A:
+                    _IsProjectionHotkeyPressed = isKeyDown;
+                    break;
+            }
+        }
     }
 }

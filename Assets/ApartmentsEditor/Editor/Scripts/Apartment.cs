@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using System.IO;
@@ -23,15 +24,21 @@ namespace Foxsys.ApartmentEditor
             return apartment;
         }
 
+        private Room _SelectedRoom;
+
         public float Height;
-        public Rect Dimensions;
+
         public Material WallMaterial;
         public Material FloorMaterial;
 
         public bool IsGenerateOutside;
+        
         [SerializeField]
         private List<Room> _Rooms;
+        [SerializeField]
+        private Rect _Dimensions;
 
+        private Vector2[] _DimensionsPoints = new Vector2[4];
        
         public List<Room> Rooms
         {
@@ -54,6 +61,34 @@ namespace Foxsys.ApartmentEditor
             }
         }
 
+        public Rect Dimensions
+        {
+            get { return _Dimensions; }
+            set
+            {
+                _Dimensions = value;
+                _DimensionsPoints[0] = new Vector3(Dimensions.width / 2, Dimensions.height / 2);
+                _DimensionsPoints[1] = new Vector3(-Dimensions.width / 2, Dimensions.height / 2);
+                _DimensionsPoints[2] = new Vector3(-Dimensions.width / 2, -Dimensions.height / 2);
+                _DimensionsPoints[3] = new Vector3(Dimensions.width / 2, -Dimensions.height / 2);
+            }
+        }
+
+        public Room SelectedRoom
+        {
+            get { return _SelectedRoom; }
+            set
+            {
+                _SelectedRoom = value;
+                int index = _Rooms.FindIndex(x => x ==_SelectedRoom);
+                if (index > 0)
+                {
+                    var room = _Rooms[index];
+                    _Rooms[index] = _Rooms[0];
+                    _Rooms[0] = room;
+                }
+            }
+        }
         public void Draw(Grid grid)
         {
             DrawDimensions(grid);
@@ -65,26 +100,56 @@ namespace Foxsys.ApartmentEditor
         private void DrawDimensions(Grid grid)
         {
             Handles.color = Color.green;
-            Handles.DrawLine(
-                grid.GridToGUI(
-                    new Vector3(Dimensions.width / 2, Dimensions.height/ 2)),
-                grid.GridToGUI(
-                    new Vector3(Dimensions.width / 2, -Dimensions.height / 2)));
-            Handles.DrawLine(
-                grid.GridToGUI(
-                    new Vector3(Dimensions.width / 2, -Dimensions.height / 2)),
-                grid.GridToGUI(
-                    new Vector3(-Dimensions.width / 2, -Dimensions.height / 2)));
-            Handles.DrawLine(
-                grid.GridToGUI(
-                    new Vector3(-Dimensions.width / 2, -Dimensions.height / 2)),
-                grid.GridToGUI(
-                    new Vector3(-Dimensions.width / 2, Dimensions.height / 2)));
-            Handles.DrawLine(
-                grid.GridToGUI(
-                    new Vector3(-Dimensions.width / 2, Dimensions.height / 2)),
-                grid.GridToGUI(
-                    new Vector3(Dimensions.width / 2, Dimensions.height / 2)));
+            for(int i = 0; i < _DimensionsPoints.Length; i++)
+                Handles.DrawLine(
+                    grid.GridToGUI((_DimensionsPoints[i])),
+                    grid.GridToGUI(_DimensionsPoints[(i + 1) % _DimensionsPoints.Length]));
+        }
+
+        public Vector2 GetPointProjectionOnNearestContour(Vector2 point)
+        {
+            Vector2 result = point; 
+            float minDistance = float.MaxValue;
+            foreach (var room in Rooms)
+            {
+                if(room == SelectedRoom) continue;
+
+                foreach (var wall in room.Walls)
+                {
+                    var distance = MathUtils.DistanceFromPointToLine(point, wall.Begin, wall.End);
+                    if (distance < minDistance)
+                    {
+                        var projection = MathUtils.PointProjectionToOnLine(point, wall.Begin, wall.End);
+                        if (!MathUtils.IsPointInsideLineSegment(projection, wall.Begin, wall.End))
+                        {
+                            result = projection;
+                            minDistance = distance;
+                        }
+                    }
+                }
+            }
+            for (int i = 0; i < _DimensionsPoints.Length; i++)
+            {
+                Vector2 begin = _DimensionsPoints[i], end = _DimensionsPoints[(i + 1) % _DimensionsPoints.Length];
+                var distance = MathUtils.DistanceFromPointToLine(point, begin, end);
+                if (distance < minDistance)
+                {
+                    result = MathUtils.PointProjectionToOnLine(point, begin, end);
+                    minDistance = distance;
+                }
+            }
+            return result;
+        }
+        public Room PointInsideRooms(Vector2 point, Room excudeRoom = null)
+        {
+            foreach (var room in _Rooms)
+            {
+                if(excudeRoom != room && room.IsPointInside(point))
+                {
+                    return room;
+                }
+            }
+            return null;
         }
 
         public bool IsApartmentInRect(Rect rect)

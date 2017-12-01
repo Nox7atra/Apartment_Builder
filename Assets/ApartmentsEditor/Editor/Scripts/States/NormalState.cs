@@ -5,22 +5,17 @@ namespace Foxsys.ApartmentEditor
 {
     public class NormalState : StateApartmentBuilder
     {
-        public Room SelectedRoom{ get { return _SelectedRoom; }  }
-        public SelectionType CurrentSelection { get { return _CurrentSelection; } }
-        public int SelectedVertIndex { get { return _SelectedVertIndex; } }
-   
-        private Room _SelectedRoom;
+        #region fields
         private SelectionType _CurrentSelection;
         private int _SelectedVertIndex;
 
-        private Vector3? _LastMousePosition;
-        private NormalStateHotkeys _Hotkeys;
-        private Apartment _CurrentApartment;
+        private Vector2? _LastMousePosition;
+    #endregion
         public override void Draw()
         {
             if (!_IsActive)
                 return;
-            _SelectedRoom = Selection.activeObject as Room;
+            ApartmentsManager.Instance.CurrentApartment.SelectedRoom = Selection.activeObject as Room;
             DrawSelection();
         }
         public override void SetActive(bool enable)
@@ -32,18 +27,19 @@ namespace Foxsys.ApartmentEditor
         }
         public void DeleteSelected()
         {
+
             switch (_CurrentSelection)
             {
                 case SelectionType.Room:
-                    ApartmentsManager.Instance.CurrentApartment.Rooms.Remove(_SelectedRoom);
-                    UnityEngine.Object.DestroyImmediate(_SelectedRoom, true);
-                    _SelectedRoom = null;
+                    ApartmentsManager.Instance.CurrentApartment.Rooms.Remove(ApartmentsManager.Instance.CurrentApartment.SelectedRoom);
+                    UnityEngine.Object.DestroyImmediate(ApartmentsManager.Instance.CurrentApartment.SelectedRoom, true);
+                    ApartmentsManager.Instance.CurrentApartment.SelectedRoom = null;
                     break;
                 case SelectionType.Vert:
-                    if (_SelectedRoom.Walls.Count > 3)
+                    if (ApartmentsManager.Instance.CurrentApartment.SelectedRoom.Walls.Count > 3)
                     {
-                        Undo.RegisterCompleteObjectUndo(_SelectedRoom, "Vert Removed");
-                        _SelectedRoom.RemoveVert(_SelectedVertIndex);
+                        Undo.RegisterCompleteObjectUndo(ApartmentsManager.Instance.CurrentApartment.SelectedRoom, "Vert Removed");
+                        ApartmentsManager.Instance.CurrentApartment.SelectedRoom.RemoveVert(_SelectedVertIndex);
                         _SelectedVertIndex = -1;
                     }
                     else
@@ -56,55 +52,68 @@ namespace Foxsys.ApartmentEditor
             _CurrentSelection = SelectionType.None;
         }
  
-        protected override void OnKeyEvent(EventType type, Event @event)
+        protected override void OnKeyEvent(EventType type, Vector2 mousePosition, KeyCode keyCode)
         {
             if (!_IsActive)
                 return;
 
             if (Event.current.button == 0)
             {
-                OnLeftMouse(type, @event);
+                OnLeftMouse(type, mousePosition);
             }
 
             if(type == EventType.KeyDown)
             {
-                 _Hotkeys.Use(@event);
+                 _Hotkeys.Use(keyCode, true);
+            }
+            if (type == EventType.KeyUp)
+            {
+                _Hotkeys.Use(keyCode, false);
             }
             _ParentWindow.Repaint();
         }
 
-        private void MoveSelected()
+        private void MoveSelected(Vector2 mousePositon)
         {
+
             if (_CurrentSelection == SelectionType.None )
                 return;
-
-            var curMousePosition = Event.current.mousePosition;
-    
+            var apartment = ApartmentsManager.Instance.CurrentApartment;
             if (_LastMousePosition.HasValue)
             {
-                var dv = (GUIUtility.GUIToScreenPoint((Vector2)_LastMousePosition)
-                     - GUIUtility.GUIToScreenPoint(curMousePosition)) * _ParentWindow.Grid.Zoom;
-                var dimensions = ApartmentsManager.Instance.CurrentApartment.Dimensions;
+                var dv = (GUIUtility.GUIToScreenPoint(_LastMousePosition.Value)
+                     - GUIUtility.GUIToScreenPoint(mousePositon)) * _ParentWindow.Grid.Zoom;
+                var dimensions = apartment.Dimensions;
                 switch (_CurrentSelection)
                 {
                     case SelectionType.Vert:
-                        _SelectedRoom.MoveVert(_SelectedVertIndex, -dv);
-                        if(!_SelectedRoom.IsVertInsideRect(_SelectedVertIndex, dimensions))
-                            _SelectedRoom.MoveVert(_SelectedVertIndex, dv);
+                        var gridMousePos = _ParentWindow.Grid.GUIToGrid(mousePositon);
+                        var vertPos =
+                            _Hotkeys.IsProjectionHotkeyPressed
+                                ? apartment.GetPointProjectionOnNearestContour(gridMousePos)
+                                : gridMousePos;
+
+                        var insideRoom = apartment.PointInsideRooms(vertPos, apartment.SelectedRoom);
+                        if (insideRoom != null)
+                            vertPos = insideRoom.GetNearestPointOnContour(vertPos);
+
+                        apartment.SelectedRoom.MoveVertTo(_SelectedVertIndex, apartment.Dimensions.Clamp(vertPos));
                         break;
                     case SelectionType.Room:
-                        _SelectedRoom.Move(-dv);
-                        if (!_SelectedRoom.IsInsideRect(dimensions))
-                            _SelectedRoom.Move(dv);
+                        apartment.SelectedRoom.Move(-dv);
+                        if (!apartment.SelectedRoom.IsInsideRect(dimensions))
+                            apartment.SelectedRoom.Move(dv);
                         break;
                 }
             }
-            _LastMousePosition = curMousePosition;
+            _LastMousePosition = mousePositon;
         }
-
+        
         private void DrawSelection()
         {
-            if (_SelectedRoom == null || Selection.activeObject != _SelectedRoom || ApartmentsManager.Instance.CurrentApartment != _SelectedRoom.ParentApartment)
+            var selectedRoom = ApartmentsManager.Instance.CurrentApartment.SelectedRoom;
+            if (selectedRoom == null 
+                || Selection.activeObject != selectedRoom)
                 return;
 
             switch (_CurrentSelection)
@@ -112,15 +121,15 @@ namespace Foxsys.ApartmentEditor
                 case SelectionType.Vert:
                     Handles.color = Color.yellow;
                     Handles.DrawWireDisc(
-                        _ParentWindow.Grid.GridToGUI(_SelectedRoom.GetVertPosition(_SelectedVertIndex)),
+                        _ParentWindow.Grid.GridToGUI(selectedRoom.GetVertPosition(_SelectedVertIndex)),
                         Vector3.back, Room.SNAPING_RAD / _ParentWindow.Grid.Zoom
                     );
                     break;
                 case SelectionType.Room:
-                    var walls = _SelectedRoom.Walls;
-                    for (int i = 0; i < walls.Count; i++)
+                    var walls = selectedRoom.Walls;
+                    foreach (Wall wall in walls)
                     {
-                        walls[i].Draw(_ParentWindow.Grid, Color.yellow);
+                        wall.Draw(_ParentWindow.Grid, Color.yellow);
                     }
                     break;
             }
@@ -128,58 +137,60 @@ namespace Foxsys.ApartmentEditor
 
         private void SetupSelection(Vector2 position)
         {
+            var apartment = ApartmentsManager.Instance.CurrentApartment;
             switch (_CurrentSelection)
             {
                 case SelectionType.Room:
-                    _SelectedRoom = ApartmentsManager.Instance.CurrentApartment.Rooms
-                               .FirstOrDefault(x => MathUtils.IsPointInsideCountour(x.GetContour(), position));
-                    if(_SelectedRoom == null)
+                    apartment.SelectedRoom = apartment.Rooms
+                               .FirstOrDefault(x => x.IsPointInside(position));
+                    if(apartment.SelectedRoom == null)
                     {
                         _CurrentSelection = SelectionType.None;
                     }
                     break;
                 case SelectionType.Vert:
-                    _SelectedVertIndex = _SelectedRoom.GetContourVertIndex(position);
+                    _SelectedVertIndex = apartment.SelectedRoom.GetContourVertIndex(position);
                     ApartmentConfig.MakeBackup();
                     ApartmentConfig.Current.IsDrawPositions = true;
                     break;
             }
-            if (_SelectedRoom)
+            if (apartment.SelectedRoom)
             {
-                Selection.activeObject = _SelectedRoom;
+                Selection.activeObject = apartment.SelectedRoom;
             }
             else
             {
-                Selection.activeObject = ApartmentsManager.Instance.CurrentApartment;
+                Selection.activeObject = apartment;
             }
         }
-        void OnLeftMouse(EventType type, Event @event)
+        private void OnLeftMouse(EventType type, Vector2 mousePosition)
         {
+            var apartment = ApartmentsManager.Instance.CurrentApartment;
             switch (type)
             {
                 case EventType.MouseDown:
                     _CurrentSelection = SelectionType.None;
 
-                    var mousePos = _ParentWindow.Grid.GUIToGrid(@event.mousePosition);
+                    var mousePos = _ParentWindow.Grid.GUIToGrid(mousePosition);
 
-                    _SelectedRoom = ApartmentsManager.Instance.CurrentApartment.Rooms
+                    apartment.SelectedRoom = apartment.Rooms
                         .FirstOrDefault(x => x.GetContourVertIndex(mousePos) >= 0);
                    
-                    _CurrentSelection = _SelectedRoom == null ? SelectionType.Room : SelectionType.Vert;
+                    _CurrentSelection = apartment.SelectedRoom == null ? SelectionType.Room : SelectionType.Vert;
 
                     SetupSelection(mousePos);
-                    if (_SelectedRoom)
-                        Undo.RegisterCompleteObjectUndo(_SelectedRoom, "Room position changed");
-                    _LastMousePosition = @event.mousePosition;
+                    if (apartment.SelectedRoom)
+                        Undo.RegisterCompleteObjectUndo(apartment.SelectedRoom, "Room position changed");
+                    _LastMousePosition = mousePosition;
                     break;
                 case EventType.MouseDrag:
-                    MoveSelected();
+                    MoveSelected(mousePosition);
                     break;
                 case EventType.MouseUp:
                     ApartmentConfig.ApplyBackup();
-                    if (_SelectedRoom != null)
+                    if (apartment.SelectedRoom != null)
                     {
-                        _SelectedRoom.RoundContourPoints();
+                        apartment.SelectedRoom.RoundContourPoints();
                     }
                     _LastMousePosition = null;
                     break;

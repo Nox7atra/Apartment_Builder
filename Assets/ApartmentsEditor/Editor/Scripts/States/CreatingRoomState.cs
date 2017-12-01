@@ -43,19 +43,21 @@ namespace Foxsys.ApartmentEditor
         #endregion
 
         #region key events
-        protected override void OnKeyEvent(EventType type, Event @event)
+        protected override void OnKeyEvent(EventType type, Vector2 mousePosition, KeyCode keyCode)
         {
             if (!_IsActive)
                 return;
             switch (type)
             {
                 case EventType.MouseMove:
-                    _CurrentMousePosition = @event.mousePosition;
+                    _CurrentMousePosition = mousePosition;
                     _ParentWindow.Repaint();
                     break;
                 case EventType.MouseDown:
-                    var position = _ParentWindow.Grid.GUIToGrid(@event.mousePosition);
-                    if (@event.button == 0 && ApartmentsManager.Instance.CurrentApartment.Dimensions.Contains(position))
+                    var position = _ParentWindow.Grid.GUIToGrid(mousePosition);
+                    if (Event.current.button == 0
+                        && _CurrentRoom.ParentApartment.Dimensions.Contains(position) 
+                        && _CurrentRoom.ParentApartment.PointInsideRooms(position) == null)
                     {
                         Undo.RegisterCompleteObjectUndo(_CurrentRoom, "Add Room point");
                         if (!_CurrentRoom.Add(position))
@@ -66,12 +68,13 @@ namespace Foxsys.ApartmentEditor
                     }
                     break;
                 case EventType.KeyDown:
-                    if (@event.keyCode == KeyCode.Escape)
+                    if (keyCode == KeyCode.Escape)
                     {
                         Object.DestroyImmediate(_CurrentRoom, true);
                         AssetDatabase.SaveAssets();
                         _ParentWindow.ActivateState(ApartmentEditorWindow.EditorWindowState.Normal);
                     }
+                    
                     break;
             }
         }

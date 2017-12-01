@@ -8,9 +8,10 @@ namespace Foxsys.ApartmentEditor
         #endregion
 
         #region public methods
-        public override void Use(Event @event)
+        public override void Use(KeyCode keyCode, bool isKeyDown)
         {
-            switch (@event.keyCode)
+            base.Use(keyCode, isKeyDown);
+            switch (keyCode)
             {
                 case KeyCode.Delete:
                     Delete();
