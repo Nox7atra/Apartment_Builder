@@ -21,7 +21,7 @@ namespace Foxsys.ApartmentEditor
                 _CurrentSkin.MiniButtonStyle
             ))
             { 
-                _ParentWindow.AddObjectStateBegin(Door.CreateInstance<Door>());
+                _ParentWindow.AddObjectStateBegin(ObjectsManager.Mode.Doors);
             }
             EditorGUILayout.EndVertical();
             GUILayout.EndArea();

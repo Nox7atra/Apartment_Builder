@@ -8,8 +8,7 @@ namespace Foxsys.ApartmentEditor
     public class AddObjectState : StateApartmentBuilder
     {
         #region fields
-
-        public WallObject ObjectToAdd;
+        
         private Vector2 _CurrentMousePosition;
 
         #endregion
@@ -22,11 +21,9 @@ namespace Foxsys.ApartmentEditor
             
             if (!enable)
             {
-                ObjectToAdd = null;
                 return;
             }
-
-            Selection.activeObject = ObjectToAdd;
+            
         }
 
         #endregion
@@ -47,7 +44,7 @@ namespace Foxsys.ApartmentEditor
             var walls = apartment.GetWallsWithPoint(objgridPos);
             foreach (var wall in walls)
             {
-                wall.DrawWallObject(_ParentWindow.Grid, ObjectToAdd, wall.GetPositionWallObjectFromPoint(objgridPos));
+                wall.DrawWallObject(_ParentWindow.Grid, ObjectsManager.Instance.SelectedObject, wall.GetPositionWallObjectFromPoint(objgridPos));
             }
         }
 
@@ -70,9 +67,9 @@ namespace Foxsys.ApartmentEditor
                 case EventType.KeyDown:
                     if (code == KeyCode.Escape)
                     {
-                        Object.DestroyImmediate(ObjectToAdd, true);
                         AssetDatabase.SaveAssets();
                         _ParentWindow.ActivateState(ApartmentEditorWindow.EditorWindowState.Normal);
+                        Selection.activeObject = ApartmentsManager.Instance.CurrentApartment;
                     }
 
                     break;

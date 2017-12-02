@@ -32,9 +32,10 @@ namespace Foxsys.ApartmentEditor
 
         #region object to add state
 
-        public void AddObjectStateBegin(WallObject obj)
+        public void AddObjectStateBegin(ObjectsManager.Mode mode)
         {
-            ((AddObjectState) _States[EditorWindowState.ObjectAdding]).ObjectToAdd = obj;
+            ObjectsManager.Instance.SelectMode(mode);
+            Selection.activeObject = ObjectsManager.Instance;
             ActivateState(EditorWindowState.ObjectAdding);
         }
 

@@ -41,7 +41,12 @@ namespace Foxsys.ApartmentEditor
 
         public void Refresh()
         {
-            string[] assets = Directory.GetFiles(PathsConfig.Instance.PathToApartments, "*.asset");
+            var pathsToApartments = PathsConfig.Instance.PathToApartments;
+            if (!Directory.Exists(pathsToApartments))
+            {
+                Directory.CreateDirectory(pathsToApartments);
+            }
+            string[] assets = Directory.GetFiles(PathsConfig.Instance.PathToApartments,"*.asset");
             _Apartments = new List<Apartment>(assets.Length);
             foreach (var asset in assets)
             {

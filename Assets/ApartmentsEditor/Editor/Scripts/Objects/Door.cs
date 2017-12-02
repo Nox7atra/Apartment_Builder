@@ -10,7 +10,9 @@ namespace Foxsys.ApartmentEditor
     {
         public static Door CreateOrGet(string name, float width, float height)
         {
-            var fullpath = Path.Combine(PathsConfig.Instance.PathToApartments, "/Doors/" + name + ".asset");
+            var pathsToDoors = PathsConfig.Instance.PathToDoors;
+          
+            var fullpath = Path.Combine(pathsToDoors, name + ".asset");
             Door door = AssetDatabase.LoadAssetAtPath<Door>(fullpath);
             if (door == null)
             {
@@ -18,6 +20,7 @@ namespace Foxsys.ApartmentEditor
                 door.Height = height;
                 door.Width = width;
                 AssetDatabase.CreateAsset(door, fullpath);
+                AssetDatabase.SaveAssets();
             }
             return door;
         }

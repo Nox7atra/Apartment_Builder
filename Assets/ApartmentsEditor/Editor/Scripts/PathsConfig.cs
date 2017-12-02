@@ -8,10 +8,30 @@ namespace Foxsys.ApartmentEditor
 {
     public class PathsConfig : ScriptableObject
     {
-        public string PathToApartments = "";
         public string PathToModels = "";
         public string PathToSkins = "";
+        public string PathToData = "";
 
+        public string PathToApartments
+        {
+            get { return Path.Combine(PathToData, "Apartments"); }
+        }
+        public string PathToDoors
+        {
+            get
+            {
+                var pathToDoors = Path.Combine(PathToData, "Doors");
+                if (!Directory.Exists(pathToDoors))
+                {
+                    Directory.CreateDirectory(pathToDoors);
+                }
+                return pathToDoors;
+            }
+        }
+        public string PathToWindows
+        {
+            get { return Path.Combine(PathToData, "Windows"); }
+        }
         private static PathsConfig _Instance;
 
         public static PathsConfig Instance
