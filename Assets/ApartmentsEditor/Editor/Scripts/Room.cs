@@ -19,7 +19,6 @@ namespace Foxsys.ApartmentEditor
             room.name = "Room_" + GUID.Generate();
             AssetDatabase.AddObjectToAsset(room, parent);
             room._ParentApartment = parent;
-            room.ContourColor = Color.HSVToRGB(Random.Range(0f, 1f), 0.8f, 1f);
             EditorUtility.SetDirty(parent);
             room._Walls = new List<Wall>();
             AssetDatabase.SaveAssets();
@@ -29,17 +28,20 @@ namespace Foxsys.ApartmentEditor
         #endregion
 
         #region fields
-
-        public Color ContourColor;
-
+        
+        public Type CurrentType;
+        
         public float WallThickness;
-
+        
         [SerializeField]
         private Apartment _ParentApartment;
 
         [SerializeField]
         private List<Wall> _Walls;
 
+        public bool IsShowSizes;
+        public bool IsShowSquare;
+        public bool IsShowPositions;
         #endregion
 
         #region properties
@@ -248,30 +250,29 @@ namespace Foxsys.ApartmentEditor
 
         public void Draw(Grid grid)
         {
-            int k = 0;
+            var currentSkin = SkinManager.Instance.CurrentSkin;
+            var labelStyle = currentSkin.TextStyle;
+            Color color = currentSkin.GetColor(CurrentType);
             foreach (Wall wall in _Walls)
             {
                 var p1 = wall.Begin;
                 var p2 = wall.End;
-
-                wall.Draw(grid, ContourColor);
-                Handles.color = Color.white;
+                
+                wall.Draw(grid, color);
+                Handles.color = currentSkin.VertColor;
                 float rad = SnapingRad / grid.Zoom;
                 Handles.DrawWireDisc(grid.GridToGUI(p1), Vector3.back, rad);
 
-                Handles.Label(grid.GridToGUI(p2) - Vector2.down * 10, k.ToString());
-                k++;
-                if (ApartmentConfig.Current.IsDrawSizes)
+                if (IsShowSizes)
                 {
-                    Handles.color = Color.white;
                     Handles.Label(grid.GridToGUI((p1 + p2) / 2),
                         Vector2.Distance(
                             p1,
-                            p2).ToString());
+                            p2).ToString(), labelStyle);
                 }
-                if (ApartmentConfig.Current.IsDrawPositions)
+                if (IsShowPositions)
                 {
-                    Handles.Label(grid.GridToGUI(p1) + new Vector2(SnapingRad, SnapingRad), p1.RoundCoordsToInt().ToString());
+                    Handles.Label(grid.GridToGUI(p1) + new Vector2(SnapingRad, SnapingRad), p1.RoundCoordsToInt().ToString(), labelStyle);
                 }
             }
             if (WallThickness > 0)
@@ -279,15 +280,15 @@ namespace Foxsys.ApartmentEditor
                 var contour = GetContourWithThickness();
                 for (int i = 0, count = contour.Count; i < contour.Count; i++)
                 {
-                    Handles.color = new Color(ContourColor.r, ContourColor.g, ContourColor.b, 0.3f);
+                    Handles.color = new Color(color.r, color.g, color.b, 0.5f);
                     Vector2 p1 = grid.GridToGUI(contour[i]), p2 = grid.GridToGUI(contour[(i + 1) % count]);
                     Handles.DrawLine(grid.GridToGUI(_Walls[i].End), p1);
                     Handles.DrawLine(p1, p2);
                 }
             }
-            if (ApartmentConfig.Current.IsDrawSquare)
+            if (IsShowSquare)
             {
-                Handles.Label(grid.GridToGUI(Centroid), Square.ToString());
+                Handles.Label(grid.GridToGUI(Centroid), Square.ToString(), labelStyle);
             }
         }
 
@@ -299,8 +300,7 @@ namespace Foxsys.ApartmentEditor
             Kitchen,
             Bathroom,
             Toilet,
-            BathroomAndToilet,
-            None
+            Living
         }
     }
 }

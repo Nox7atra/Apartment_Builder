@@ -11,18 +11,109 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91af5c0efcc7cea4a9c5d710859ce37f, type: 3}
   m_Name: test
   m_EditorClassIdentifier: 
-  Height: 0
+  Height: 273
   WallMaterial: {fileID: 2100000, guid: ec83012e30c32734fbb8ed4b886a2c85, type: 2}
   FloorMaterial: {fileID: 2100000, guid: ec83012e30c32734fbb8ed4b886a2c85, type: 2}
   IsGenerateOutside: 0
   _Rooms:
   - {fileID: 114892692142526740}
+  - {fileID: 114298242822456758}
+  - {fileID: 114444626245958658}
+  - {fileID: 114223362722468878}
+  - {fileID: 114960617794437456}
   _Dimensions:
     serializedVersion: 2
     x: -500
     y: -500
     width: 1000
     height: 1000
+--- !u!114 &114223362722468878
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a52e267f180e5fb4b9966e3ef152b2c7, type: 3}
+  m_Name: Room_e94e1b2bf0cdc3b4ea058cdae501a061
+  m_EditorClassIdentifier: 
+  CurrentType: 3
+  WallThickness: 25
+  _ParentApartment: {fileID: 11400000}
+  _Walls:
+  - Begin: {x: -211, y: -283}
+    End: {x: -500, y: -276}
+    Objects: []
+  - Begin: {x: -500, y: -276}
+    End: {x: -221, y: -57}
+    Objects: []
+  - Begin: {x: -221, y: -57}
+    End: {x: -80, y: -281}
+    Objects: []
+  - Begin: {x: -80, y: -281}
+    End: {x: -211, y: -283}
+    Objects: []
+  IsShowSizes: 0
+  IsShowSquare: 0
+  IsShowPositions: 0
+--- !u!114 &114298242822456758
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a52e267f180e5fb4b9966e3ef152b2c7, type: 3}
+  m_Name: Room_a334f6849c0f7e64aa3cf967e1258506
+  m_EditorClassIdentifier: 
+  CurrentType: 2
+  WallThickness: 25
+  _ParentApartment: {fileID: 11400000}
+  _Walls:
+  - Begin: {x: -66, y: -410}
+    End: {x: -80, y: -281}
+    Objects: []
+  - Begin: {x: -80, y: -281}
+    End: {x: 27, y: -287}
+    Objects: []
+  - Begin: {x: 27, y: -287}
+    End: {x: 51, y: -423}
+    Objects: []
+  - Begin: {x: 51, y: -423}
+    End: {x: -66, y: -410}
+    Objects: []
+  IsShowSizes: 0
+  IsShowSquare: 0
+  IsShowPositions: 0
+--- !u!114 &114444626245958658
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a52e267f180e5fb4b9966e3ef152b2c7, type: 3}
+  m_Name: Room_c23d861b2d121ba4a9edc71f2b3cbb7d
+  m_EditorClassIdentifier: 
+  CurrentType: 3
+  WallThickness: 25
+  _ParentApartment: {fileID: 11400000}
+  _Walls:
+  - Begin: {x: 27, y: -287}
+    End: {x: 239, y: -223}
+    Objects: []
+  - Begin: {x: 239, y: -223}
+    End: {x: 51, y: -423}
+    Objects: []
+  - Begin: {x: 51, y: -423}
+    End: {x: 27, y: -287}
+    Objects: []
+  IsShowSizes: 0
+  IsShowSquare: 0
+  IsShowPositions: 0
 --- !u!114 &114892692142526740
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -34,19 +125,52 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a52e267f180e5fb4b9966e3ef152b2c7, type: 3}
   m_Name: Room_9919b91f46bd8cb48afa6c7229b56f87
   m_EditorClassIdentifier: 
-  ContourColor: {r: 0.95403785, g: 1, b: 0.19999999, a: 1}
-  WallThickness: 0
+  CurrentType: 1
+  WallThickness: 25
   _ParentApartment: {fileID: 11400000}
   _Walls:
-  - Begin: {x: 123, y: -267}
-    End: {x: -209, y: -134}
+  - Begin: {x: -163, y: -404}
+    End: {x: -211, y: -283}
     Objects: []
-  - Begin: {x: -209, y: -134}
-    End: {x: 159, y: 208}
+  - Begin: {x: -211, y: -283}
+    End: {x: -80, y: -281}
     Objects: []
-  - Begin: {x: 159, y: 208}
-    End: {x: 333, y: -178}
+  - Begin: {x: -80, y: -281}
+    End: {x: -66, y: -410}
     Objects: []
-  - Begin: {x: 333, y: -178}
-    End: {x: 123, y: -267}
+  - Begin: {x: -66, y: -410}
+    End: {x: -163, y: -404}
     Objects: []
+  IsShowSizes: 0
+  IsShowSquare: 0
+  IsShowPositions: 0
+--- !u!114 &114960617794437456
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a52e267f180e5fb4b9966e3ef152b2c7, type: 3}
+  m_Name: Room_42a0bebcdbdf3e446be6558f609c089a
+  m_EditorClassIdentifier: 
+  CurrentType: 0
+  WallThickness: 25
+  _ParentApartment: {fileID: 11400000}
+  _Walls:
+  - Begin: {x: -211, y: -283}
+    End: {x: -163, y: -404}
+    Objects: []
+  - Begin: {x: -163, y: -404}
+    End: {x: -500, y: -500}
+    Objects: []
+  - Begin: {x: -500, y: -500}
+    End: {x: -500, y: -276}
+    Objects: []
+  - Begin: {x: -500, y: -276}
+    End: {x: -211, y: -283}
+    Objects: []
+  IsShowSizes: 0
+  IsShowSquare: 0
+  IsShowPositions: 0

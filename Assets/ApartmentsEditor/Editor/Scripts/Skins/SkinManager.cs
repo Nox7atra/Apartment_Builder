@@ -6,12 +6,12 @@ namespace Foxsys.ApartmentEditor
 {
     public class SkinManager
     {
-        private const string DefaultSkinName = "Default.asset";
+        private const string ProSkin = "Pro.asset";
         public Skin CurrentSkin { get; private set; }
 
         private SkinManager()
         {
-            string path = Path.Combine(PathsConfig.Instance.PathToSkins, DefaultSkinName);
+            string path = Path.Combine(PathsConfig.Instance.PathToSkins, ProSkin);
             CurrentSkin = AssetDatabase.LoadAssetAtPath<Skin>(path);
             if (CurrentSkin == null)
             {

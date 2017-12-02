@@ -144,6 +144,10 @@ namespace Foxsys.ApartmentEditor
 
         private void OnGUI()
         {
+            float bgValue = 56 / 255f;
+            GUI.color = new Color(bgValue, bgValue, bgValue);
+            GUI.DrawTexture(new Rect(Vector2.zero,maxSize), EditorGUIUtility.whiteTexture);
+            GUI.color = Color.white;
             KeysEvents();
             Grid.Draw();
             var apartment = ApartmentsManager.Instance.CurrentApartment;
@@ -156,7 +160,6 @@ namespace Foxsys.ApartmentEditor
             {
                 stateApartmentEditor.Value.Draw();
             }
-
             _Toolbar.Draw();
         }
         #endregion

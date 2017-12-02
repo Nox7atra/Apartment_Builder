@@ -17,9 +17,12 @@ namespace Foxsys.ApartmentEditor
         {
             var oldName = _ThisRoom.name;
             _ThisRoom.name = EditorGUILayout.TextField(_ThisRoom.name);
-            _ThisRoom.ContourColor = EditorGUILayout.ColorField(_ThisRoom.ContourColor);
+            _ThisRoom.CurrentType = (Room.Type) EditorGUILayout.EnumPopup("Room type", _ThisRoom.CurrentType);
             _ThisRoom.WallThickness = EditorGUILayout.FloatField("WallThikness (cm)", _ThisRoom.WallThickness);
             DrawContourPositions();
+            _ThisRoom.IsShowPositions = EditorGUILayout.ToggleLeft("Show Positions", _ThisRoom.IsShowPositions);
+            _ThisRoom.IsShowSizes = EditorGUILayout.ToggleLeft("Show Sizes", _ThisRoom.IsShowSizes);
+            _ThisRoom.IsShowSquare = EditorGUILayout.ToggleLeft("Show Square", _ThisRoom.IsShowSquare);
             if (oldName != _ThisRoom.name)
             {
                 AssetDatabase.SaveAssets();

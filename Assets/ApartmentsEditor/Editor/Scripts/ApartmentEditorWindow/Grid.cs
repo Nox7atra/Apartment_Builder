@@ -61,12 +61,13 @@ namespace Foxsys.ApartmentEditor
         }
         void DrawLODLines(int level)
         {
+            var gridColor = SkinManager.Instance.CurrentSkin.GridColor;
             var step0 = Mathf.Pow(10, level);
             int halfCount = (int) step0 * CELLS_IN_LINE_COUNT / 2 * 10;
             var length = halfCount * DEFAULT_CELL_SIZE;
             for (int i = -halfCount; i <= halfCount; i += (int)step0)
             {
-                Handles.color = new Color(GRID_COLOR.r, GRID_COLOR.g, GRID_COLOR.b,  step0 / 4);
+                Handles.color = new Color(gridColor.r, gridColor.g, gridColor.b,  step0 / 4);
                 
                 Handles.DrawLine(
                     GridToGUI(new Vector2(-length, i * DEFAULT_CELL_SIZE)),
@@ -79,7 +80,7 @@ namespace Foxsys.ApartmentEditor
             }
             for (int i = -halfCount; i <= halfCount; i += (int)step0 * 10)
             {
-                Handles.color = new Color(GRID_COLOR.r, GRID_COLOR.g, GRID_COLOR.b,  step0);
+                Handles.color = new Color(gridColor.r, gridColor.g, gridColor.b,  step0);
                 Handles.DrawLine(
                     GridToGUI(new Vector2(-length, i * DEFAULT_CELL_SIZE)),
                     GridToGUI(new Vector2(length, i * DEFAULT_CELL_SIZE))
@@ -120,7 +121,6 @@ namespace Foxsys.ApartmentEditor
         const float MAX_ZOOM_VALUE             = 4f;
         const int   CELLS_IN_LINE_COUNT        = 40;
         const float DEFAULT_CELL_SIZE          = 20;
-        private static readonly Color GRID_COLOR = new Color(0.3f, 0.3f, 0.3f);
         #endregion
     }
 }

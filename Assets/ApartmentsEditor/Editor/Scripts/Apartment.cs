@@ -108,7 +108,7 @@ namespace Foxsys.ApartmentEditor
         }
         private void DrawDimensions(Grid grid)
         {
-            Handles.color = Color.green;
+            Handles.color = SkinManager.Instance.CurrentSkin.RoomDimensionsColor;
             for(int i = 0; i < _DimensionsPoints.Length; i++)
                 Handles.DrawLine(
                     grid.GridToGUI((_DimensionsPoints[i])),

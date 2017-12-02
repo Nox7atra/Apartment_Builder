@@ -8,7 +8,7 @@ namespace Foxsys.ApartmentEditor
         #region fields
         private SelectionType _CurrentSelection;
         private int _SelectedVertIndex;
-
+        private bool _IsShowPositionsValue;
         private Vector2? _LastMousePosition;
         #endregion
 
@@ -28,19 +28,19 @@ namespace Foxsys.ApartmentEditor
 
         public void DeleteSelected()
         {
-
+            var apartment = ApartmentsManager.Instance.CurrentApartment;
             switch (_CurrentSelection)
             {
                 case SelectionType.Room:
-                    ApartmentsManager.Instance.CurrentApartment.Rooms.Remove(ApartmentsManager.Instance.CurrentApartment.SelectedRoom);
+                    apartment.Rooms.Remove(ApartmentsManager.Instance.CurrentApartment.SelectedRoom);
                     UnityEngine.Object.DestroyImmediate(ApartmentsManager.Instance.CurrentApartment.SelectedRoom, true);
-                    ApartmentsManager.Instance.CurrentApartment.SelectedRoom = null;
+                    apartment.SelectedRoom = null;
                     break;
                 case SelectionType.Vert:
-                    if (ApartmentsManager.Instance.CurrentApartment.SelectedRoom.Walls.Count > 3)
+                    if (apartment.SelectedRoom.Walls.Count > 3)
                     {
-                        Undo.RegisterCompleteObjectUndo(ApartmentsManager.Instance.CurrentApartment.SelectedRoom, "Vert Removed");
-                        ApartmentsManager.Instance.CurrentApartment.SelectedRoom.RemoveVert(_SelectedVertIndex);
+                        Undo.RegisterCompleteObjectUndo(apartment.SelectedRoom, "Vert Removed");
+                        apartment.SelectedRoom.RemoveVert(_SelectedVertIndex);
                         _SelectedVertIndex = -1;
                     }
                     else
@@ -105,8 +105,6 @@ namespace Foxsys.ApartmentEditor
                     break;
                 case SelectionType.Vert:
                     _SelectedVertIndex = apartment.SelectedRoom.GetContourVertIndex(position);
-                    ApartmentConfig.MakeBackup();
-                    ApartmentConfig.Current.IsDrawPositions = true;
                     break;
             }
             if (apartment.SelectedRoom)
@@ -136,11 +134,11 @@ namespace Foxsys.ApartmentEditor
             if (selectedRoom == null
                 || Selection.activeObject != selectedRoom)
                 return;
-
+            var color = SkinManager.Instance.CurrentSkin.SelectionColor;
             switch (_CurrentSelection)
             {
                 case SelectionType.Vert:
-                    Handles.color = Color.yellow;
+                    Handles.color = color;
                     Handles.DrawWireDisc(
                         _ParentWindow.Grid.GridToGUI(selectedRoom.GetVertPosition(_SelectedVertIndex)),
                         Vector3.back, Room.SnapingRad / _ParentWindow.Grid.Zoom
@@ -150,7 +148,7 @@ namespace Foxsys.ApartmentEditor
                     var walls = selectedRoom.Walls;
                     foreach (Wall wall in walls)
                     {
-                        wall.Draw(_ParentWindow.Grid, Color.yellow);
+                        wall.Draw(_ParentWindow.Grid, color);
                     }
                     break;
             }
@@ -197,17 +195,21 @@ namespace Foxsys.ApartmentEditor
 
                     SetupSelection(mousePos);
                     if (apartment.SelectedRoom)
+                    {
+                        _IsShowPositionsValue = apartment.SelectedRoom.IsShowPositions;
                         Undo.RegisterCompleteObjectUndo(apartment.SelectedRoom, "Room position changed");
+                        apartment.SelectedRoom.IsShowPositions = true;
+                    }
                     _LastMousePosition = mousePosition;
                     break;
                 case EventType.MouseDrag:
                     MoveSelected(mousePosition);
                     break;
                 case EventType.MouseUp:
-                    ApartmentConfig.ApplyBackup();
                     if (apartment.SelectedRoom != null)
                     {
                         apartment.SelectedRoom.RoundContourPoints();
+                        apartment.SelectedRoom.IsShowPositions = _IsShowPositionsValue;
                     }
                     _LastMousePosition = null;
                     break;

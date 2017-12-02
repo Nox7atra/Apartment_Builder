@@ -14,9 +14,12 @@ namespace Foxsys.ApartmentEditor
         public override void SetActive(bool enable)
         {
             base.SetActive(enable);
-            _CurrentRoom = enable ? Room.Create(ApartmentsManager.Instance.CurrentApartment) : null;
+            var apartment = ApartmentsManager.Instance.CurrentApartment;
+            _CurrentRoom = enable ? Room.Create(apartment) : null;
+            
             if (enable)
             {
+                _CurrentRoom.WallThickness = apartment.Rooms[apartment.Rooms.Count - 1].WallThickness;
                 Undo.RegisterCreatedObjectUndo(_CurrentRoom, "Room Created");
             }
         }
