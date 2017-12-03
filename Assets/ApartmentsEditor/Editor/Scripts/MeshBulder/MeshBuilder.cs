@@ -55,7 +55,9 @@ namespace Foxsys.ApartmentEditor
 
             if(!inside)
                 wallContour.Reverse();
-            
+
+            var materials = apartment.RoomsMaterialses[(int) room.CurrentType];
+
             for (int j = 0, count = wallContour.Count; j < count; j++)
             {
                 Vector2 begin = wallContour[j], end = wallContour[(j + 1) % count];
@@ -66,7 +68,7 @@ namespace Foxsys.ApartmentEditor
                     triangulator,
                     maxDimension,
                     height,
-                    apartment.WallMaterial,
+                    materials.WallMat,
                     j);
 
                 SaveMesh(wallGO.GetComponent<MeshFilter>().sharedMesh, room.name, inside);
@@ -75,9 +77,9 @@ namespace Foxsys.ApartmentEditor
 
             Vector3 centroid = room.Centroid.XYtoXYZ();
 
-            GameObject floorGO = GenerateFloorRoof(wallContour, triangulator, centroid, maxDimension, apartment.FloorMaterial);
+            GameObject floorGO = GenerateFloorRoof(wallContour, triangulator, centroid, maxDimension, materials.FloorMat);
             SaveMesh(floorGO.GetComponent<MeshFilter>().sharedMesh, room.name, inside);
-            GameObject roofGO = PrepareRoof(floorGO, height);
+            GameObject roofGO = PrepareRoof(floorGO, height, materials.RoofMat);
             SaveMesh(roofGO.GetComponent<MeshFilter>().sharedMesh, room.name, inside);
             if (!inside)
                 GameObject.DestroyImmediate(floorGO);
@@ -87,12 +89,13 @@ namespace Foxsys.ApartmentEditor
 
             return roomGO;
         }
-        private static GameObject PrepareRoof(GameObject floor, float apartmentHeight)
+        private static GameObject PrepareRoof(GameObject floor, float apartmentHeight, Material roofMat)
         {
             GameObject roofGO = GameObject.Instantiate(floor);
             roofGO.name = "roof";
             roofGO.transform.position += Vector3.up * apartmentHeight / MeasurmentK;
             var mf = roofGO.GetComponent<MeshFilter>();
+            var mr = roofGO.GetComponent<MeshRenderer>();
             var mesh = Object.Instantiate(mf.sharedMesh);
      
 
@@ -107,6 +110,7 @@ namespace Foxsys.ApartmentEditor
             mesh.RecalculateNormals();
             mesh.name = roofGO.name;
             mf.sharedMesh = mesh;
+            mr.sharedMaterial = roofMat;
             return roofGO;
         }
         private static GameObject GenerateFloorRoof(

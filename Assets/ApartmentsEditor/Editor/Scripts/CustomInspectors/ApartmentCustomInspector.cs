@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEditor;
 
@@ -12,25 +14,22 @@ namespace Foxsys.ApartmentEditor
 
         private Rect _Dimensions;
 
+        private bool[] _MaterialFoldouts;
         private void OnEnable()
         {
             _ThisApartment = (Apartment) target;
             _Dimensions = _ThisApartment.Dimensions;
+            _MaterialFoldouts = new bool[_ThisApartment.RoomsMaterialses.Count];
         }
 
         public override void OnInspectorGUI()
         {
-            var oldName = _ThisApartment.name;
-            _ThisApartment.name = EditorGUILayout.TextField(_ThisApartment.name);
-            OpenBlueprint();
+            TopButtons();
             _ThisApartment.Height = EditorGUILayout.FloatField("Height (cm)", _ThisApartment.Height);
 
             var dimensions = EditorGUILayout.Vector2Field("Dimensions (cm)", _Dimensions.size).RoundCoordsToInt();
-            _ThisApartment.FloorMaterial =
-                (Material)EditorGUILayout.ObjectField("Floor Material", _ThisApartment.FloorMaterial, typeof(Material), false);
-            _ThisApartment.WallMaterial =
-                (Material) EditorGUILayout.ObjectField("Wall Material", _ThisApartment.WallMaterial, typeof(Material), false);
-
+  
+            DrawMaterialProperties();
             _ThisApartment.IsGenerateOutside = EditorGUILayout.Toggle("Generate outside (Directional Light)", _ThisApartment.IsGenerateOutside);
             GenerateButton();
 
@@ -40,15 +39,48 @@ namespace Foxsys.ApartmentEditor
                 _Dimensions = dimensionsRect;
 
             _ThisApartment.Dimensions = _Dimensions;
-
-            if (oldName != _ThisApartment.name)
-            {
-                string assetPath = AssetDatabase.GetAssetPath(_ThisApartment.GetInstanceID());
-                AssetDatabase.RenameAsset(assetPath, _ThisApartment.name);
-                AssetDatabase.SaveAssets();
-            }
         }
 
+        private void DrawMaterialProperties()
+        {
+            GUILayout.Label("Materials");
+            var materials = _ThisApartment.RoomsMaterialses;
+            for (int i = 0, count = materials.Count; i < count; i++)
+            {
+                _MaterialFoldouts[i] = EditorGUILayout.Foldout(_MaterialFoldouts[i], ((Room.Type) i).ToString());
+                if (_MaterialFoldouts[i])
+                {
+                    materials[i].FloorMat =
+                        (Material) EditorGUILayout.ObjectField("Floor Material", materials[i].FloorMat,
+                            typeof(Material), false);
+                    materials[i].RoofMat =
+                        (Material) EditorGUILayout.ObjectField("Roof Material", materials[i].RoofMat, typeof(Material),
+                            false);
+                    materials[i].WallMat =
+                        (Material) EditorGUILayout.ObjectField("Wall Material", materials[i].WallMat, typeof(Material),
+                            false);
+                }
+
+            }
+        }
+        private void TopButtons()
+        {
+            GUILayout.BeginHorizontal();
+            CreateNewBlueprint();
+            OpenBlueprint();
+            GUILayout.EndHorizontal();
+        }
+
+        private void CreateNewBlueprint()
+        {
+            if (GUILayout.Button(
+                "Create new"
+            ))
+            {
+                var manager = ApartmentsManager.Instance;
+                manager.SelectApartment(manager.CreateOrGetApartment("New Apartment" + GUID.Generate()));
+            }
+        }
         private void OpenBlueprint()
         {
             if (GUILayout.Button(
@@ -59,6 +91,7 @@ namespace Foxsys.ApartmentEditor
                 ApartmentEditorWindow.Create();
             }
         }
+
         private void GenerateButton()
         {
             if (GUILayout.Button(

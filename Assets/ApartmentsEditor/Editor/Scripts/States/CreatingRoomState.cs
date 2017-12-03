@@ -19,7 +19,8 @@ namespace Foxsys.ApartmentEditor
             
             if (enable)
             {
-                _CurrentRoom.WallThickness = apartment.Rooms[apartment.Rooms.Count - 1].WallThickness;
+                if(apartment.Rooms.Count > 0)
+                    _CurrentRoom.WallThickness = apartment.Rooms[apartment.Rooms.Count - 1].WallThickness;
                 Undo.RegisterCreatedObjectUndo(_CurrentRoom, "Room Created");
             }
         }

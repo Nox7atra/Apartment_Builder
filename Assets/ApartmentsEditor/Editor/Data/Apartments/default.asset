@@ -1,0 +1,86 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91af5c0efcc7cea4a9c5d710859ce37f, type: 3}
+  m_Name: default
+  m_EditorClassIdentifier: 
+  Height: 273
+  WallMaterial: {fileID: 0}
+  FloorMaterial: {fileID: 0}
+  IsGenerateOutside: 0
+  _Rooms:
+  - {fileID: 114727115749408910}
+  - {fileID: 114957445928758436}
+  _Dimensions:
+    serializedVersion: 2
+    x: -500
+    y: -500
+    width: 1000
+    height: 1000
+--- !u!114 &114727115749408910
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a52e267f180e5fb4b9966e3ef152b2c7, type: 3}
+  m_Name: Bathroom_0
+  m_EditorClassIdentifier: 
+  CurrentType: 1
+  WallThickness: 0
+  _ParentApartment: {fileID: 11400000}
+  _Walls:
+  - Begin: {x: -20, y: -119}
+    End: {x: 412, y: -337}
+    Objects: []
+  - Begin: {x: 412, y: -337}
+    End: {x: -202, y: -229}
+    Objects: []
+  - Begin: {x: -202, y: -229}
+    End: {x: -72, y: -124}
+    Objects: []
+  - Begin: {x: -72, y: -124}
+    End: {x: -20, y: -119}
+    Objects: []
+  IsShowSizes: 0
+  IsShowSquare: 0
+  IsShowPositions: 0
+--- !u!114 &114957445928758436
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a52e267f180e5fb4b9966e3ef152b2c7, type: 3}
+  m_Name: Kitchen_0
+  m_EditorClassIdentifier: 
+  CurrentType: 0
+  WallThickness: 0
+  _ParentApartment: {fileID: 11400000}
+  _Walls:
+  - Begin: {x: -259, y: -500}
+    End: {x: -500, y: -500}
+    Objects: []
+  - Begin: {x: -500, y: -500}
+    End: {x: -498, y: -84}
+    Objects: []
+  - Begin: {x: -498, y: -84}
+    End: {x: -233, y: -86}
+    Objects: []
+  - Begin: {x: -233, y: -86}
+    End: {x: -259, y: -500}
+    Objects: []
+  IsShowSizes: 0
+  IsShowSquare: 0
+  IsShowPositions: 1

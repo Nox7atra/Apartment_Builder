@@ -1,12 +1,30 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
+using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace Foxsys.ApartmentEditor
 {
     public class ApartmentsManager
     {
+        #region factory
+
+        public Apartment CreateOrGetApartment(string name)
+        {
+            var fullpath = Path.Combine(PathsConfig.Instance.PathToApartments, name + ".asset");
+            Apartment apartment = AssetDatabase.LoadAssetAtPath<Apartment>(fullpath);
+
+            if (apartment == null)
+            {
+                apartment = Apartment.CreateInstance<Apartment>();
+                apartment.Dimensions = new Rect(-Vector2.one * 500, Vector2.one * 1000);
+                apartment.Height = 273;
+                ProjectWindowUtil.CreateAsset(apartment, fullpath);
+            }
+            return apartment;
+        }
+        #endregion
         private Apartment _CurrentApartment;
 
         private List<Apartment> _Apartments;
@@ -18,7 +36,7 @@ namespace Foxsys.ApartmentEditor
                 if (_CurrentApartment == null)
                 {
                     Refresh();
-                    _CurrentApartment = _Apartments.Count > 0 ? _Apartments[0] : Apartment.CreateOrGet("test");
+                    _CurrentApartment = _Apartments.Count > 0 ? _Apartments[0] : CreateOrGetApartment("default");
                 }
                 return _CurrentApartment;
             }
@@ -33,7 +51,7 @@ namespace Foxsys.ApartmentEditor
         {
             _CurrentApartment = apartment;
         }
-        
+
         private ApartmentsManager()
         {
             Refresh();

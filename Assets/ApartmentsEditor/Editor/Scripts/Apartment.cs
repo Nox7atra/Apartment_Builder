@@ -8,29 +8,11 @@ namespace Foxsys.ApartmentEditor
 {
     public class Apartment : ScriptableObject
     {
-        #region factory
-        public static Apartment CreateOrGet(string name)
-        {
-            var fullpath = Path.Combine(PathsConfig.Instance.PathToApartments, name + ".asset");
-            Apartment apartment = AssetDatabase.LoadAssetAtPath<Apartment>(fullpath);
-
-            if (apartment == null)
-            {
-                apartment = CreateInstance<Apartment>();
-                apartment._Rooms = new List<Room>();
-                apartment.Dimensions = new Rect(-Vector2.one * 500, Vector2.one * 1000);
-                AssetDatabase.CreateAsset(apartment, fullpath);
-            }
-            return apartment;
-        }
-        #endregion
-
         #region fields
 
         public float Height;
 
-        public Material WallMaterial;
-        public Material FloorMaterial;
+        public List<RoomMaterials> RoomsMaterialses;
 
         public bool IsGenerateOutside;
 
@@ -183,6 +165,30 @@ namespace Foxsys.ApartmentEditor
                     return false;
             }
             return true;
+        }
+
+        public string GetRoomName(Room.Type type)
+        {
+            var typeName = type.ToString();
+            var room = _Rooms.FindLast(x => x.name.Split('_')[0] == typeName);
+            var num = room == null ? 0 : (int.Parse(room.name.Split('_')[1]) + 1);
+            return typeName + "_" + num;
+        }
+        private Apartment()
+        {
+            _Rooms = new List<Room>();
+            RoomsMaterialses = new List<RoomMaterials>(4);
+            for (int i = 0; i < 4; i++)
+            {
+                RoomsMaterialses.Add(new RoomMaterials());
+            }
+        }
+
+        public class RoomMaterials
+        {
+            public Material FloorMat;
+            public Material RoofMat;
+            public Material WallMat;
         }
     }
 }

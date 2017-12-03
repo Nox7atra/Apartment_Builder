@@ -15,21 +15,25 @@ namespace Foxsys.ApartmentEditor
         }
         public override void OnInspectorGUI()
         {
-            var oldName = _ThisRoom.name;
-            _ThisRoom.name = EditorGUILayout.TextField(_ThisRoom.name);
-            _ThisRoom.CurrentType = (Room.Type) EditorGUILayout.EnumPopup("Room type", _ThisRoom.CurrentType);
+            DrawRoomTypeField();
             _ThisRoom.WallThickness = EditorGUILayout.FloatField("WallThikness (cm)", _ThisRoom.WallThickness);
             DrawContourPositions();
             _ThisRoom.IsShowPositions = EditorGUILayout.ToggleLeft("Show Positions", _ThisRoom.IsShowPositions);
             _ThisRoom.IsShowSizes = EditorGUILayout.ToggleLeft("Show Sizes", _ThisRoom.IsShowSizes);
             _ThisRoom.IsShowSquare = EditorGUILayout.ToggleLeft("Show Square", _ThisRoom.IsShowSquare);
-            if (oldName != _ThisRoom.name)
+        }
+        private void DrawRoomTypeField()
+        {
+            var prevType = _ThisRoom.CurrentType;
+            _ThisRoom.CurrentType = (Room.Type)EditorGUILayout.EnumPopup("Room type", _ThisRoom.CurrentType);
+
+            if (prevType != _ThisRoom.CurrentType)
             {
+                _ThisRoom.name = _ThisRoom.ParentApartment.GetRoomName(_ThisRoom.CurrentType);
                 AssetDatabase.SaveAssets();
             }
         }
-
-        public void DrawContourPositions()
+        private void DrawContourPositions()
         {
             var dimension = _ThisRoom.ParentApartment.Dimensions;
             for (int i = 0; i < _ThisRoom.Walls.Count; i++)

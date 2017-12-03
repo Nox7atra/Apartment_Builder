@@ -16,7 +16,7 @@ namespace Foxsys.ApartmentEditor
         public static Room Create(Apartment parent)
         {
             Room room = CreateInstance<Room>();
-            room.name = "Room_" + GUID.Generate();
+            room.name = parent.GetRoomName(room.CurrentType);
             AssetDatabase.AddObjectToAsset(room, parent);
             room._ParentApartment = parent;
             EditorUtility.SetDirty(parent);
@@ -297,10 +297,10 @@ namespace Foxsys.ApartmentEditor
         public const float SnapingRad = 6f;
         public enum Type
         {
-            Kitchen,
-            Bathroom,
-            Toilet,
-            Living
+            Kitchen = 0,
+            Bathroom = 1,
+            Toilet = 2,
+            Living = 3
         }
     }
 }
