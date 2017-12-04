@@ -186,7 +186,7 @@ namespace Foxsys.ApartmentEditor
             }
             return result;
         }
-        public static Vector2[] CreatePlaneUVs(Mesh mesh, Vector2 maxDimensions)
+        public static Vector2[] CreatePlaneUVs(Mesh mesh)
         {
             try
             {
@@ -196,7 +196,7 @@ namespace Foxsys.ApartmentEditor
                 Vector3 maxPoint = GetPointWithMaxCords(verts);
                 for (int i = 0; i < uvs.Length; i++)
                 {
-                    uvs[i] = GetPlaneUVPoint(minPoint, maxPoint, verts[i], maxDimensions);
+                    uvs[i] = GetPlaneUVPoint(minPoint, maxPoint, verts[i], MAX_DIMENSIONS);
                 }
 
                 return uvs;
@@ -276,6 +276,6 @@ namespace Foxsys.ApartmentEditor
             }
             return maxPoint;
         }
-     
+        private static readonly Vector2 MAX_DIMENSIONS = new Vector2(100, 100);
     }
 }

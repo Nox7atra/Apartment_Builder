@@ -30,13 +30,12 @@ namespace Foxsys.ApartmentEditor
             var dimensions = EditorGUILayout.Vector2Field("Dimensions (cm)", _Dimensions.size).RoundCoordsToInt();
   
             DrawMaterialProperties();
-            _ThisApartment.IsGenerateOutside = EditorGUILayout.Toggle("Generate outside (Directional Light)", _ThisApartment.IsGenerateOutside);
+            //_ThisApartment.IsGenerateOutside = EditorGUILayout.Toggle("Generate outside (Directional Light)", _ThisApartment.IsGenerateOutside);
             GenerateButton();
 
             var dimensionsRect = new Rect(-dimensions.x / 2, -dimensions.y / 2, dimensions.x, dimensions.y);
 
-            if(_ThisApartment.IsApartmentInRect(dimensionsRect))
-                _Dimensions = dimensionsRect;
+            _Dimensions = dimensionsRect;
 
             _ThisApartment.Dimensions = _Dimensions;
         }

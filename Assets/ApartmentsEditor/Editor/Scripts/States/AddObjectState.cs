@@ -37,15 +37,7 @@ namespace Foxsys.ApartmentEditor
         #region drawing
         public override void Draw()
         {
-            if (!_IsActive)
-                return;
-            var apartment = ApartmentsManager.Instance.CurrentApartment;
-            var objgridPos = apartment.GetPointProjectionOnNearestContour(_ParentWindow.Grid.GUIToGrid(_CurrentMousePosition));
-            var walls = apartment.GetWallsWithPoint(objgridPos);
-            foreach (var wall in walls)
-            {
-                wall.DrawWallObject(_ParentWindow.Grid, ObjectsManager.Instance.SelectedObject, wall.GetPositionWallObjectFromPoint(objgridPos));
-            }
+
         }
 
 

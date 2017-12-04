@@ -23,8 +23,6 @@ namespace Foxsys.ApartmentEditor
 
         private Vector2[] _DimensionsPoints = new Vector2[4];
 
-        private Room _SelectedRoom;
-
         #endregion
 
         #region properties
@@ -62,22 +60,6 @@ namespace Foxsys.ApartmentEditor
             }
         }
 
-        public Room SelectedRoom
-        {
-            get { return _SelectedRoom; }
-            set
-            {
-                _SelectedRoom = value;
-                int index = _Rooms.FindIndex(x => x == _SelectedRoom);
-                if (index > 0)
-                {
-                    var room = _Rooms[index];
-                    _Rooms[index] = _Rooms[0];
-                    _Rooms[0] = room;
-                }
-            }
-        }
-
         #endregion
 
         public void Draw(Grid grid)
@@ -97,55 +79,40 @@ namespace Foxsys.ApartmentEditor
                     grid.GridToGUI(_DimensionsPoints[(i + 1) % _DimensionsPoints.Length]));
         }
 
-        public Vector2 GetPointProjectionOnNearestContour(Vector2 point)
-        {
-            Vector2 result = point; 
-            float minDistance = float.MaxValue;
-            foreach (var room in Rooms)
-            {
-                if(room == SelectedRoom) continue;
-
-                foreach (var wall in room.Walls)
-                {
-                    var distance = MathUtils.DistanceFromPointToLine(point, wall.Begin, wall.End);
-                    if (distance < minDistance)
-                    {
-                        var projection = MathUtils.PointProjectionToOnLine(point, wall.Begin, wall.End);
-                        if (wall.IsPointOnWall(point))
-                        {
-                            result = projection;
-                            minDistance = distance;
-                        }
-                    }
-                }
-            }
-            for (int i = 0; i < _DimensionsPoints.Length; i++)
-            {
-                Vector2 begin = _DimensionsPoints[i], end = _DimensionsPoints[(i + 1) % _DimensionsPoints.Length];
-                var distance = MathUtils.DistanceFromPointToLine(point, begin, end);
-                if (distance < minDistance)
-                {
-                    result = MathUtils.PointProjectionToOnLine(point, begin, end);
-                    minDistance = distance;
-                }
-            }
-            return result;
-        }
-
         public List<Wall> GetWallsWithPoint(Vector2 point)
         {
             List<Wall> result = new List<Wall>();
             foreach (var room in Rooms)
             {
-                foreach (Wall wall in room.Walls)
+                var contour = room.Contour;
+                for (int i = 0, count = contour.Count; i < count; i++)
                 {
-                    if(wall.IsPointOnWall(point))
+                    RoomVert vert1 = contour[i],
+                        vert2 = contour[(i + 1) % count];
+                    var wall = new Wall(vert1, vert2);
+                    if (wall.IsPointOnWall(point))
                         result.Add(wall);
                 }
             }
             return result;
         }
-        public Room PointInsideRooms(Vector2 point, Room excludeRoom = null)
+
+        public RoomVert GetVertInPos(Vector2 position, out Room inRoom)
+        {
+            foreach (var room in _Rooms)
+            {
+                foreach (var roomVert in room.Contour)
+                {
+                    if (!(Vector2.Distance(roomVert.Position, position) < Room.SnapingRad)) continue;
+
+                    inRoom = room;
+                    return roomVert;
+                }
+            }
+            inRoom = null;
+            return null;
+        }
+        public Room GetRoomWithInsidePoint(Vector2 point, Room excludeRoom = null)
         {
             foreach (var room in _Rooms)
             {
@@ -184,6 +151,7 @@ namespace Foxsys.ApartmentEditor
             }
         }
 
+        [Serializable]
         public class RoomMaterials
         {
             public Material FloorMat;

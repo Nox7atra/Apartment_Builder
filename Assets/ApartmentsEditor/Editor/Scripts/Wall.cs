@@ -5,19 +5,26 @@ using UnityEngine;
 
 namespace Foxsys.ApartmentEditor
 {
-    [Serializable]
-    public class Wall
+    public struct Wall
     {
         #region fields
 
-        [SerializeField] public Vector2 Begin;
-        [SerializeField] public Vector2 End;
-        [SerializeField] public List<ObjectOnWall> Objects;
+        private RoomVert _Begin;
+        private RoomVert _End;
 
         #endregion
 
         #region properties
 
+        public Vector2 Begin
+        {
+            get { return _Begin.Position; }
+        }
+
+        public Vector2 End
+        {
+            get { return _End.Position; }
+        }
         public Vector2 Center
         {
             get { return (End + Begin) / 2; }
@@ -45,21 +52,10 @@ namespace Foxsys.ApartmentEditor
 
         #endregion
 
+        
         #region service methods
 
-        public void Reverse()
-        {
-            var tmp = Begin;
-            Begin = End;
-            End = tmp;
-        }
-
-        public void Move(Vector2 dv)
-        {
-            Begin += dv;
-            End += dv;
-        }
-
+   
         public bool IsPointOnWall(Vector2 point)
         {
             return MathUtils.IsPointInsideLineSegment(point, Begin, End);
@@ -92,22 +88,48 @@ namespace Foxsys.ApartmentEditor
 
         #endregion
 
-
-        public Wall()
+        public Wall(RoomVert begin, RoomVert end)
         {
-            Objects = new List<ObjectOnWall>();
+            _Begin = begin;
+            _End = end;
+        }
+        public static Wall? MergeWalls(Wall w1, Wall w2)
+        {
+            Wall? merged = null;
+            if (w1.Begin == w2.Begin)
+            {
+                merged = new Wall
+                {
+                    _Begin = w1._End,
+                    _End = w2._End
+                };
+            }
+            else if(w1.End == w2.End)
+            {
+                merged = new Wall
+                {
+                    _Begin = w1._Begin,
+                    _End = w2._Begin
+                };
+            }
+            else if (w1.Begin == w2.End)
+            {
+                merged = new Wall
+                {
+                    _Begin = w1._End,
+                    _End = w2._Begin
+                };
+            }
+            else if (w1.End == w2.Begin)
+            {
+                merged = new Wall
+                {
+                    _Begin = w1._Begin,
+                    _End = w2._End
+                };
+            }
+            return merged;
         }
 
-        public Wall(Vector2 point) : this()
-        {
-            Begin = point;
-            End = point;
-        }
-        [Serializable]
-        public struct ObjectOnWall
-        {
-            [SerializeField] public float Position;
-            [SerializeField] public WallObject Object;
-        }
     }
 }

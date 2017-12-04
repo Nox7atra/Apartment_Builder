@@ -30,19 +30,18 @@ namespace Foxsys.ApartmentEditor
             if (!_IsActive)
                 return;
             var mousePos = _CurrentMousePosition;
-            if (_CurrentRoom != null && _CurrentRoom.Walls.Count > 0)
+            if (_CurrentRoom != null && _CurrentRoom.Contour.Count > 0)
             {
                 Handles.color = Color.gray;
-                var walls = _CurrentRoom.Walls;
+                var contour = _CurrentRoom.Contour;
                 Handles.DrawLine(
                     mousePos,
-                    _ParentWindow.Grid.GridToGUI(walls[walls.Count - 1].End)
-                );
+                    _ParentWindow.Grid.GridToGUI(contour[contour.Count - 1].Position));
             }
 
             DrawMouseLabel(mousePos);
 
-            _CurrentRoom.Draw(_ParentWindow.Grid);
+            _CurrentRoom.Draw(_ParentWindow.Grid, false);
         }
         #endregion
 
@@ -59,12 +58,10 @@ namespace Foxsys.ApartmentEditor
                     break;
                 case EventType.MouseDown:
                     var position = _ParentWindow.Grid.GUIToGrid(mousePosition);
-                    if (Event.current.button == 0
-                        && _CurrentRoom.ParentApartment.Dimensions.Contains(position) 
-                        && _CurrentRoom.ParentApartment.PointInsideRooms(position) == null)
+                    if (Event.current.button == 0)
                     {
                         Undo.RegisterCompleteObjectUndo(_CurrentRoom, "Add Room point");
-                        if (!_CurrentRoom.Add(position))
+                        if (!_CurrentRoom.Add(_CurrentRoom.ParentApartment.Dimensions.Clamp(position)))
                         {
                             Undo.ClearAll();
                             _ParentWindow.CreateRoomStateEnd(_CurrentRoom);
