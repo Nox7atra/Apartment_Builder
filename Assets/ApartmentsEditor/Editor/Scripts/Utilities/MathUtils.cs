@@ -44,7 +44,7 @@ namespace Foxsys.ApartmentEditor
         }
         public static bool IsPointInsideLineSegment(Vector2 point, Vector2 linePoint1, Vector2 linePoint2)
         {
-            return Vector3.Distance(linePoint1, linePoint2) + float.Epsilon
+            return Vector3.Distance(linePoint1, linePoint2) + 0.001f
                 >= Vector3.Distance(point, linePoint1)
                 + Vector3.Distance(point, linePoint2);
         }
@@ -276,6 +276,7 @@ namespace Foxsys.ApartmentEditor
             }
             return maxPoint;
         }
+
         private static readonly Vector2 MAX_DIMENSIONS = new Vector2(100, 100);
     }
 }

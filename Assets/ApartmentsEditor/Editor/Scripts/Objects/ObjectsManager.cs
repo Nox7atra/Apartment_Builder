@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
@@ -12,9 +13,13 @@ namespace Foxsys.ApartmentEditor
 
         private Mode _CurrentMode;
         private WallObject _SelectedObject;
-        private string[] _Choices;
         #endregion
 
+        #region events
+
+        public event Action OnReset;
+
+        #endregion
         #region properties
 
         public Mode CurrentMode
@@ -22,32 +27,41 @@ namespace Foxsys.ApartmentEditor
             get { return _CurrentMode; }
         }
 
-        public string[] Choices
-        {
-            get { return _Choices; }
-        }
         public WallObject SelectedObject
         {
             get { return _SelectedObject; }
         }
+
         #endregion
 
         #region public methods
 
+        public void Reset()
+        {
+            _CurrentMode = Mode.None;
+            _SelectedObject = null;
+            if (OnReset != null)
+                OnReset();
+        }
         public void SelectMode(Mode mode)
         {
             _CurrentMode = mode;
 
-            if(_CurrentMode == null)
-                return;
-
-            _Choices = GetChoices();
         }
 
-        public void SelectObjectAtChoice(int chioceIndex)
+        public void SelectObject(WallObject wallObj)
         {
-            _SelectedObject = AssetDatabase.LoadAssetAtPath<WallObject>(_Choices[chioceIndex]);
+            _SelectedObject = wallObj;
         }
+
+        
+        #endregion
+
+
+        #region service methods
+
+
+
         #endregion
 
         #region singletone
@@ -76,23 +90,6 @@ namespace Foxsys.ApartmentEditor
 
         #endregion
 
-        #region service methods
-
-
-        private string[] GetChoices()
-        {
-            switch (_CurrentMode)
-            {
-                case Mode.Doors:
-                    return Directory.GetFiles(PathsConfig.Instance.PathToDoors, "*.asset");
-                case Mode.Windows:
-                    return Directory.GetFiles(PathsConfig.Instance.PathToWindows, "*.asset");
-            }
-            return null;
-        }
-
-        
-        #endregion
         private const string AssetName = "ObjectsManager.asset";
         public enum Mode
         {

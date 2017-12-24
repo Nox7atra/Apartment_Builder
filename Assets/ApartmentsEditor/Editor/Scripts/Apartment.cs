@@ -62,7 +62,7 @@ namespace Foxsys.ApartmentEditor
 
         #endregion
 
-        public void Draw(Grid grid)
+        public void Draw(ApartmentEditorGrid grid)
         {
             DrawDimensions(grid);
             foreach (Room room in _Rooms)
@@ -70,7 +70,7 @@ namespace Foxsys.ApartmentEditor
                 room.Draw(grid);
             }
         }
-        private void DrawDimensions(Grid grid)
+        private void DrawDimensions(ApartmentEditorGrid grid)
         {
             Handles.color = SkinManager.Instance.CurrentSkin.RoomDimensionsColor;
             for(int i = 0; i < _DimensionsPoints.Length; i++)
@@ -96,21 +96,28 @@ namespace Foxsys.ApartmentEditor
             }
             return result;
         }
-
-        public RoomVert GetVertInPos(Vector2 position, out Room inRoom)
+        
+        public ISelectable GetSelectableInPos(Vector2 position, out Room inRoom)
         {
+            ISelectable selectable = null;
+            inRoom = null;
             foreach (var room in _Rooms)
-            {
+            { 
+                foreach (var wallObject in room.WallObjects)
+                {
+                    if (!(Vector2.Distance(room.PositionOnContourToPoint(wallObject.Position), position) <
+                          Room.SnapingRad)) continue;
+                    inRoom = room;
+                    return wallObject;
+                }
                 foreach (var roomVert in room.Contour)
                 {
                     if (!(Vector2.Distance(roomVert.Position, position) < Room.SnapingRad)) continue;
-
                     inRoom = room;
-                    return roomVert;
+                    selectable = roomVert;
                 }
             }
-            inRoom = null;
-            return null;
+            return selectable;
         }
         public Room GetRoomWithInsidePoint(Vector2 point, Room excludeRoom = null)
         {
@@ -124,6 +131,27 @@ namespace Foxsys.ApartmentEditor
             return null;
         }
 
+        public Room GetNearestRoom(Vector2 point)
+        {
+            Room nearestRoom = null;
+            var minDistance = float.MaxValue;
+            for (int i = 0, count = _Rooms.Count; i < count; i++)
+            {
+                var room = _Rooms[i];
+                var projection = room.GetNearestPointOnContour(point);
+
+                if (!projection.HasValue)
+                    continue;
+                
+                var distance = Vector2.Distance(point, projection.Value);
+                if (minDistance > distance)
+                {
+                    nearestRoom = room;
+                    minDistance = distance;
+                }
+            }
+            return nearestRoom;
+        }
         public bool IsApartmentInRect(Rect rect)
         {
             foreach (var room in _Rooms)

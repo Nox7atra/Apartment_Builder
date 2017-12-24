@@ -6,7 +6,7 @@ namespace Foxsys.ApartmentEditor
     {
         void MoveTo(Vector2 position);
         void Delete();
-        void DrawSelection(Grid grid, Color color);
+        void DrawSelection(ApartmentEditorGrid grid, Color color);
         void EndMoving();
     }
 }

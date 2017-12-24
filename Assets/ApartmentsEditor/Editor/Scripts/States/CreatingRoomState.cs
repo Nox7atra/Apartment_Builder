@@ -50,6 +50,7 @@ namespace Foxsys.ApartmentEditor
         {
             if (!_IsActive)
                 return;
+            base.OnKeyEvent(type, mousePosition, keyCode);
             switch (type)
             {
                 case EventType.MouseMove:
@@ -68,15 +69,7 @@ namespace Foxsys.ApartmentEditor
                         }
                     }
                     break;
-                case EventType.KeyDown:
-                    if (keyCode == KeyCode.Escape)
-                    {
-                        Object.DestroyImmediate(_CurrentRoom, true);
-                        AssetDatabase.SaveAssets();
-                        _ParentWindow.ActivateState(ApartmentEditorWindow.EditorWindowState.Normal);
-                    }
-                    
-                    break;
+              
             }
         }
         #endregion
@@ -86,5 +79,12 @@ namespace Foxsys.ApartmentEditor
         {
         }
         #endregion
+
+        protected override void Reset()
+        {
+            Object.DestroyImmediate(_CurrentRoom, true);
+            AssetDatabase.SaveAssets();
+            _ParentWindow.ActivateState(ApartmentEditorWindow.EditorWindowState.Normal);
+        }
     }
 }

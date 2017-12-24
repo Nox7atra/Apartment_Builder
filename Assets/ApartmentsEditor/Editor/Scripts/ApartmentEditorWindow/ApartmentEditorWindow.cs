@@ -22,12 +22,11 @@ namespace Foxsys.ApartmentEditor
         
         #region fields
 
-        public Grid Grid;
+        public ApartmentEditorGrid Grid;
 
         private Toolbar _Toolbar;
         private Dictionary<EditorWindowState, StateApartmentBuilder> _States;
         private Vector3? _LastMousePosition;
-
         #endregion
 
         #region object to add state
@@ -128,7 +127,7 @@ namespace Foxsys.ApartmentEditor
         }
         private void OnEnable()
         {
-            Grid = new Grid(this);
+            Grid = new ApartmentEditorGrid(this);
             _Toolbar = new Toolbar(this);
 
             _States = new Dictionary<EditorWindowState, StateApartmentBuilder>

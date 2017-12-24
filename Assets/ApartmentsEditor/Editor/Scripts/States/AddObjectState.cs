@@ -37,7 +37,9 @@ namespace Foxsys.ApartmentEditor
         #region drawing
         public override void Draw()
         {
-
+            var manager = ObjectsManager.Instance;
+            if(manager.SelectedObject != null)
+                manager.SelectedObject.Draw(_ParentWindow.Grid, _CurrentMousePosition);
         }
 
 
@@ -45,25 +47,22 @@ namespace Foxsys.ApartmentEditor
        
         #region key events
 
-        protected override void OnKeyEvent(EventType type, Vector2 mousePosition, KeyCode code)
+        protected override void OnKeyEvent(EventType type, Vector2 mousePosition, KeyCode keyCode)
         {
             if (!_IsActive)
                 return;
+            base.OnKeyEvent(type, mousePosition, keyCode);
             switch (type)
             {
+                case EventType.MouseDown:
+                    if (Event.current.button == 0)
+                    {
+                        ObjectsManager.Instance.SelectedObject.TryAddObject(_ParentWindow.Grid, _CurrentMousePosition);
+                    }
+                    break;
                 case EventType.MouseMove:
                     _CurrentMousePosition = mousePosition;
                     _ParentWindow.Repaint();
-                    break;
-
-                case EventType.KeyDown:
-                    if (code == KeyCode.Escape)
-                    {
-                        AssetDatabase.SaveAssets();
-                        _ParentWindow.ActivateState(ApartmentEditorWindow.EditorWindowState.Normal);
-                        Selection.activeObject = ApartmentsManager.Instance.CurrentApartment;
-                    }
-
                     break;
             }
         }
@@ -75,6 +74,13 @@ namespace Foxsys.ApartmentEditor
         {
         }
 #endregion
-        
+
+        protected override void Reset()
+        {
+            ObjectsManager.Instance.Reset();
+            ActiveEditorTracker.sharedTracker.isLocked = false;
+            AssetDatabase.SaveAssets();
+            _ParentWindow.ActivateState(ApartmentEditorWindow.EditorWindowState.Normal);
+        }
     }
 }

@@ -68,7 +68,7 @@ namespace Foxsys.ApartmentEditor
         {
             if (!_IsActive)
                 return;
-
+            base.OnKeyEvent(type, mousePosition, keyCode);
             if (Event.current.button == 0)
             {
                 OnLeftMouse(type, mousePosition);
@@ -84,6 +84,11 @@ namespace Foxsys.ApartmentEditor
             }
             _ParentWindow.Repaint();
         }
+
+        protected override void Reset()
+        {
+        }
+
         private void OnLeftMouse(EventType type, Vector2 mousePosition)
         {
             var apartment = ApartmentsManager.Instance.CurrentApartment;
@@ -93,20 +98,19 @@ namespace Foxsys.ApartmentEditor
                 case EventType.MouseDown:
                     _SelectedObject = null;
                     Room selectedRoom;
-                    var vert = apartment.GetVertInPos(mousePos, out selectedRoom);
-
+                    var selectable = apartment.GetSelectableInPos(mousePos, out selectedRoom);
+                    
                     selectedRoom = selectedRoom == null
                         ?  apartment.Rooms
                             .FirstOrDefault(x => x.IsPointInside(mousePos))
                         : selectedRoom;
                     if (selectedRoom != null)
                     {
-
                         Selection.activeObject = selectedRoom;
                         Undo.RegisterCompleteObjectUndo(selectedRoom, "Room position changed");
                         selectedRoom.IsShowPositions = true;
                        
-                        _SelectedObject = (vert != null ? (ISelectable) vert : selectedRoom );
+                        _SelectedObject = selectable ?? selectedRoom;
                     }
                     else
                     {

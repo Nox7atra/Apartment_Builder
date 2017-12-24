@@ -70,13 +70,13 @@ namespace Foxsys.ApartmentEditor
 
         #region drawing
 
-        public void Draw(Grid grid, Color color)
+        public void Draw(ApartmentEditorGrid grid, Color color)
         {
             Handles.color = color;
             Handles.DrawLine(grid.GridToGUI(Begin), grid.GridToGUI(End));
         }
 
-        public void DrawWallObject(Grid grid, WallObject wallObj, float wallObjPosition)
+        public void DrawWallObject(ApartmentEditorGrid grid, WallObject wallObj, float wallObjPosition)
         {
             Handles.color = Color.magenta;
             Vector2 begin = grid.GridToGUI(Begin), end = grid.GridToGUI(End);

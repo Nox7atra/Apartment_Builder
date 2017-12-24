@@ -19,6 +19,7 @@ namespace Foxsys.ApartmentEditor
             room.name = parent.GetRoomName(room.CurrentType);
             AssetDatabase.AddObjectToAsset(room, parent);
             room._ParentApartment = parent;
+            room.WallObjects = new List<CountourObject>();
             EditorUtility.SetDirty(parent);
             room._Contour = new List<RoomVert>();
             AssetDatabase.SaveAssets();
@@ -42,6 +43,7 @@ namespace Foxsys.ApartmentEditor
         public bool IsShowSizes;
         public bool IsShowSquare;
         public bool IsShowPositions;
+        public List<CountourObject> WallObjects;
         #endregion
 
         #region properties
@@ -98,6 +100,18 @@ namespace Foxsys.ApartmentEditor
             }
         }
 
+        public float ContourLength
+        {
+            get
+            {
+                float length = 0;
+                for (int i = 0, count = _Contour.Count; i < count; i++)
+                {
+                    length += Vector2.Distance(_Contour[i].Position, _Contour[(i + 1) % count].Position);
+                }
+                return length;
+            }
+        }
         #endregion
 
         #region service methods
@@ -167,48 +181,44 @@ namespace Foxsys.ApartmentEditor
             return contour;
         }
 
-        public Vector2 GetNearestPointOnContour(Vector2 point)
+        public Vector2? GetNearestPointOnContour(Vector2 point, out Vector2 tangent)
         {
+            var result = GetNearestPointOnContour(point);
+            tangent = new Vector2();
+            for (int i = 0, count = _Contour.Count; i < count; i++)
+            {
+                RoomVert v1 = _Contour[i],
+                    v2 = _Contour[(i + 1) % count];
+                if (MathUtils.IsPointInsideLineSegment(result.Value, v1.Position, v2.Position))
+                {
+                    var wall = new Wall(v1, v2);
+                    tangent = wall.Tangent;
+                }
+            }
+            return result;
+        }
+
+        public Vector2? GetNearestPointOnContour(Vector2 point)
+        {
+
             Vector2 result = new Vector2();
             float minDistance = float.MaxValue;
             for (int i = 0, count = _Contour.Count; i < count; i++)
             {
                 Vector2 p1 = _Contour[i].Position,
                     p2 = _Contour[(i + 1) % count].Position;
+
+                var projection = MathUtils.PointProjectionToOnLine(point, p1, p2);
+
                 float distance = MathUtils.DistanceFromPointToLine(point, p1, p2);
+                
                 if (distance < minDistance)
                 {
                     minDistance = distance;
-                    result = MathUtils.PointProjectionToOnLine(point, p1, p2);
-                }
-            }
-            return result;
-        }
-
-        public Vector2 GetPointProjectionOnNearestContour(Vector2 point)
-        {
-            Vector2 result = point;
-            float minDistance = float.MaxValue;
-            foreach (var room in ParentApartment.Rooms)
-            {
-                if(room == this) continue;
-
-                var contour = room.Contour;
-                for (int i = 0, count = contour.Count; i < count; i++)
-                {
-                    RoomVert vert1 = contour[i],
-                        vert2 = contour[(i + 1) % count];
-                    var wall = new Wall(vert1, vert2);
-                    var distance = MathUtils.DistanceFromPointToLine(point, wall.Begin, wall.End);
-                    if (distance < minDistance)
-                    {
-                        var projection = MathUtils.PointProjectionToOnLine(point, wall.Begin, wall.End);
-                        if (wall.IsPointOnWall(point))
-                        {
-                            result = projection;
-                            minDistance = distance;
-                        }
-                    }
+                    
+                    result = MathUtils.IsPointInsideLineSegment(projection, p1, p2) ? (Vector2) projection :
+                        (Vector2.Distance(p1, projection) < Vector2.Distance(p2, projection) ? p1 : p2);
+      
                 }
             }
             return result;
@@ -244,12 +254,50 @@ namespace Foxsys.ApartmentEditor
             return Vector2.Distance(point, _Contour[0].Position) < SnapingRad;
         }
 
+        public float PointToPositionOnContour(Vector2 point)
+        {
+            float length = 0;
+            for (int i = 0, count = _Contour.Count; i < count; i++)
+            {
+                Vector2 p1 = _Contour[i].Position, p2 = _Contour[(i + 1) % count].Position;
+                if (MathUtils.IsPointInsideLineSegment(point, p1, p2))
+                {
+                    length += Vector2.Distance(p1, point);
+                    break;
+                }
+                else
+                {
+                    length += Vector2.Distance(p1, p2);
+                }
+            }
+
+            return length / ContourLength;
+        }
+
+        public Vector2 PositionOnContourToPoint(float position)
+        {
+            float length = 0;
+            for (int i = 0, count = _Contour.Count; i < count; i++)
+            {
+                Vector2 p1 = _Contour[i].Position, p2 = _Contour[(i + 1) % count].Position;
+                var distance = Vector2.Distance(p1, p2) / ContourLength;
+                if (length + distance < position)
+                {
+                    length += distance;
+                }
+                else
+                {
+                    return Vector2.Lerp(p1, p2, (position - length) * ContourLength / Vector2.Distance(p1, p2));
+                }
+            }
+            return _Contour[0].Position;
+        }
         #endregion
 
 
         #region drawing
 
-        public void Draw(Grid grid, bool isClosed = true)
+        public void Draw(ApartmentEditorGrid grid, bool isClosed = true)
         {
             var currentSkin = SkinManager.Instance.CurrentSkin;
             var labelStyle = currentSkin.TextStyle;
@@ -289,6 +337,13 @@ namespace Foxsys.ApartmentEditor
                     Handles.DrawLine(p1, p2);
                 }
             }
+            if (WallObjects.Count > 0)
+            {
+                for (int i = 0, count = WallObjects.Count; i < count; i++)
+                {
+                    WallObjects[i].Object.Draw(grid, grid.GridToGUI(PositionOnContourToPoint(WallObjects[i].Position)));
+                }
+            }
             if (IsShowSquare)
             {
                 Handles.Label(grid.GridToGUI(Centroid), Square.ToString(), labelStyle);
@@ -303,7 +358,7 @@ namespace Foxsys.ApartmentEditor
 
         }
 
-        public void DrawSelection(Grid grid, Color color)
+        public void DrawSelection(ApartmentEditorGrid grid, Color color)
         {
             Handles.color = color;
             for (int i = 0, count = _Contour.Count; i < count; i++)
@@ -323,7 +378,7 @@ namespace Foxsys.ApartmentEditor
 
         #endregion
 
-        public const float SnapingRad = 6f;
+        public const float SnapingRad = 20f;
         public enum Type
         {
             Kitchen = 0,
@@ -348,7 +403,7 @@ namespace Foxsys.ApartmentEditor
         {
             var room = _Parent.ParentApartment.GetRoomWithInsidePoint(position, _Parent);
             position = room != null
-                ? room.GetNearestPointOnContour(position)
+                ? room.GetNearestPointOnContour(position).Value
                 : position;
             _Position = _Parent.ParentApartment.Dimensions.Clamp(position);
         }
@@ -359,7 +414,7 @@ namespace Foxsys.ApartmentEditor
             _Parent = null;
         }
 
-        public void DrawSelection(Grid grid, Color color)
+        public void DrawSelection(ApartmentEditorGrid grid, Color color)
         {
             Handles.color = color;
             Handles.DrawWireDisc(grid.GridToGUI(_Position), Vector3.back, Room.SnapingRad / grid.Zoom);
@@ -382,9 +437,30 @@ namespace Foxsys.ApartmentEditor
     }
 
     [Serializable]
-    public struct CountourObject
+    public class CountourObject : ISelectable
     {
         public float Position;
+        public Room Parent;
         public WallObject Object;
+
+        public void Delete()
+        {
+            Parent.WallObjects.Remove(this);
+        }
+
+        public void DrawSelection(ApartmentEditorGrid grid, Color color)
+        {
+            Handles.color = color;
+            Handles.DrawWireDisc(grid.GridToGUI(Parent.PositionOnContourToPoint(Position)), Vector3.back, Room.SnapingRad / grid.Zoom);
+        }
+
+        public void EndMoving()
+        {
+        }
+
+        public void MoveTo(Vector2 position)
+        {
+            Position = Parent.PointToPositionOnContour(Parent.GetNearestPointOnContour(position).Value);
+        }
     }
 }

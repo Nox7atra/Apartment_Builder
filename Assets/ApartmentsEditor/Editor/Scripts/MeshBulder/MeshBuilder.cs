@@ -17,13 +17,20 @@ namespace Foxsys.ApartmentEditor
         {
             _ApartmentName = apartment.name;
             GameObject go = new GameObject(_ApartmentName);
-
+            ClearOld();
             var rooms = GenerateRooms(apartment, new EarCuttingTriangulator());
 
             rooms.transform.SetParent(go.transform);
+            AssetDatabase.Refresh();
             return go;
         }
 
+        private static void ClearOld()
+        {
+            var path = Path.Combine(PathsConfig.Instance.PathToModels, _ApartmentName);
+            if(Directory.Exists(path))
+                Directory.Delete(path, true);
+        }
         private static GameObject GenerateRooms(Apartment apartment, Triangulator triangulator)
         {
             GameObject go = new GameObject("Rooms");
