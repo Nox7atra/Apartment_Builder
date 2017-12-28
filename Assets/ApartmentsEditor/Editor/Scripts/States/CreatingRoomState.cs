@@ -34,9 +34,9 @@ namespace Foxsys.ApartmentEditor
             {
                 Handles.color = Color.gray;
                 var contour = _CurrentRoom.Contour;
-                Handles.DrawLine(
-                    mousePos,
-                    _ParentWindow.Grid.GridToGUI(contour[contour.Count - 1].Position));
+                WindowObjectDrawer.DrawLine(
+                    _ParentWindow.Grid.GUIToGrid(mousePos),
+                    contour[contour.Count - 1].Position);
             }
 
             DrawMouseLabel(mousePos);

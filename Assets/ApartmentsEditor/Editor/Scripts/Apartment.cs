@@ -16,10 +16,9 @@ namespace Foxsys.ApartmentEditor
 
         public bool IsGenerateOutside;
 
-        [SerializeField]
-        private List<Room> _Rooms;
-        [SerializeField]
-        private Rect _Dimensions;
+        [SerializeField] private List<Room> _Rooms;
+        [SerializeField] private Rect _Dimensions;
+        [SerializeField] private Texture _PlanImage;
 
         private Vector2[] _DimensionsPoints = new Vector2[4];
 
@@ -65,54 +64,73 @@ namespace Foxsys.ApartmentEditor
         public void Draw(ApartmentEditorGrid grid)
         {
             DrawDimensions(grid);
+            if(_PlanImage != null)
+                GUI.DrawTexture(Dimensions, _PlanImage, ScaleMode.ScaleToFit, true);
             foreach (Room room in _Rooms)
             {
                 room.Draw(grid);
+               
+            }
+            DrawWallObjects(grid);
+        }
+
+        private void DrawWallObjects(ApartmentEditorGrid grid)
+        {
+            foreach (Room room in _Rooms)
+            {
+                var wallObjects = room.WallObjects;
+                if (wallObjects.Count > 0)
+                {
+                    for (int i = 0, count = room.WallObjects.Count; i < count; i++)
+                    {
+                        wallObjects[i].Object.Draw(grid,
+                            grid.GridToGUI(wallObjects[i].GetVector2Position()));
+                        if (room.IsShowPositions)
+                        {
+                            var position = wallObjects[i].GetVector2Position();
+                            WindowObjectDrawer.DrawLabel(position, position.RoundCoordsToInt().ToString());
+                        }
+                    }
+                }
             }
         }
         private void DrawDimensions(ApartmentEditorGrid grid)
         {
             Handles.color = SkinManager.Instance.CurrentSkin.RoomDimensionsColor;
             for(int i = 0; i < _DimensionsPoints.Length; i++)
-                Handles.DrawLine(
-                    grid.GridToGUI((_DimensionsPoints[i])),
-                    grid.GridToGUI(_DimensionsPoints[(i + 1) % _DimensionsPoints.Length]));
+                WindowObjectDrawer.DrawLine(_DimensionsPoints[i],_DimensionsPoints[(i + 1) % _DimensionsPoints.Length]);
         }
 
-        public List<Wall> GetWallsWithPoint(Vector2 point)
+        public RoomVert GetVertInPos(Vector2 point, Room excludeRoom = null)
         {
-            List<Wall> result = new List<Wall>();
-            foreach (var room in Rooms)
+            RoomVert vert = null;
+            foreach (var room in _Rooms)
             {
-                var contour = room.Contour;
-                for (int i = 0, count = contour.Count; i < count; i++)
-                {
-                    RoomVert vert1 = contour[i],
-                        vert2 = contour[(i + 1) % count];
-                    var wall = new Wall(vert1, vert2);
-                    if (wall.IsPointOnWall(point))
-                        result.Add(wall);
-                }
+                if(room == excludeRoom)
+                    continue;
+
+                vert = room.GetVertInPos(point);
             }
-            return result;
+            return vert;
         }
-        
-        public ISelectable GetSelectableInPos(Vector2 position, out Room inRoom)
+        public ISelectable GetSelectableInPos(ApartmentEditorGrid grid, Vector2 position, out Room inRoom)
         {
             ISelectable selectable = null;
             inRoom = null;
+
+            var rad = SkinManager.Instance.CurrentSkin.CirclesRad;
             foreach (var room in _Rooms)
             { 
                 foreach (var wallObject in room.WallObjects)
                 {
-                    if (!(Vector2.Distance(room.PositionOnContourToPoint(wallObject.Position), position) <
-                          Room.SnapingRad)) continue;
+                    if (!(Vector2.Distance(wallObject.GetVector2Position(), position) <
+                          rad)) continue;
                     inRoom = room;
                     return wallObject;
                 }
                 foreach (var roomVert in room.Contour)
                 {
-                    if (!(Vector2.Distance(roomVert.Position, position) < Room.SnapingRad)) continue;
+                    if (!(Vector2.Distance(roomVert.Position, position) < rad)) continue;
                     inRoom = room;
                     selectable = roomVert;
                 }

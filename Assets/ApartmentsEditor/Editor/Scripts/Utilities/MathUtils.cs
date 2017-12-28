@@ -8,6 +8,15 @@ namespace Foxsys.ApartmentEditor
 {
     public static class MathUtils
     {
+        public static Vector2 CalculateTangent(Vector2 p1, Vector2 p2)
+        {
+           return new Vector2(p1.x - p2.x, p1.y - p2.y).normalized;
+
+        }
+        public static Vector2 CalculateNormal(Vector2 p1, Vector2 p2)
+        {
+            return new Vector2(p1.y - p2.y, p2.x - p1.x).normalized;
+        }
         public static bool IsPointInsideTriangle(Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p)
         {
             var A = 1 / 2f * (-p1.y * p2.x + p0.y * (-p1.x + p2.x) + p0.x * (p1.y - p2.y) + p1.x * p2.y);

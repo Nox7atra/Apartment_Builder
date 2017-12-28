@@ -18,6 +18,7 @@ namespace Foxsys.ApartmentEditor
 
         #endregion
 
+        public abstract List<Vector2> GetHole(Vector2 position, Vector2 wallBegin, Vector2 wallEnd);
         public void Draw(ApartmentEditorGrid grid, Vector2 position)
         {
             var apartment = ApartmentsManager.Instance.CurrentApartment;
@@ -28,9 +29,15 @@ namespace Foxsys.ApartmentEditor
                 Vector2 tangent;
                 var projection = room.GetNearestPointOnContour(gridpos, out tangent);
                 Handles.color = this is Door ? SkinManager.Instance.CurrentSkin.DoorColor : SkinManager.Instance.CurrentSkin.WindowColor;
-                Handles.DrawWireDisc(grid.GridToGUI(projection.Value), Vector3.back, Room.SnapingRad / grid.Zoom);
-                Handles.DrawLine(grid.GridToGUI(projection.Value - tangent * Width / 2), grid.GridToGUI(projection.Value + tangent * Width / 2));
+
+                WindowObjectDrawer.DrawCircle(projection.Value);
+                WindowObjectDrawer.DrawLine(projection.Value - tangent * Width / 2, projection.Value + tangent * Width / 2);
             }
+        }
+
+        public float CalculateOffset(Vector2 position, Vector2 wallBegin, Vector2 wallEnd, bool isFromBegin)
+        {
+            return Vector2.Distance(position, wallEnd) - Vector2.Distance(wallEnd, wallBegin) / 2 + (isFromBegin ? Width / 2 : -Width / 2);
         }
         public bool TryAddObject(ApartmentEditorGrid grid, Vector2 position)
         {

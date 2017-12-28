@@ -129,22 +129,23 @@ namespace Foxsys.ApartmentEditor
         }
         public void MoveTo(Vector2 position)
         {
-            var center = Centroid;
-            var oldPoses = new Vector2[_Contour.Count];
-            for(int i = 0, count = _Contour.Count; i < count; i++)
-            {
-                oldPoses[i] = _Contour[i].Position;
-                var newPos = _Contour[i].Position + position - center;
-                _Contour[i].MoveTo(newPos);
-            }
-                //if (!this.IsInsideRect(_ParentApartment.Dimensions))
-                //{
-                //    for (int i = 0; i < oldPoses.Length; i++)
-                //    {
-                //        _Contour[i].MoveTo(oldPoses[i]);
-                //    }
-                //}
-            
+            //var center = Centroid;
+            //for (int i = 0, count = _Contour.Count; i < count; i++)
+            //{
+            //    var newPos = _Contour[i].Position + position - center;
+            //    if (!_ParentApartment.Dimensions.Contains(newPos))
+            //        return;
+            //    foreach (Room room in _ParentApartment.Rooms)
+            //    {
+            //        if(room != this && room.IsPointInside(newPos))
+            //            return;
+            //    }
+            //}
+            //for (int i = 0, count = _Contour.Count; i < count; i++)
+            //{
+            //    var newPos = _Contour[i].Position + position - center;
+            //    _Contour[i].MoveTo(newPos);
+            //}    
         }
 
         public void RemoveVert(int index)
@@ -165,14 +166,15 @@ namespace Foxsys.ApartmentEditor
             List<Vector2> contour = new List<Vector2>();
             for (int i = 0, count = _Contour.Count; i < count; i++)
             {
-                RoomVert vert1 = _Contour[i],
-                    vert2 = _Contour[(i + 1) % count],
-                    vert3 = _Contour[(i + 2) % count];
-                Wall wall1 = new Wall(vert1, vert2), wall2 = new Wall(vert2, vert3);
-                Vector2 p1 = wall1.Begin - wall1.Normal * WallThickness,
-                    p2 = wall1.End - wall1.Normal * WallThickness,
-                    p3 = wall2.Begin - wall2.Normal * WallThickness,
-                    p4 = wall2.End - wall2.Normal * WallThickness;
+                Vector2 vert1 = _Contour[i].Position,
+                    vert2 = _Contour[(i + 1) % count].Position,
+                    vert3 = _Contour[(i + 2) % count].Position;
+                Vector2 normal1 = MathUtils.CalculateNormal(vert1, vert2),
+                    normal2 = MathUtils.CalculateNormal(vert2, vert3);
+                Vector2 p1 = vert1 - normal1 * WallThickness,
+                    p2 = vert2 - normal1 * WallThickness,
+                    p3 = vert2 - normal2 * WallThickness,
+                    p4 = vert3 - normal2 * WallThickness;
 
                 var intersection = MathUtils.LinesInterseciton(p1, p2, p3, p4);
                 if (intersection.HasValue)
@@ -191,8 +193,8 @@ namespace Foxsys.ApartmentEditor
                     v2 = _Contour[(i + 1) % count];
                 if (MathUtils.IsPointInsideLineSegment(result.Value, v1.Position, v2.Position))
                 {
-                    var wall = new Wall(v1, v2);
-                    tangent = wall.Tangent;
+
+                    tangent = MathUtils.CalculateTangent(v1.Position, v2.Position);
                 }
             }
             return result;
@@ -228,12 +230,16 @@ namespace Foxsys.ApartmentEditor
             if (MathUtils.IsContourClockwise(_Contour.Select(x => x.Position).ToList()))
             {
                 _Contour.Reverse();
+                foreach (var wallObject in WallObjects)
+                {
+                    wallObject.Position = 1 - wallObject.Position;
+                }
             }
         }
 
         public RoomVert GetVertInPos(Vector2 point)
         {
-            return _Contour.Find(x => Vector2.Distance(x.Position, point) < SnapingRad);
+            return _Contour.Find(x => Vector2.Distance(x.Position, point) < SkinManager.Instance.CurrentSkin.CirclesRad);
         }
         public bool IsVertInsideRect(int vertNum, Rect rect)
         {
@@ -251,7 +257,7 @@ namespace Foxsys.ApartmentEditor
 
         public bool IsLastPoint(Vector2 point)
         {
-            return Vector2.Distance(point, _Contour[0].Position) < SnapingRad;
+            return Vector2.Distance(point, _Contour[0].Position) < SkinManager.Instance.CurrentSkin.CirclesRad;
         }
 
         public float PointToPositionOnContour(Vector2 point)
@@ -300,7 +306,6 @@ namespace Foxsys.ApartmentEditor
         public void Draw(ApartmentEditorGrid grid, bool isClosed = true)
         {
             var currentSkin = SkinManager.Instance.CurrentSkin;
-            var labelStyle = currentSkin.TextStyle;
             Color color = currentSkin.GetColor(CurrentType);
             for (int i = 0, count = _Contour.Count ; i < (isClosed ? count : count - 1); i++)
             {
@@ -308,22 +313,19 @@ namespace Foxsys.ApartmentEditor
                 var p2 = _Contour[(i + 1) % count].Position;
 
                 Handles.color = color;
-                Handles.DrawLine(grid.GridToGUI(p1), grid.GridToGUI(p2));
 
+                WindowObjectDrawer.DrawLine(p1, p2);
                 Handles.color = currentSkin.VertColor;
-                float rad = SnapingRad / grid.Zoom;
-                Handles.DrawWireDisc(grid.GridToGUI(p1), Vector3.back, rad);
-
+                WindowObjectDrawer.DrawCircle(p1);
                 if (IsShowSizes)
                 {
-                    Handles.Label(grid.GridToGUI((p1 + p2) / 2),
-                        Vector2.Distance(
-                            p1,
-                            p2).ToString(), labelStyle);
+                    WindowObjectDrawer.DrawLabel(
+                        (p1 + p2) / 2,
+                        Vector2.Distance(p1, p2).ToString());
                 }
                 if (IsShowPositions)
                 {
-                    Handles.Label(grid.GridToGUI(p1) + new Vector2(SnapingRad, SnapingRad), p1.RoundCoordsToInt().ToString(), labelStyle);
+                    WindowObjectDrawer.DrawLabel(p1 , p1.RoundCoordsToInt().ToString());
                 }
             }
             if (WallThickness > 0)
@@ -332,21 +334,15 @@ namespace Foxsys.ApartmentEditor
                 for (int i = 0, count = contour.Count; i < contour.Count; i++)
                 {
                     Handles.color = new Color(color.r, color.g, color.b, 0.5f);
-                    Vector2 p1 = grid.GridToGUI(contour[i]), p2 = grid.GridToGUI(contour[(i + 1) % count]);
-                    Handles.DrawLine(grid.GridToGUI(_Contour[(i + 1) % _Contour.Count].Position), p1);
-                    Handles.DrawLine(p1, p2);
+                    Vector2 p1 = contour[i], p2 = contour[(i + 1) % count];
+                    WindowObjectDrawer.DrawLine(_Contour[(i + 1) % _Contour.Count].Position, p1);
+                    WindowObjectDrawer.DrawLine(p1, p2);
                 }
             }
-            if (WallObjects.Count > 0)
-            {
-                for (int i = 0, count = WallObjects.Count; i < count; i++)
-                {
-                    WallObjects[i].Object.Draw(grid, grid.GridToGUI(PositionOnContourToPoint(WallObjects[i].Position)));
-                }
-            }
+         
             if (IsShowSquare)
             {
-                Handles.Label(grid.GridToGUI(Centroid), Square.ToString(), labelStyle);
+                WindowObjectDrawer.DrawLabel(Centroid, Square.ToString());;
             }
         }
 
@@ -367,18 +363,17 @@ namespace Foxsys.ApartmentEditor
                 var p2 = _Contour[(i + 1) % count].Position;
 
                 Handles.color = color;
-                Handles.DrawLine(grid.GridToGUI(p1), grid.GridToGUI(p2));
+                WindowObjectDrawer.DrawLine(p1, p2);
             }
         }
 
-        public void EndMoving()
+        public void EndMoving(bool IsSnap = true)
         {
             RoundContourPoints();
         }
 
         #endregion
 
-        public const float SnapingRad = 20f;
         public enum Type
         {
             Kitchen = 0,
@@ -417,14 +412,16 @@ namespace Foxsys.ApartmentEditor
         public void DrawSelection(ApartmentEditorGrid grid, Color color)
         {
             Handles.color = color;
-            Handles.DrawWireDisc(grid.GridToGUI(_Position), Vector3.back, Room.SnapingRad / grid.Zoom);
+            WindowObjectDrawer.DrawCircle(_Position);
+            WindowObjectDrawer.DrawLabel(_Position, _Position.RoundCoordsToInt().ToString());
         }
 
-        public void EndMoving()
+        public void EndMoving(bool IsSnap = true)
         {
-            _Position = _Position.RoundCoordsToInt();
+            var vert = _Parent.ParentApartment.GetVertInPos(_Position, _Parent);
+            _Position = vert != null ? vert.Position : _Position.RoundCoordsToInt();
         }
-
+       
         public void RoundCoordsToInt()
         {
             _Position = _Position.RoundCoordsToInt();
@@ -450,14 +447,25 @@ namespace Foxsys.ApartmentEditor
 
         public void DrawSelection(ApartmentEditorGrid grid, Color color)
         {
+            var position = GetVector2Position();
             Handles.color = color;
-            Handles.DrawWireDisc(grid.GridToGUI(Parent.PositionOnContourToPoint(Position)), Vector3.back, Room.SnapingRad / grid.Zoom);
+            WindowObjectDrawer.DrawCircle(position);
+
+            WindowObjectDrawer.DrawLabel(position, position.RoundCoordsToInt().ToString());
         }
 
-        public void EndMoving()
+        public void EndMoving(bool IsSnap = true)
         {
         }
 
+        public List<Vector2> GetHole(Vector2 position, Vector2 wallBegin, Vector2 wallEnd)
+        {
+            return Object.GetHole(position, wallBegin, wallEnd);
+        }
+        public Vector2 GetVector2Position()
+        {
+            return Parent.PositionOnContourToPoint(Position).RoundCoordsToInt();
+        }
         public void MoveTo(Vector2 position)
         {
             Position = Parent.PointToPositionOnContour(Parent.GetNearestPointOnContour(position).Value);

@@ -158,7 +158,7 @@ MonoBehaviour:
   IconSave: {fileID: 2800000, guid: 757f0eeae9b90904d8198a63c1c7a83c, type: 3}
   IconCreateRoom: {fileID: 2800000, guid: 42690acb832598b498204cd49805a29a, type: 3}
   IconRecenter: {fileID: 2800000, guid: 4dbacabd9e09788449dc39bfbbe064a8, type: 3}
-  GridColor: {r: 0.3455882, g: 0.3455882, b: 0.3455882, a: 1}
+  GridColor: {r: 0.28654844, g: 0.3342143, b: 0.3897059, a: 1}
   VertColor: {r: 1, g: 0.7322515, b: 0.029411793, a: 1}
   KitchenContourColor: {r: 1, g: 0, b: 0.022000015, a: 1}
   BathroomContourColor: {r: 0.058391, g: 0.7606939, b: 0.99264705, a: 1}
@@ -166,5 +166,6 @@ MonoBehaviour:
   LivingContourColor: {r: 1, g: 0.6088235, b: 0.022058845, a: 1}
   RoomDimensionsColor: {r: 0.15862082, g: 1, b: 0, a: 1}
   SelectionColor: {r: 0.94482756, g: 1, b: 0, a: 1}
-  DoorColor: {r: 0.9034481, g: 0, b: 1, a: 1}
-  WindowColor: {r: 0.3602941, g: 1, b: 0.92058825, a: 1}
+  DoorColor: {r: 1, g: 1, b: 1, a: 1}
+  WindowColor: {r: 0, g: 0.25517225, b: 1, a: 1}
+  CirclesRad: 20

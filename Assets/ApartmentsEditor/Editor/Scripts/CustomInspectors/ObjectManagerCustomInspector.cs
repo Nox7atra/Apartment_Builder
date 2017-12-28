@@ -41,7 +41,7 @@ namespace Foxsys.ApartmentEditor
         private void CreateDefault()
         {
             _ChosenObject = _SelectedManager.CurrentMode  == ObjectsManager.Mode.Doors ?
-                (WallObject)Door.CreateOrGet("default", 190f, 80f) 
+                (WallObject)Door.CreateOrGet("default", 80f, 190f) 
                 : Window.CreateOrGet("default", 142f, 147f, 90f);
         }
     }

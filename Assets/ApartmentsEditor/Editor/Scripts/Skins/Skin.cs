@@ -22,6 +22,7 @@ namespace Foxsys.ApartmentEditor
         public Color SelectionColor;
         public Color DoorColor;
         public Color WindowColor;
+        public float CirclesRad;
         public void RefreshDefaultStyles()
         {
             MiniButtonStyle = EditorGUIUtility.isProSkin ? EditorStyles.miniButton : EditorStyles.miniButtonLeft;

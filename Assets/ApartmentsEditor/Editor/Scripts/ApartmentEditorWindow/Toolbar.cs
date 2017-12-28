@@ -15,14 +15,8 @@ namespace Foxsys.ApartmentEditor
             EditorGUILayout.BeginVertical();
             RecenterButton();
             CreateRoomButton();
-            if (EditorUIUtils.ButtonWithFallback(
-                null,
-                "ad",
-                _CurrentSkin.MiniButtonStyle
-            ))
-            { 
-                _ParentWindow.AddObjectStateBegin(ObjectsManager.Mode.Doors);
-            }
+            DoorButton();
+            WindowButton();
             EditorGUILayout.EndVertical();
             GUILayout.EndArea();
         }
@@ -50,6 +44,30 @@ namespace Foxsys.ApartmentEditor
                 _ParentWindow.Grid.Recenter();
             }
         }
+
+        public void DoorButton()
+        {
+            if (EditorUIUtils.ButtonWithFallback(
+                null,
+                "AD",
+                _CurrentSkin.MiniButtonStyle
+            ))
+            {
+                _ParentWindow.AddObjectStateBegin(ObjectsManager.Mode.Doors);
+            }
+        }
+        public void WindowButton()
+        {
+            if (EditorUIUtils.ButtonWithFallback(
+                null,
+                "AW",
+                _CurrentSkin.MiniButtonStyle
+            ))
+            {
+                _ParentWindow.AddObjectStateBegin(ObjectsManager.Mode.Windows);
+            }
+        }
+
         public Toolbar(ApartmentEditorWindow parentWindow)
         {
             _ParentWindow = parentWindow;

@@ -24,7 +24,7 @@ namespace Foxsys.ApartmentEditor
         }
         protected void DrawMouseLabel(Vector2 position)
         {
-            Handles.Label(position + MouseLabelOffset, _ParentWindow.Grid.GUIToGrid(position).ToString());
+            WindowObjectDrawer.DrawLabel(_ParentWindow.Grid.GUIToGrid(position) + MouseLabelOffset, _ParentWindow.Grid.GUIToGrid(position).ToString());
         }
         public abstract void Draw();
 

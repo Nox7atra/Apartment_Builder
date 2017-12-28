@@ -129,7 +129,7 @@ namespace Foxsys.ApartmentEditor
         {
             Grid = new ApartmentEditorGrid(this);
             _Toolbar = new Toolbar(this);
-
+            WindowObjectDrawer.CurrentWindow = this;
             _States = new Dictionary<EditorWindowState, StateApartmentBuilder>
             {
                 {EditorWindowState.Normal,       new NormalState(this)},

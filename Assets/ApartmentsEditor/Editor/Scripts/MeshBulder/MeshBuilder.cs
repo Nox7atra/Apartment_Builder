@@ -69,10 +69,12 @@ namespace Foxsys.ApartmentEditor
             for (int j = 0, count = wallContour.Count; j < count; j++)
             {
                 Vector2 begin = wallContour[j], end = wallContour[(j + 1) % count];
+                var holes = GetHoles(room, begin, end);
                 GameObject wallGO = GenerateWall(
                     begin,
                     end,
                     (end + begin).XYtoXYZ() / 2,
+                    holes,
                     triangulator,
                     height,
                     materials.WallMat,
@@ -95,6 +97,26 @@ namespace Foxsys.ApartmentEditor
             roofGO.transform.SetParent(roomGO.transform);
 
             return roomGO;
+        }
+
+        private static List<List<Vector2>> GetHoles(Room room, Vector2 begin, Vector2 end)
+        {
+            List<List<Vector2>> holes = new List<List<Vector2>>();
+            var normal = new Vector2(begin.y - end.y, end.x - begin.x).normalized;
+            foreach (var rm in room.ParentApartment.Rooms)
+            {
+                foreach (var wallObject in rm.WallObjects)
+                {
+                    var position = wallObject.GetVector2Position();
+                    if (MathUtils.IsPointInsideLineSegment(position - normal * room.WallThickness, begin, end))
+                    {
+                        holes.Add(wallObject.GetHole(position, begin, end));
+                    }
+                }
+               
+
+            }
+            return holes;
         }
         private static GameObject PrepareRoof(GameObject floor, float apartmentHeight, Material roofMat)
         {
@@ -155,6 +177,7 @@ namespace Foxsys.ApartmentEditor
             Vector3 begin,
             Vector3 end,
             Vector3 center,
+            List<List<Vector2>> holes,
             Triangulator triangulator,
             float apartmentHeight,
             Material wallMat,
@@ -165,15 +188,22 @@ namespace Foxsys.ApartmentEditor
             MeshRenderer wallMr = wallGO.AddComponent<MeshRenderer>();
 
             float wallLength = (Vector2.Distance(begin, end) / 2) / MeasurmentK;
-            float wallHeight = apartmentHeight / MeasurmentK / 2;
+            float wallHeight = apartmentHeight / MeasurmentK;
             List<Vector2> wallContour = new List<Vector2>
             {
-                new Vector2(-wallLength, -wallHeight),
+                new Vector2(-wallLength, 0),
                 new Vector2(-wallLength,  wallHeight),
                 new Vector2( wallLength,  wallHeight),
-                new Vector2( wallLength, -wallHeight)
+                new Vector2( wallLength, 0)
             };
-            var mesh = triangulator.CreateMesh(wallContour);
+            foreach (var hole in holes)
+            {
+                for (int i = 0; i < hole.Count; i++)
+                {
+                    hole[i] = hole[i] / MeasurmentK;
+                }
+            }
+            var mesh = triangulator.CreateMesh(wallContour, holes);
             mesh.RecalculateNormals();
             mesh.RecalculateBounds();
             mesh.uv = MathUtils.CreatePlaneUVs(mesh);
@@ -183,7 +213,7 @@ namespace Foxsys.ApartmentEditor
 
             var transform = wallGO.transform;
             transform.rotation = Quaternion.Euler(0, -Vector2.SignedAngle(Vector2.right, end - begin), 0);
-            transform.position = (center + Vector3.up * apartmentHeight / 2) / MeasurmentK;
+            transform.position = center / MeasurmentK;
             return wallGO;
         }
 

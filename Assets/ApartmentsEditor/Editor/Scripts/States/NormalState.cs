@@ -98,7 +98,7 @@ namespace Foxsys.ApartmentEditor
                 case EventType.MouseDown:
                     _SelectedObject = null;
                     Room selectedRoom;
-                    var selectable = apartment.GetSelectableInPos(mousePos, out selectedRoom);
+                    var selectable = apartment.GetSelectableInPos(_ParentWindow.Grid, mousePos, out selectedRoom);
                     
                     selectedRoom = selectedRoom == null
                         ?  apartment.Rooms
@@ -108,7 +108,6 @@ namespace Foxsys.ApartmentEditor
                     {
                         Selection.activeObject = selectedRoom;
                         Undo.RegisterCompleteObjectUndo(selectedRoom, "Room position changed");
-                        selectedRoom.IsShowPositions = true;
                        
                         _SelectedObject = selectable ?? selectedRoom;
                     }

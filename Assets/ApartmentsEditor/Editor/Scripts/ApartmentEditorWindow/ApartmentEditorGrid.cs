@@ -37,8 +37,8 @@ namespace Foxsys.ApartmentEditor
         }
         public void Draw()
         {
-            DrawCenter();
             DrawLines();
+            DrawCenter();
         }
         public void Recenter()
         {
@@ -59,19 +59,20 @@ namespace Foxsys.ApartmentEditor
         #region service methods
         void DrawLines()
         {
-            DrawLODLines(0);
+            int lodLevel = (int) (Mathf.Log(_Zoom) / 1.5f);
+            DrawLODLines(lodLevel > 0 ? lodLevel : 0);
         }
         void DrawLODLines(int level)
         {
             var gridColor = SkinManager.Instance.CurrentSkin.GridColor;
-            var step0 = Mathf.Pow(10, level);
-            int halfCount = (int) step0 * CELLS_IN_LINE_COUNT / 2 * 10;
+            var step0 = (int) Mathf.Pow(10, level);
+            int halfCount = step0 * CELLS_IN_LINE_COUNT / 2 * 10;
             var length = halfCount * DEFAULT_CELL_SIZE;
-            int offsetX = (int) (_Offset.x / DEFAULT_CELL_SIZE);
-            int offsetY = (int) (_Offset.y / DEFAULT_CELL_SIZE);
-            for (int i = -halfCount; i <= halfCount; i += (int)step0)
+            int offsetX = ((int) (_Offset.x / DEFAULT_CELL_SIZE)) / (step0 * step0) * step0;
+            int offsetY = ((int) (_Offset.y / DEFAULT_CELL_SIZE)) / (step0 * step0) * step0;
+            for (int i = -halfCount; i <= halfCount; i += step0)
             {
-                Handles.color = new Color(gridColor.r, gridColor.g, gridColor.b,  step0 / 4);
+                Handles.color = new Color(gridColor.r, gridColor.g, gridColor.b,  0.3f);
                     
                 Handles.DrawLine(
                     GridToGUI(new Vector2(-length + offsetX * DEFAULT_CELL_SIZE, (i + offsetY) * DEFAULT_CELL_SIZE)),
@@ -82,11 +83,11 @@ namespace Foxsys.ApartmentEditor
                     GridToGUI(new Vector2((i + offsetX) * DEFAULT_CELL_SIZE, length + offsetY * DEFAULT_CELL_SIZE))
                 );
             }
-            offsetX = (offsetX / 10) * 10;
-            offsetY = (offsetY / 10) * 10;
-            for (int i = -halfCount; i <= halfCount; i += (int)step0 * 10)
+            offsetX = (offsetX / (10 * step0)) * 10 * step0;
+            offsetY = (offsetY / (10 * step0)) * 10 * step0; ;
+            for (int i = -halfCount; i <= halfCount; i += step0 * 10)
             {
-                Handles.color = new Color(gridColor.r, gridColor.g, gridColor.b,  step0);
+                Handles.color = new Color(gridColor.r, gridColor.g, gridColor.b,  1);
                 Handles.DrawLine(
                     GridToGUI(new Vector2(-length + offsetX * DEFAULT_CELL_SIZE, (i + offsetY) * DEFAULT_CELL_SIZE)),
                     GridToGUI(new Vector2(length + offsetX * DEFAULT_CELL_SIZE, (i + offsetY) * DEFAULT_CELL_SIZE))
@@ -103,10 +104,10 @@ namespace Foxsys.ApartmentEditor
                 return;
 
             Handles.color = Color.cyan;
-            Handles.DrawLine(GridToGUI(Vector3.left * DEFAULT_CELL_SIZE),
-                GridToGUI(Vector3.right * DEFAULT_CELL_SIZE));
-            Handles.DrawLine(GridToGUI(Vector3.down * DEFAULT_CELL_SIZE),
-                GridToGUI(Vector3.up * DEFAULT_CELL_SIZE));
+            Handles.DrawLine(GridToGUI(Vector3.left * DEFAULT_CELL_SIZE * _Zoom),
+                GridToGUI(Vector3.right * DEFAULT_CELL_SIZE * _Zoom));
+            Handles.DrawLine(GridToGUI(Vector3.down * DEFAULT_CELL_SIZE * _Zoom),
+                GridToGUI(Vector3.up * DEFAULT_CELL_SIZE * _Zoom));
         }
         #endregion
 
@@ -114,7 +115,7 @@ namespace Foxsys.ApartmentEditor
 
         public ApartmentEditorGrid(EditorWindow parentWindow, bool isDrawCenterMark = true)
         {
-            _Zoom = 0.9f;
+            _Zoom = 5f;
             _ParentWindow = parentWindow;
             IsDrawCenter = isDrawCenterMark;
             Recenter();
@@ -123,10 +124,10 @@ namespace Foxsys.ApartmentEditor
         #endregion
 
         #region constants
-        const float MIN_ZOOM_VALUE             = 0.2f;
-        const float MAX_ZOOM_VALUE             = 8;
-        const int   CELLS_IN_LINE_COUNT        = 70;
-        const float DEFAULT_CELL_SIZE          = 20;
+        const float MIN_ZOOM_VALUE             = 0.1f;
+        const float MAX_ZOOM_VALUE             = 1000;
+        const int   CELLS_IN_LINE_COUNT        = 60;
+        const float DEFAULT_CELL_SIZE          = 10;
         #endregion
     }
 }

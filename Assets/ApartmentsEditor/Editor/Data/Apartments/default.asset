@@ -9,13 +9,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 91af5c0efcc7cea4a9c5d710859ce37f, type: 3}
-  m_Name: demo_apartment
+  m_Name: default
   m_EditorClassIdentifier: 
   Height: 273
   RoomsMaterialses:
-  - FloorMat: {fileID: 0}
-    RoofMat: {fileID: 0}
-    WallMat: {fileID: 0}
+  - FloorMat: {fileID: 2100000, guid: dacfa76175c50cc49a0fce169af706a9, type: 2}
+    RoofMat: {fileID: 2100000, guid: 9947000ffc89c1a43bf3e370f04ea3f7, type: 2}
+    WallMat: {fileID: 2100000, guid: 9947000ffc89c1a43bf3e370f04ea3f7, type: 2}
   - FloorMat: {fileID: 0}
     RoofMat: {fileID: 0}
     WallMat: {fileID: 0}
@@ -26,34 +26,15 @@ MonoBehaviour:
     RoofMat: {fileID: 0}
     WallMat: {fileID: 0}
   IsGenerateOutside: 0
-  _Rooms:
-  - {fileID: 114736357213177216}
+  _Rooms: []
   _Dimensions:
     serializedVersion: 2
-    x: -1000
-    y: -1100
-    width: 2000
-    height: 2200
---- !u!114 &114110595659667202
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a52e267f180e5fb4b9966e3ef152b2c7, type: 3}
-  m_Name: Kitchen_1
-  m_EditorClassIdentifier: 
-  CurrentType: 0
-  WallThickness: 0
-  _ParentApartment: {fileID: 11400000}
-  _Contour: []
-  IsShowSizes: 0
-  IsShowSquare: 0
-  IsShowPositions: 0
-  WallObjects: []
---- !u!114 &114736357213177216
+    x: -4800
+    y: -7700
+    width: 9600
+    height: 15400
+  _PlanImage: {fileID: 0}
+--- !u!114 &114434111496499696
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -65,18 +46,10 @@ MonoBehaviour:
   m_Name: Kitchen_0
   m_EditorClassIdentifier: 
   CurrentType: 0
-  WallThickness: 47
+  WallThickness: 0
   _ParentApartment: {fileID: 11400000}
-  _Contour:
-  - _Parent: {fileID: 114736357213177216}
-    _Position: {x: -1000, y: -1100}
-  - _Parent: {fileID: 114736357213177216}
-    _Position: {x: -1000, y: -400}
-  - _Parent: {fileID: 114736357213177216}
-    _Position: {x: -200, y: -400}
-  - _Parent: {fileID: 114736357213177216}
-    _Position: {x: -200, y: -1100}
+  _Contour: []
   IsShowSizes: 0
   IsShowSquare: 0
-  IsShowPositions: 1
+  IsShowPositions: 0
   WallObjects: []
