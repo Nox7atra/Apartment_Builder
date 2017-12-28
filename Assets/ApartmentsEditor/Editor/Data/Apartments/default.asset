@@ -26,30 +26,11 @@ MonoBehaviour:
     RoofMat: {fileID: 0}
     WallMat: {fileID: 0}
   IsGenerateOutside: 0
+  PlanImage: {fileID: 2800000, guid: 85597c995c4143942b49e334e67fafdf, type: 3}
   _Rooms: []
   _Dimensions:
     serializedVersion: 2
-    x: -4800
-    y: -7700
-    width: 9600
-    height: 15400
-  _PlanImage: {fileID: 0}
---- !u!114 &114434111496499696
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a52e267f180e5fb4b9966e3ef152b2c7, type: 3}
-  m_Name: Kitchen_0
-  m_EditorClassIdentifier: 
-  CurrentType: 0
-  WallThickness: 0
-  _ParentApartment: {fileID: 11400000}
-  _Contour: []
-  IsShowSizes: 0
-  IsShowSquare: 0
-  IsShowPositions: 0
-  WallObjects: []
+    x: -480
+    y: -770
+    width: 960
+    height: 1540

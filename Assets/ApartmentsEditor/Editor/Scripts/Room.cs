@@ -52,7 +52,6 @@ namespace Foxsys.ApartmentEditor
         {
             get
             {
-
                 return _Contour;
             }
         }
@@ -122,7 +121,8 @@ namespace Foxsys.ApartmentEditor
             {
                 return false;
             }
-            
+            var snappedPoint = ParentApartment.GetVertInPos(point, this);
+            point = snappedPoint != null ? snappedPoint.Position : point;
             Undo.RecordObject(this, "Add Room point");
             _Contour.Add(new RoomVert(this, point));
             return true;
@@ -315,8 +315,9 @@ namespace Foxsys.ApartmentEditor
                 Handles.color = color;
 
                 WindowObjectDrawer.DrawLine(p1, p2);
-                Handles.color = currentSkin.VertColor;
-                WindowObjectDrawer.DrawCircle(p1);
+
+                _Contour[i].Draw(p1);
+
                 if (IsShowSizes)
                 {
                     WindowObjectDrawer.DrawLabel(
@@ -383,7 +384,7 @@ namespace Foxsys.ApartmentEditor
         }
     }
     [Serializable]
-    public class RoomVert : ISelectable
+    public class RoomVert : ISelectable, IWallObject
     {
         [SerializeField] private Room _Parent;
         [SerializeField] private Vector2 _Position;
@@ -430,6 +431,33 @@ namespace Foxsys.ApartmentEditor
         {
             _Parent = parent;
             _Position = position;
+        }
+
+        public bool TryAddObject(Vector2 position)
+        {
+            var room = ApartmentsManager.Instance.CurrentApartment.GetNearestRoom(position);
+            if (room != null)
+            {
+                var projection = room.GetNearestPointOnContour(position);
+                var contour = room.Contour;
+
+                for (int i = 0, count = contour.Count; i < count; i++)
+                {
+                    Vector2 p1 = contour[i].Position, p2 = contour[(i + 1) % count].Position;
+                    if(MathUtils.IsPointInsideLineSegment(projection.Value, p1, p2))
+                    {
+                        room.Contour.Insert(i + 1, new RoomVert(room, projection.Value));
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        public void Draw(Vector2 position)
+        {
+            Handles.color = SkinManager.Instance.CurrentSkin.VertColor;
+            WindowObjectDrawer.DrawCircle(position);
         }
     }
 

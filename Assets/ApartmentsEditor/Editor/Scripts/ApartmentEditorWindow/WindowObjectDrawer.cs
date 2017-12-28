@@ -28,5 +28,11 @@ namespace Foxsys.ApartmentEditor
         {
             Handles.Label(_CurrentWindow.Grid.GridToGUI(position), text, SkinManager.Instance.CurrentSkin.TextStyle);
         }
+
+        public static void DrawTexture(Rect dimensions, Texture texture)
+        {
+            var rect = new Rect(_CurrentWindow.Grid.GridToGUI(dimensions.position), dimensions.size / _CurrentWindow.Grid.Zoom);
+            GUI.DrawTexture(rect, texture, ScaleMode.StretchToFill, true);
+        }
     }
 }

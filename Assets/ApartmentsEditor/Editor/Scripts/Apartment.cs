@@ -16,9 +16,10 @@ namespace Foxsys.ApartmentEditor
 
         public bool IsGenerateOutside;
 
+        public Texture PlanImage;
+
         [SerializeField] private List<Room> _Rooms;
         [SerializeField] private Rect _Dimensions;
-        [SerializeField] private Texture _PlanImage;
 
         private Vector2[] _DimensionsPoints = new Vector2[4];
 
@@ -64,8 +65,10 @@ namespace Foxsys.ApartmentEditor
         public void Draw(ApartmentEditorGrid grid)
         {
             DrawDimensions(grid);
-            if(_PlanImage != null)
-                GUI.DrawTexture(Dimensions, _PlanImage, ScaleMode.ScaleToFit, true);
+
+            if(PlanImage != null)
+                DrawPlanImage();
+               
             foreach (Room room in _Rooms)
             {
                 room.Draw(grid);
@@ -74,6 +77,10 @@ namespace Foxsys.ApartmentEditor
             DrawWallObjects(grid);
         }
 
+        private void DrawPlanImage()
+        {
+            WindowObjectDrawer.DrawTexture(_Dimensions, PlanImage);
+        }
         private void DrawWallObjects(ApartmentEditorGrid grid)
         {
             foreach (Room room in _Rooms)
@@ -83,8 +90,7 @@ namespace Foxsys.ApartmentEditor
                 {
                     for (int i = 0, count = room.WallObjects.Count; i < count; i++)
                     {
-                        wallObjects[i].Object.Draw(grid,
-                            grid.GridToGUI(wallObjects[i].GetVector2Position()));
+                        wallObjects[i].Object.Draw(wallObjects[i].GetVector2Position());
                         if (room.IsShowPositions)
                         {
                             var position = wallObjects[i].GetVector2Position();

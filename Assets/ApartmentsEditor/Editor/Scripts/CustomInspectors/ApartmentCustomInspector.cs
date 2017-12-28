@@ -28,7 +28,7 @@ namespace Foxsys.ApartmentEditor
             _ThisApartment.Height = EditorGUILayout.FloatField("Height (cm)", _ThisApartment.Height);
 
             var dimensions = EditorGUILayout.Vector2Field("Dimensions (cm)", _Dimensions.size).RoundCoordsToInt();
-  
+            _ThisApartment.PlanImage = (Texture) EditorGUILayout.ObjectField(_ThisApartment.PlanImage, typeof(Texture), false);
             DrawMaterialProperties();
             //_ThisApartment.IsGenerateOutside = EditorGUILayout.Toggle("Generate outside (Directional Light)", _ThisApartment.IsGenerateOutside);
             GenerateButton();

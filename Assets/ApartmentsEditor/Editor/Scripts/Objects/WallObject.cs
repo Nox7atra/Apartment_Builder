@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Foxsys.ApartmentEditor
 {
     [Serializable]
-    public abstract class WallObject : ScriptableObject
+    public abstract class WallObject : ScriptableObject, IWallObject
     {
         #region fields
 
@@ -19,15 +19,14 @@ namespace Foxsys.ApartmentEditor
         #endregion
 
         public abstract List<Vector2> GetHole(Vector2 position, Vector2 wallBegin, Vector2 wallEnd);
-        public void Draw(ApartmentEditorGrid grid, Vector2 position)
+        public void Draw(Vector2 position)
         {
             var apartment = ApartmentsManager.Instance.CurrentApartment;
-            var gridpos = grid.GUIToGrid(position);
-            var room = apartment.GetNearestRoom(gridpos);
+            var room = apartment.GetNearestRoom(position);
             if (room != null)
             {
                 Vector2 tangent;
-                var projection = room.GetNearestPointOnContour(gridpos, out tangent);
+                var projection = room.GetNearestPointOnContour(position, out tangent);
                 Handles.color = this is Door ? SkinManager.Instance.CurrentSkin.DoorColor : SkinManager.Instance.CurrentSkin.WindowColor;
 
                 WindowObjectDrawer.DrawCircle(projection.Value);
@@ -39,13 +38,13 @@ namespace Foxsys.ApartmentEditor
         {
             return Vector2.Distance(position, wallEnd) - Vector2.Distance(wallEnd, wallBegin) / 2 + (isFromBegin ? Width / 2 : -Width / 2);
         }
-        public bool TryAddObject(ApartmentEditorGrid grid, Vector2 position)
+
+        public bool TryAddObject(Vector2 position)
         {
-            var gridpos = grid.GUIToGrid(position);
-            var room = ApartmentsManager.Instance.CurrentApartment.GetNearestRoom(gridpos);
-            var projection = room.GetNearestPointOnContour(gridpos);
+            var room = ApartmentsManager.Instance.CurrentApartment.GetNearestRoom(position);
             if (room != null)
             {
+                var projection = room.GetNearestPointOnContour(position);
                 room.WallObjects.Add(new CountourObject
                 {
                     Parent = room,
@@ -55,6 +54,7 @@ namespace Foxsys.ApartmentEditor
                 return true;
             }
             return false;
+
         }
     }
 }

@@ -168,4 +168,4 @@ MonoBehaviour:
   SelectionColor: {r: 0.94482756, g: 1, b: 0, a: 1}
   DoorColor: {r: 1, g: 1, b: 1, a: 1}
   WindowColor: {r: 0, g: 0.25517225, b: 1, a: 1}
-  CirclesRad: 20
+  CirclesRad: 100

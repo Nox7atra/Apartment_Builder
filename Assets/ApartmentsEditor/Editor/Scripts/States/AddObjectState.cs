@@ -28,18 +28,13 @@ namespace Foxsys.ApartmentEditor
 
         #endregion
 
-        #region service methods
-
-
-
-        #endregion
 
         #region drawing
         public override void Draw()
         {
             var manager = ObjectsManager.Instance;
             if(manager.SelectedObject != null)
-                manager.SelectedObject.Draw(_ParentWindow.Grid, _CurrentMousePosition);
+                manager.SelectedObject.Draw(_ParentWindow.Grid.GUIToGrid(_CurrentMousePosition));
         }
 
 
@@ -57,7 +52,7 @@ namespace Foxsys.ApartmentEditor
                 case EventType.MouseDown:
                     if (Event.current.button == 0)
                     {
-                        ObjectsManager.Instance.SelectedObject.TryAddObject(_ParentWindow.Grid, _CurrentMousePosition);
+                        ObjectsManager.Instance.SelectedObject.TryAddObject(_ParentWindow.Grid.GUIToGrid(_CurrentMousePosition));
                     }
                     break;
                 case EventType.MouseMove:

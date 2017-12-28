@@ -12,7 +12,7 @@ namespace Foxsys.ApartmentEditor
         #region fields
 
         private Mode _CurrentMode;
-        private WallObject _SelectedObject;
+        private IWallObject _SelectedObject;
         #endregion
 
         #region events
@@ -27,7 +27,7 @@ namespace Foxsys.ApartmentEditor
             get { return _CurrentMode; }
         }
 
-        public WallObject SelectedObject
+        public IWallObject SelectedObject
         {
             get { return _SelectedObject; }
         }
@@ -49,7 +49,7 @@ namespace Foxsys.ApartmentEditor
 
         }
 
-        public void SelectObject(WallObject wallObj)
+        public void SelectObject(IWallObject wallObj)
         {
             _SelectedObject = wallObj;
         }
@@ -95,6 +95,7 @@ namespace Foxsys.ApartmentEditor
         {
             Doors,
             Windows,
+            Vert,
             None
         }
     }

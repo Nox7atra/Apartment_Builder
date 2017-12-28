@@ -8,5 +8,6 @@ namespace Foxsys.ApartmentEditor
         void Delete();
         void DrawSelection(ApartmentEditorGrid grid, Color color);
         void EndMoving(bool IsSnap = true);
+
     }
 }

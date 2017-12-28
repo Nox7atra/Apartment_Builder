@@ -11,7 +11,7 @@ namespace Foxsys.ApartmentEditor
 
         private int _CurrentSelection;
 
-        private WallObject _ChosenObject;
+        private IWallObject _ChosenObject;
         public void OnEnable()
         {   
             _SelectedManager = target as ObjectsManager;
@@ -29,13 +29,16 @@ namespace Foxsys.ApartmentEditor
         }
         public override void OnInspectorGUI()
         {
-            if (_SelectedManager.CurrentMode == ObjectsManager.Mode.None)
+            if (_SelectedManager.CurrentMode == ObjectsManager.Mode.None || _SelectedManager.CurrentMode == ObjectsManager.Mode.Vert)
                 return;
 
             base.OnInspectorGUI();
- 
-            _ChosenObject = (WallObject) EditorGUILayout.ObjectField(_ChosenObject, typeof(WallObject), false);
-            _SelectedManager.SelectObject(_ChosenObject);
+            var wallObj = _ChosenObject as WallObject;
+            if (wallObj != null)
+            {
+                wallObj = (WallObject) EditorGUILayout.ObjectField(wallObj, typeof(WallObject), false);
+                _SelectedManager.SelectObject(_ChosenObject);
+            }
         }
 
         private void CreateDefault()
