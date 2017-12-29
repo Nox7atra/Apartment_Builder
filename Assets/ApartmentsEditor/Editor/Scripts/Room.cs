@@ -16,7 +16,7 @@ namespace Foxsys.ApartmentEditor
         public static Room Create(Apartment parent)
         {
             Room room = CreateInstance<Room>();
-            room.MaterialPreset = RoomMaterialPreset.CreateOrGet("default");
+            room.MaterialPreset = ScriptableObjectUtils.CreateOrGet<RoomMaterialPreset>("default");
             room.name = parent.GetRoomName(room.MaterialPreset);
             AssetDatabase.AddObjectToAsset(room, parent);
             room._ParentApartment = parent;

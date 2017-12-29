@@ -11,7 +11,7 @@ namespace Foxsys.ApartmentEditor
         [MenuItem("Window/ApartmentBuilder/Material Presets/Create default")]
         public static void CreateDefault()
         {
-            ScriptableObjectUtils.CreateOrGet<RoomMaterialPreset("default");
+            ScriptableObjectUtils.CreateOrGet<RoomMaterialPreset>("default");
         }
 
 
