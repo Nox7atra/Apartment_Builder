@@ -15,21 +15,21 @@ namespace Foxsys.ApartmentEditor
         }
         public override void OnInspectorGUI()
         {
-            DrawRoomTypeField();
+            DrawMaterialPresetField();
             _ThisRoom.WallThickness = EditorGUILayout.FloatField("WallThikness (cm)", _ThisRoom.WallThickness);
             DrawContourPositions();
             _ThisRoom.IsShowPositions = EditorGUILayout.ToggleLeft("Show Positions", _ThisRoom.IsShowPositions);
             _ThisRoom.IsShowSizes = EditorGUILayout.ToggleLeft("Show Sizes", _ThisRoom.IsShowSizes);
             _ThisRoom.IsShowSquare = EditorGUILayout.ToggleLeft("Show Square", _ThisRoom.IsShowSquare);
         }
-        private void DrawRoomTypeField()
+        private void DrawMaterialPresetField()
         {
-            var prevType = _ThisRoom.CurrentType;
-            _ThisRoom.CurrentType = (Room.Type)EditorGUILayout.EnumPopup("Room type", _ThisRoom.CurrentType);
+            var prevType = _ThisRoom.MaterialPreset;
+            _ThisRoom.MaterialPreset = (RoomMaterialPreset)EditorGUILayout.ObjectField(_ThisRoom.MaterialPreset, typeof(RoomMaterialPreset), false);
 
-            if (prevType != _ThisRoom.CurrentType)
+            if (prevType != _ThisRoom.MaterialPreset)
             {
-                _ThisRoom.name = _ThisRoom.ParentApartment.GetRoomName(_ThisRoom.CurrentType);
+                _ThisRoom.name = _ThisRoom.ParentApartment.GetRoomName(_ThisRoom.MaterialPreset);
                 AssetDatabase.SaveAssets();
             }
         }

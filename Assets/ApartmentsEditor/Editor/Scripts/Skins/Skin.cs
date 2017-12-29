@@ -14,10 +14,6 @@ namespace Foxsys.ApartmentEditor
         public Texture IconRecenter;
         public Color GridColor;
         public Color VertColor;
-        public Color KitchenContourColor;
-        public Color BathroomContourColor;
-        public Color ToiletContourColor;
-        public Color LivingContourColor;
         public Color RoomDimensionsColor;
         public Color SelectionColor;
         public Color DoorColor;
@@ -26,23 +22,6 @@ namespace Foxsys.ApartmentEditor
         public void RefreshDefaultStyles()
         {
             MiniButtonStyle = EditorGUIUtility.isProSkin ? EditorStyles.miniButton : EditorStyles.miniButtonLeft;
-        }
-
-        public Color GetColor(Room.Type type)
-        {
-            switch (type)
-            {
-                default:
-                    return Color.magenta;
-                case Room.Type.Bathroom:
-                    return BathroomContourColor;
-                case Room.Type.Kitchen:
-                    return KitchenContourColor;
-                case Room.Type.Living:
-                    return LivingContourColor;
-                case Room.Type.Toilet:
-                    return ToiletContourColor;
-            }
         }
     }
 }

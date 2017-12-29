@@ -64,7 +64,7 @@ namespace Foxsys.ApartmentEditor
             if(!inside)
                 wallContour.Reverse();
 
-            var materials = apartment.RoomsMaterialses[(int) room.CurrentType];
+
 
             for (int j = 0, count = wallContour.Count; j < count; j++)
             {
@@ -77,7 +77,7 @@ namespace Foxsys.ApartmentEditor
                     holes,
                     triangulator,
                     height,
-                    materials.WallMat,
+                    room.MaterialPreset.WallMaterial,
                     j);
 
                 SaveMesh(wallGO.GetComponent<MeshFilter>().sharedMesh, room.name, inside);
@@ -86,9 +86,9 @@ namespace Foxsys.ApartmentEditor
 
             Vector3 centroid = room.Centroid.XYtoXYZ();
 
-            GameObject floorGO = GenerateFloor(wallContour, triangulator, centroid, materials.FloorMat);
+            GameObject floorGO = GenerateFloor(wallContour, triangulator, centroid, room.MaterialPreset.FloorMaterial);
             SaveMesh(floorGO.GetComponent<MeshFilter>().sharedMesh, room.name, inside);
-            GameObject roofGO = PrepareRoof(floorGO, height, materials.RoofMat);
+            GameObject roofGO = PrepareRoof(floorGO, height, room.MaterialPreset.RoofMaterial);
             SaveMesh(roofGO.GetComponent<MeshFilter>().sharedMesh, room.name, inside);
             if (!inside)
                 GameObject.DestroyImmediate(floorGO);

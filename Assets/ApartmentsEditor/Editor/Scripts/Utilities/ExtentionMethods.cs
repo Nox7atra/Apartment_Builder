@@ -7,6 +7,7 @@ namespace Foxsys.ApartmentEditor
 {
     public static class ExtentionMethods
     {
+
         public static Vector2 Clamp(this Rect rect, Vector2 point)
         {
             Vector2 result = point;

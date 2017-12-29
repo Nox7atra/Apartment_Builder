@@ -16,10 +16,11 @@ namespace Foxsys.ApartmentEditor
         public static Room Create(Apartment parent)
         {
             Room room = CreateInstance<Room>();
-            room.name = parent.GetRoomName(room.CurrentType);
+            room.MaterialPreset = RoomMaterialPreset.CreateOrGet("default");
+            room.name = parent.GetRoomName(room.MaterialPreset);
             AssetDatabase.AddObjectToAsset(room, parent);
             room._ParentApartment = parent;
-            room.WallObjects = new List<CountourObject>();
+            room.WallObjects = new List<ContourObject>();
             EditorUtility.SetDirty(parent);
             room._Contour = new List<RoomVert>();
             AssetDatabase.SaveAssets();
@@ -29,8 +30,6 @@ namespace Foxsys.ApartmentEditor
         #endregion
 
         #region fields
-        
-        public Type CurrentType;
         
         public float WallThickness;
         
@@ -43,7 +42,9 @@ namespace Foxsys.ApartmentEditor
         public bool IsShowSizes;
         public bool IsShowSquare;
         public bool IsShowPositions;
-        public List<CountourObject> WallObjects;
+        public RoomMaterialPreset MaterialPreset;
+        [SerializeField]
+        public List<ContourObject> WallObjects;
         #endregion
 
         #region properties
@@ -303,10 +304,10 @@ namespace Foxsys.ApartmentEditor
 
         #region drawing
 
-        public void Draw(ApartmentEditorGrid grid, bool isClosed = true)
+        public void Draw( bool isClosed = true)
         {
             var currentSkin = SkinManager.Instance.CurrentSkin;
-            Color color = currentSkin.GetColor(CurrentType);
+            var color = MaterialPreset.Color;
             for (int i = 0, count = _Contour.Count ; i < (isClosed ? count : count - 1); i++)
             {
                 var p1 = _Contour[i].Position;
@@ -316,7 +317,7 @@ namespace Foxsys.ApartmentEditor
 
                 WindowObjectDrawer.DrawLine(p1, p2);
 
-                _Contour[i].Draw(p1);
+                _Contour[i].Draw();
 
                 if (IsShowSizes)
                 {
@@ -374,14 +375,6 @@ namespace Foxsys.ApartmentEditor
         }
 
         #endregion
-
-        public enum Type
-        {
-            Kitchen = 0,
-            Bathroom = 1,
-            Toilet = 2,
-            Living = 3
-        }
     }
     [Serializable]
     public class RoomVert : ISelectable, IWallObject
@@ -440,13 +433,14 @@ namespace Foxsys.ApartmentEditor
             {
                 var projection = room.GetNearestPointOnContour(position);
                 var contour = room.Contour;
-
+                _Position = projection.Value;
                 for (int i = 0, count = contour.Count; i < count; i++)
                 {
                     Vector2 p1 = contour[i].Position, p2 = contour[(i + 1) % count].Position;
-                    if(MathUtils.IsPointInsideLineSegment(projection.Value, p1, p2))
+                    if(MathUtils.IsPointInsideLineSegment(_Position, p1, p2))
                     {
-                        room.Contour.Insert(i + 1, new RoomVert(room, projection.Value));
+                        _Parent = room;
+                        room.Contour.Insert(i + 1, this);
                         return true;
                     }
                 }
@@ -454,15 +448,28 @@ namespace Foxsys.ApartmentEditor
             return false;
         }
 
-        public void Draw(Vector2 position)
+        public void DrawOnWall(Vector2 position)
+        {
+            var apartment = ApartmentsManager.Instance.CurrentApartment;
+            var room = apartment.GetNearestRoom(position);
+            if (room != null)
+            {
+                var projection = room.GetNearestPointOnContour(position);
+                Handles.color = SkinManager.Instance.CurrentSkin.VertColor;
+
+                WindowObjectDrawer.DrawCircle(projection.Value);
+            }
+        }
+
+        public void Draw()
         {
             Handles.color = SkinManager.Instance.CurrentSkin.VertColor;
-            WindowObjectDrawer.DrawCircle(position);
+            WindowObjectDrawer.DrawCircle(_Position);
         }
     }
 
     [Serializable]
-    public class CountourObject : ISelectable
+    public class ContourObject : ISelectable
     {
         public float Position;
         public Room Parent;

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
@@ -11,7 +12,7 @@ namespace Foxsys.ApartmentEditor
         public string PathToModels = "";
         public string PathToSkins = "";
         public string PathToData = "";
-
+        public string PathToMaterialPresets = "";
         public string PathToApartments
         {
             get { return Path.Combine(PathToData, "Apartments"); }
@@ -34,6 +35,27 @@ namespace Foxsys.ApartmentEditor
         }
         private static PathsConfig _Instance;
 
+        public string GetPathByType(Type type)
+        {
+            if (type == typeof(Door))
+            {
+                return PathToDoors;
+            }
+            if (type == typeof(Apartment))
+            {
+                return PathToApartments;
+            }
+            if (type == typeof(Window))
+            {
+                return PathToDoors;
+            }
+            if (type == typeof(RoomMaterialPreset))
+            {
+                return PathToDoors;
+            }
+            Debug.Log("You don't have special path for objects of type " + type.ToString());
+            return null;
+        }
         public static PathsConfig Instance
         {
             get

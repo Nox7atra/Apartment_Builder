@@ -8,9 +8,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 52205107df63fa14fbbf1b52e407af61, type: 3}
-  m_Name: default
+  m_Script: {fileID: 11500000, guid: 0045413922ca1124cbb88f6973befd7f, type: 3}
+  m_Name: New Foxsys.ApartmentEditor.Door9e8189d2679a9a94b9dd6c6e18b0a5d7
   m_EditorClassIdentifier: 
-  Width: 142
-  Height: 177
-  DistanceFromFloor: 90
+  Width: 0
+  Height: 0

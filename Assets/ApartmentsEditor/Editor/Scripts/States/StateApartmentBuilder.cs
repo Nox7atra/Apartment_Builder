@@ -47,7 +47,7 @@ namespace Foxsys.ApartmentEditor
             
         }
 
-        protected abstract void Reset();
+        public abstract void Reset();
 
         private static readonly Vector2 MouseLabelOffset = new Vector2(10, 10);
     }

@@ -12,8 +12,6 @@ namespace Foxsys.ApartmentEditor
 
         public float Height;
 
-        public List<RoomMaterials> RoomsMaterialses;
-
         public bool IsGenerateOutside;
 
         public Texture PlanImage;
@@ -62,26 +60,26 @@ namespace Foxsys.ApartmentEditor
 
         #endregion
 
-        public void Draw(ApartmentEditorGrid grid)
+        public void Draw()
         {
-            DrawDimensions(grid);
+            DrawDimensions();
 
             if(PlanImage != null)
                 DrawPlanImage();
                
             foreach (Room room in _Rooms)
             {
-                room.Draw(grid);
+                room.Draw();
                
             }
-            DrawWallObjects(grid);
+            DrawWallObjects();
         }
 
         private void DrawPlanImage()
         {
             WindowObjectDrawer.DrawTexture(_Dimensions, PlanImage);
         }
-        private void DrawWallObjects(ApartmentEditorGrid grid)
+        private void DrawWallObjects()
         {
             foreach (Room room in _Rooms)
             {
@@ -90,7 +88,7 @@ namespace Foxsys.ApartmentEditor
                 {
                     for (int i = 0, count = room.WallObjects.Count; i < count; i++)
                     {
-                        wallObjects[i].Object.Draw(wallObjects[i].GetVector2Position());
+                        wallObjects[i].Object.DrawOnWall(wallObjects[i].GetVector2Position());
                         if (room.IsShowPositions)
                         {
                             var position = wallObjects[i].GetVector2Position();
@@ -100,7 +98,7 @@ namespace Foxsys.ApartmentEditor
                 }
             }
         }
-        private void DrawDimensions(ApartmentEditorGrid grid)
+        private void DrawDimensions()
         {
             Handles.color = SkinManager.Instance.CurrentSkin.RoomDimensionsColor;
             for(int i = 0; i < _DimensionsPoints.Length; i++)
@@ -186,9 +184,9 @@ namespace Foxsys.ApartmentEditor
             return true;
         }
 
-        public string GetRoomName(Room.Type type)
+        public string GetRoomName(RoomMaterialPreset preset)
         {
-            var typeName = type.ToString();
+            var typeName = preset.name;
             var room = _Rooms.FindLast(x => x.name.Split('_')[0] == typeName);
             var num = room == null ? 0 : (int.Parse(room.name.Split('_')[1]) + 1);
             return typeName + "_" + num;
@@ -196,19 +194,6 @@ namespace Foxsys.ApartmentEditor
         private Apartment()
         {
             _Rooms = new List<Room>();
-            RoomsMaterialses = new List<RoomMaterials>(4);
-            for (int i = 0; i < 4; i++)
-            {
-                RoomsMaterialses.Add(new RoomMaterials());
-            }
-        }
-
-        [Serializable]
-        public class RoomMaterials
-        {
-            public Material FloorMat;
-            public Material RoofMat;
-            public Material WallMat;
         }
     }
 }

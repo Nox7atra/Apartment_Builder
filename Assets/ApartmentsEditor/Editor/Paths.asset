@@ -14,3 +14,4 @@ MonoBehaviour:
   PathToModels: Assets/ApartmentsEditor/Editor/Data/Models/
   PathToSkins: Assets/ApartmentsEditor/Editor/Skins/
   PathToData: Assets/ApartmentsEditor/Editor/Data/
+  PathToMaterialPresets: Assets/ApartmentsEditor/Editor/Data/MaterialPresets/

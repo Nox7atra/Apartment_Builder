@@ -34,7 +34,7 @@ namespace Foxsys.ApartmentEditor
         {
             var manager = ObjectsManager.Instance;
             if(manager.SelectedObject != null)
-                manager.SelectedObject.Draw(_ParentWindow.Grid.GUIToGrid(_CurrentMousePosition));
+                manager.SelectedObject.DrawOnWall(_ParentWindow.Grid.GUIToGrid(_CurrentMousePosition));
         }
 
 
@@ -52,7 +52,14 @@ namespace Foxsys.ApartmentEditor
                 case EventType.MouseDown:
                     if (Event.current.button == 0)
                     {
-                        ObjectsManager.Instance.SelectedObject.TryAddObject(_ParentWindow.Grid.GUIToGrid(_CurrentMousePosition));
+                        var position = _ParentWindow.Grid.GUIToGrid(_CurrentMousePosition);
+                        Undo.RegisterCompleteObjectUndo(ApartmentsManager.Instance.CurrentApartment.GetNearestRoom(position), "Add Wall Object");
+                        if (ObjectsManager.Instance.SelectedObject.TryAddObject(position))
+                        {
+                            if(ObjectsManager.Instance.CurrentMode == ObjectsManager.Mode.Vert)
+                                Reset();
+                            AssetDatabase.SaveAssets();
+                        };
                     }
                     break;
                 case EventType.MouseMove:
@@ -70,7 +77,7 @@ namespace Foxsys.ApartmentEditor
         }
 #endregion
 
-        protected override void Reset()
+        public override void Reset()
         {
             ObjectsManager.Instance.Reset();
             ActiveEditorTracker.sharedTracker.isLocked = false;

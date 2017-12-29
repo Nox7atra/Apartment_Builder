@@ -14,12 +14,11 @@ namespace Foxsys.ApartmentEditor
 
         private Rect _Dimensions;
 
-        private bool[] _MaterialFoldouts;
         private void OnEnable()
         {
             _ThisApartment = (Apartment) target;
             _Dimensions = _ThisApartment.Dimensions;
-            _MaterialFoldouts = new bool[_ThisApartment.RoomsMaterialses.Count];
+
         }
 
         public override void OnInspectorGUI()
@@ -29,7 +28,7 @@ namespace Foxsys.ApartmentEditor
 
             var dimensions = EditorGUILayout.Vector2Field("Dimensions (cm)", _Dimensions.size).RoundCoordsToInt();
             _ThisApartment.PlanImage = (Texture) EditorGUILayout.ObjectField(_ThisApartment.PlanImage, typeof(Texture), false);
-            DrawMaterialProperties();
+
             //_ThisApartment.IsGenerateOutside = EditorGUILayout.Toggle("Generate outside (Directional Light)", _ThisApartment.IsGenerateOutside);
             GenerateButton();
 
@@ -40,28 +39,7 @@ namespace Foxsys.ApartmentEditor
             _ThisApartment.Dimensions = _Dimensions;
         }
 
-        private void DrawMaterialProperties()
-        {
-            GUILayout.Label("Materials");
-            var materials = _ThisApartment.RoomsMaterialses;
-            for (int i = 0, count = materials.Count; i < count; i++)
-            {
-                _MaterialFoldouts[i] = EditorGUILayout.Foldout(_MaterialFoldouts[i], ((Room.Type) i).ToString());
-                if (_MaterialFoldouts[i])
-                {
-                    materials[i].FloorMat =
-                        (Material) EditorGUILayout.ObjectField("Floor Material", materials[i].FloorMat,
-                            typeof(Material), false);
-                    materials[i].RoofMat =
-                        (Material) EditorGUILayout.ObjectField("Roof Material", materials[i].RoofMat, typeof(Material),
-                            false);
-                    materials[i].WallMat =
-                        (Material) EditorGUILayout.ObjectField("Wall Material", materials[i].WallMat, typeof(Material),
-                            false);
-                }
 
-            }
-        }
         private void TopButtons()
         {
             GUILayout.BeginHorizontal();

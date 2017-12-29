@@ -8,9 +8,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 52205107df63fa14fbbf1b52e407af61, type: 3}
+  m_Script: {fileID: 11500000, guid: 82d30376ff4358b48af0ec8cc9b8df7f, type: 3}
   m_Name: default
   m_EditorClassIdentifier: 
-  Width: 142
-  Height: 177
-  DistanceFromFloor: 90
+  Color: {r: 1, g: 0, b: 1, a: 1}
+  FloorMaterial: {fileID: 0}
+  RoofMaterial: {fileID: 0}
+  WallMaterial: {fileID: 0}

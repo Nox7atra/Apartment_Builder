@@ -33,6 +33,11 @@ namespace Foxsys.ApartmentEditor
 
         public void AddObjectStateBegin(ObjectsManager.Mode mode)
         {
+            if (ApartmentsManager.Instance.CurrentApartment.Rooms.Count <= 0)
+            {
+                Debug.Log("Create at least one room to add " + mode.ToString());
+                return;
+            }
             ObjectsManager.Instance.SelectMode(mode);
             Selection.activeObject = ObjectsManager.Instance;
             ActivateState(EditorWindowState.ObjectAdding);
@@ -152,7 +157,7 @@ namespace Foxsys.ApartmentEditor
             var apartment = ApartmentsManager.Instance.CurrentApartment;
             if (apartment != null)
             {
-                apartment.Draw(Grid);
+                apartment.Draw();
             }
 
             foreach (var stateApartmentEditor in _States)

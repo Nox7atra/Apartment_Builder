@@ -7,6 +7,6 @@ namespace Foxsys.ApartmentEditor
     public interface IWallObject
     {
         bool TryAddObject(Vector2 position);
-        void Draw(Vector2 position);
+        void DrawOnWall(Vector2 position);
     }
 }

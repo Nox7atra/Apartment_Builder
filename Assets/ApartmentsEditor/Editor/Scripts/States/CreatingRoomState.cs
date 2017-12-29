@@ -41,7 +41,7 @@ namespace Foxsys.ApartmentEditor
 
             DrawMouseLabel(mousePos);
 
-            _CurrentRoom.Draw(_ParentWindow.Grid, false);
+            _CurrentRoom.Draw(false);
         }
         #endregion
 
@@ -80,7 +80,7 @@ namespace Foxsys.ApartmentEditor
         }
         #endregion
 
-        protected override void Reset()
+        public override void Reset()
         {
             Object.DestroyImmediate(_CurrentRoom, true);
             AssetDatabase.SaveAssets();

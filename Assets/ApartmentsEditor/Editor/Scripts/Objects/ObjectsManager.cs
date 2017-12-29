@@ -46,7 +46,18 @@ namespace Foxsys.ApartmentEditor
         public void SelectMode(Mode mode)
         {
             _CurrentMode = mode;
-
+            switch (mode)
+            {
+                case Mode.Doors:
+                    _SelectedObject = ScriptableObjectUtils.CreateOrGet<Door>("default");
+                    break;
+                case Mode.Windows:
+                    _SelectedObject = ScriptableObjectUtils.CreateOrGet<Window>("default");
+                    break;
+                case Mode.Vert:
+                    _SelectedObject = new RoomVert(null, new Vector2());
+                    break;
+            }
         }
 
         public void SelectObject(IWallObject wallObj)

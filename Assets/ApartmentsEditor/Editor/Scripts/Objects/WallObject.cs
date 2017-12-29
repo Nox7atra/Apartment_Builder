@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 
@@ -9,6 +10,7 @@ namespace Foxsys.ApartmentEditor
     [Serializable]
     public abstract class WallObject : ScriptableObject, IWallObject
     {
+ 
         #region fields
 
         [SerializeField]
@@ -19,7 +21,7 @@ namespace Foxsys.ApartmentEditor
         #endregion
 
         public abstract List<Vector2> GetHole(Vector2 position, Vector2 wallBegin, Vector2 wallEnd);
-        public void Draw(Vector2 position)
+        public void DrawOnWall(Vector2 position)
         {
             var apartment = ApartmentsManager.Instance.CurrentApartment;
             var room = apartment.GetNearestRoom(position);
@@ -45,7 +47,7 @@ namespace Foxsys.ApartmentEditor
             if (room != null)
             {
                 var projection = room.GetNearestPointOnContour(position);
-                room.WallObjects.Add(new CountourObject
+                room.WallObjects.Add(new ContourObject
                 {
                     Parent = room,
                     Position = room.PointToPositionOnContour(projection.Value),

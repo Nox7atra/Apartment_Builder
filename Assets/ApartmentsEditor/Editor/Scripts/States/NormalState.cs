@@ -85,7 +85,7 @@ namespace Foxsys.ApartmentEditor
             _ParentWindow.Repaint();
         }
 
-        protected override void Reset()
+        public override void Reset()
         {
         }
 
@@ -106,7 +106,8 @@ namespace Foxsys.ApartmentEditor
                         : selectedRoom;
                     if (selectedRoom != null)
                     {
-                        Selection.activeObject = selectedRoom;
+                        var contourObj = selectable as ContourObject;
+                        Selection.activeObject = contourObj  != null ? contourObj.Object : (ScriptableObject) selectedRoom;
                         Undo.RegisterCompleteObjectUndo(selectedRoom, "Room position changed");
                        
                         _SelectedObject = selectable ?? selectedRoom;

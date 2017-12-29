@@ -15,6 +15,7 @@ namespace Foxsys.ApartmentEditor
             EditorGUILayout.BeginVertical();
             RecenterButton();
             CreateRoomButton();
+            VertButton();
             DoorButton();
             WindowButton();
             EditorGUILayout.EndVertical();
@@ -67,7 +68,17 @@ namespace Foxsys.ApartmentEditor
                 _ParentWindow.AddObjectStateBegin(ObjectsManager.Mode.Windows);
             }
         }
-
+        public void VertButton()
+        {
+            if (EditorUIUtils.ButtonWithFallback(
+                null,
+                "AV",
+                _CurrentSkin.MiniButtonStyle
+            ))
+            {
+                _ParentWindow.AddObjectStateBegin(ObjectsManager.Mode.Vert);
+            }
+        }
         public Toolbar(ApartmentEditorWindow parentWindow)
         {
             _ParentWindow = parentWindow;
