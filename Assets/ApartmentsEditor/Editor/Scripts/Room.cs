@@ -306,7 +306,6 @@ namespace Foxsys.ApartmentEditor
 
         public void Draw( bool isClosed = true)
         {
-            var currentSkin = SkinManager.Instance.CurrentSkin;
             var color = MaterialPreset.Color;
             for (int i = 0, count = _Contour.Count ; i < (isClosed ? count : count - 1); i++)
             {

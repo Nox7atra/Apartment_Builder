@@ -25,8 +25,18 @@ namespace Foxsys.ApartmentEditor
         public ApartmentEditorGrid Grid;
 
         private Toolbar _Toolbar;
+        private EditorWindowState _CurrentState;
         private Dictionary<EditorWindowState, StateApartmentBuilder> _States;
         private Vector3? _LastMousePosition;
+        #endregion
+
+        #region properties
+
+        public EditorWindowState CurrentState
+        {
+            get { return _CurrentState; }
+        }
+
         #endregion
 
         #region object to add state
@@ -113,6 +123,7 @@ namespace Foxsys.ApartmentEditor
 
         public void ActivateState(EditorWindowState state)
         {
+            _CurrentState = state;
             foreach (var stateApartmentEditor in _States)
             {
                 stateApartmentEditor.Value.SetActive(stateApartmentEditor.Key == state);
@@ -152,8 +163,10 @@ namespace Foxsys.ApartmentEditor
             GUI.color = new Color(bgValue, bgValue, bgValue);
             GUI.DrawTexture(new Rect(Vector2.zero,maxSize), EditorGUIUtility.whiteTexture);
             GUI.color = Color.white;
-            KeysEvents();
+
             Grid.Draw();
+
+            _Toolbar.Draw();
             var apartment = ApartmentsManager.Instance.CurrentApartment;
             if (apartment != null)
             {
@@ -164,7 +177,9 @@ namespace Foxsys.ApartmentEditor
             {
                 stateApartmentEditor.Value.Draw();
             }
-            _Toolbar.Draw();
+
+
+            KeysEvents();
         }
         #endregion
 

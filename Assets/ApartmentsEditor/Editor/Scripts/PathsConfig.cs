@@ -47,11 +47,11 @@ namespace Foxsys.ApartmentEditor
             }
             if (type == typeof(Window))
             {
-                return PathToDoors;
+                return PathToWindows;
             }
             if (type == typeof(RoomMaterialPreset))
             {
-                return PathToDoors;
+                return PathToMaterialPresets;
             }
             Debug.Log("You don't have special path for objects of type " + type.ToString());
             return null;

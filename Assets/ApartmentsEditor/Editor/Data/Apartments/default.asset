@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91af5c0efcc7cea4a9c5d710859ce37f, type: 3}
+  m_Name: default
+  m_EditorClassIdentifier: 
+  Height: 273
+  IsGenerateOutside: 0
+  PlanImage: {fileID: 0}
+  _Rooms:
+  - {fileID: 114411985747492096}
+  _Dimensions:
+    serializedVersion: 2
+    x: -500
+    y: -500
+    width: 1000
+    height: 1000
+--- !u!114 &114411985747492096
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a52e267f180e5fb4b9966e3ef152b2c7, type: 3}
+  m_Name: default_1
+  m_EditorClassIdentifier: 
+  WallThickness: 0
+  _ParentApartment: {fileID: 11400000}
+  _Contour:
+  - _Parent: {fileID: 114411985747492096}
+    _Position: {x: -332, y: 82}
+  - _Parent: {fileID: 114411985747492096}
+    _Position: {x: -18, y: 258}
+  - _Parent: {fileID: 114411985747492096}
+    _Position: {x: 218, y: 82}
+  - _Parent: {fileID: 114411985747492096}
+    _Position: {x: 302, y: -148}
+  - _Parent: {fileID: 114411985747492096}
+    _Position: {x: -267, y: -467}
+  - _Parent: {fileID: 114411985747492096}
+    _Position: {x: -324, y: -229}
+  IsShowSizes: 0
+  IsShowSquare: 0
+  IsShowPositions: 0
+  MaterialPreset: {fileID: 11400000, guid: 1d393cde74a55bf45bb231a92f3c82a5, type: 2}
+  WallObjects:
+  - Position: 0.63296217
+    Parent: {fileID: 114411985747492096}
+    Object: {fileID: 11400000, guid: 8e319cdfb65579f498a659ae8acd00de, type: 2}

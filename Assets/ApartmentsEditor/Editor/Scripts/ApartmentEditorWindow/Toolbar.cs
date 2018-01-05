@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
-using UnityEngine;
+﻿using UnityEditor;
 
 namespace Foxsys.ApartmentEditor
 {
@@ -11,15 +8,16 @@ namespace Foxsys.ApartmentEditor
         private readonly Skin _CurrentSkin;
         public void Draw()
         {
-            GUILayout.BeginArea(new Rect(0,0, Screen.width / 2f, Screen.height));
-            EditorGUILayout.BeginVertical();
-            RecenterButton();
-            CreateRoomButton();
-            VertButton();
-            DoorButton();
-            WindowButton();
-            EditorGUILayout.EndVertical();
-            GUILayout.EndArea();
+            if (_ParentWindow.CurrentState == ApartmentEditorWindow.EditorWindowState.Normal)
+            {
+                EditorGUILayout.BeginVertical();
+                RecenterButton();
+                CreateRoomButton();
+                VertButton();
+                DoorButton();
+                WindowButton();
+                EditorGUILayout.EndVertical();
+            }
         }
 
         public void CreateRoomButton()
