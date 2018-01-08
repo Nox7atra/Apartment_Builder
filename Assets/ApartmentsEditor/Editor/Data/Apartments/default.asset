@@ -31,7 +31,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a52e267f180e5fb4b9966e3ef152b2c7, type: 3}
-  m_Name: default_1
+  m_Name: kitchen_0
   m_EditorClassIdentifier: 
   WallThickness: 0
   _ParentApartment: {fileID: 11400000}
@@ -43,16 +43,25 @@ MonoBehaviour:
   - _Parent: {fileID: 114411985747492096}
     _Position: {x: 218, y: 82}
   - _Parent: {fileID: 114411985747492096}
-    _Position: {x: 302, y: -148}
+    _Position: {x: 278, y: -500}
   - _Parent: {fileID: 114411985747492096}
-    _Position: {x: -267, y: -467}
+    _Position: {x: -278, y: -500}
   - _Parent: {fileID: 114411985747492096}
-    _Position: {x: -324, y: -229}
+    _Position: {x: -276, y: -171}
   IsShowSizes: 0
   IsShowSquare: 0
   IsShowPositions: 0
-  MaterialPreset: {fileID: 11400000, guid: 1d393cde74a55bf45bb231a92f3c82a5, type: 2}
+  MaterialPreset: {fileID: 11400000, guid: 20b9d7f1dd5864a47afeba4ca0c2e155, type: 2}
   WallObjects:
   - Position: 0.63296217
     Parent: {fileID: 114411985747492096}
     Object: {fileID: 11400000, guid: 8e319cdfb65579f498a659ae8acd00de, type: 2}
+  - Position: 0.8320704
+    Parent: {fileID: 114411985747492096}
+    Object: {fileID: 11400000, guid: 8e319cdfb65579f498a659ae8acd00de, type: 2}
+  - Position: 0.46770406
+    Parent: {fileID: 114411985747492096}
+    Object: {fileID: 11400000, guid: 759fc20e5ebfe654b8e0dab7b8acd7a8, type: 2}
+  - Position: 0.39921534
+    Parent: {fileID: 114411985747492096}
+    Object: {fileID: 11400000, guid: 759fc20e5ebfe654b8e0dab7b8acd7a8, type: 2}

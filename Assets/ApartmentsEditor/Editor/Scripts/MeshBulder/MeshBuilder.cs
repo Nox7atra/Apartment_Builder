@@ -1,10 +1,12 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using Enumerable = System.Linq.Enumerable;
+using Object = UnityEngine.Object;
 
 namespace Foxsys.ApartmentEditor
 {
@@ -63,7 +65,6 @@ namespace Foxsys.ApartmentEditor
 
             if(!inside)
                 wallContour.Reverse();
-
 
 
             for (int j = 0, count = wallContour.Count; j < count; j++)
@@ -195,13 +196,47 @@ namespace Foxsys.ApartmentEditor
                 new Vector2(-wallLength,  wallHeight),
                 new Vector2( wallLength,  wallHeight),
                 new Vector2( wallLength, 0)
+         
             };
-            foreach (var hole in holes)
+            for(int iter = 0; iter < holes.Count; iter++)
             {
+                var hole = holes[iter];
                 for (int i = 0; i < hole.Count; i++)
                 {
                     hole[i] = hole[i] / MeasurmentK;
                 }
+                if (!hole.TrueForAll(v => v.y != 0))      //is Door
+                {
+                    ReorderHolePoints(hole);
+                    int insertIndex = -1;
+                    for (int j = 0, count = wallContour.Count; j <= count; j++)
+                    {
+                        Vector2 p1 = wallContour[j], p2 = wallContour[(j + 1) % count];
+                        if (MathUtils.IsPointInsideLineSegment(hole[0], p1, p2))
+                        {
+                            insertIndex = j + 1;
+                            break;
+                        }
+                    }
+                    for (int j = 0, count = wallContour.Count; j < count; j++)
+                    {
+                        for (int k = 0; k < hole.Count; k++)
+                        {
+                            if (hole[k] == wallContour[j])
+                            {
+                                hole.RemoveAt(k);
+                                wallContour.RemoveAt(j);
+                                insertIndex--;
+                                j--;
+                                k--;
+                            }
+                        }
+                    }
+                    wallContour.InsertRange(insertIndex, hole);
+                    holes.Remove(hole);
+                    iter--;
+                }
+            
             }
             var mesh = triangulator.CreateMesh(wallContour, holes);
             mesh.RecalculateNormals();
@@ -217,6 +252,17 @@ namespace Foxsys.ApartmentEditor
             return wallGO;
         }
 
+        private static void ReorderHolePoints(List<Vector2> hole)
+        {
+            var bot = hole.Where(v => Math.Abs(v.y) <= 0).ToList();
+            bot.Sort((v1, v2) => v1.x > v2.x ? -1 : 1);
+            var top = hole.Where(v =>Math.Abs(v.y) > 0).ToList();
+            top.Sort((v1, v2) => v1.x > v2.x ? -1 : 1);
+            hole[0] = bot[0];
+            hole[1] = top[0];
+            hole[2] = top[1];
+            hole[3] = bot[1];
+        }
         private static void SaveMesh(Mesh mesh, string roomName, bool isIndide)
         {
             var path = Path.Combine(PathsConfig.Instance.PathToModels, _ApartmentName);

@@ -117,49 +117,57 @@ namespace Foxsys.ApartmentEditor
 
             if (holes != null)
             {
-                holes.Sort((item1, item2) => item2.OrderByDescending(i => i.x).FirstOrDefault().x.CompareTo(item1.OrderByDescending(j => j.x).FirstOrDefault().x));
-                foreach (List<Vector2> hole in holes)
-                {
-                    Vector2? maxXpoint = null;
-                    float maxX = float.MinValue;
-                    List<Vector2> holeVerts = hole;
-
-                    bool isHoleClockwise = MathUtils.IsContourClockwise(holeVerts);
-
-                    if (!(isClockwisePolygon ^ isHoleClockwise))
-                    {
-                        holeVerts.Reverse();
-                    }
-                    for (int j = 0, count = holeVerts.Count; j < count; j++)
-                    {
-                        if (maxX < holeVerts[j].x)
-                        {
-                            maxXpoint = holeVerts[j];
-                            maxX = holeVerts[j].x;
-                        }
-                    }
-                    if (maxXpoint.HasValue)
-                    {
-                        holeVerts = MathUtils.ReorderContour(holeVerts, maxXpoint.Value);
-                        int index = FindMutuallyVisibleVertIndex(maxXpoint.Value);
-                        if (index >= 0)
-                        {
-                            for (int k = 0; k < holeVerts.Count + 2; k++)
-                            {
-                                _CountourIndexes.Add(_CountourIndexes.Count);
-                            }
-                            _Polygon.InsertRange(index + 1, holeVerts);
-                            _Polygon.Insert(index + holeVerts.Count + 1, holeVerts[0]);
-                            _Polygon.Insert(index + holeVerts.Count + 2, _Polygon[index]);
-                        }
-                    }
-                }
+                ProcessHoles(holes, isClockwisePolygon);
             }
 
             InitConvexPoints(isClockwisePolygon);
 
             return isClockwisePolygon;
         }
+
+        private void ProcessHoles(List<List<Vector2>> holes, bool isClockwisePolygon)
+        {
+
+            holes.Sort((item1, item2) => item2.OrderByDescending(i => i.x).FirstOrDefault().x
+                .CompareTo(item1.OrderByDescending(j => j.x).FirstOrDefault().x));
+            foreach (List<Vector2> hole in holes)
+            {
+                Vector2? maxXpoint = null;
+                float maxX = float.MinValue;
+                List<Vector2> holeVerts = hole;
+
+                bool isHoleClockwise = MathUtils.IsContourClockwise(holeVerts);
+
+                if (!(isClockwisePolygon ^ isHoleClockwise))
+                {
+                    holeVerts.Reverse();
+                }
+                for (int j = 0, count = holeVerts.Count; j < count; j++)
+                {
+                    if (maxX < holeVerts[j].x)
+                    {
+                        maxXpoint = holeVerts[j];
+                        maxX = holeVerts[j].x;
+                    }
+                }
+                if (maxXpoint.HasValue)
+                {
+                    holeVerts = MathUtils.ReorderContour(holeVerts, maxXpoint.Value);
+                    int index = FindMutuallyVisibleVertIndex(maxXpoint.Value);
+                    if (index >= 0)
+                    {
+                        for (int k = 0; k < holeVerts.Count + 2; k++)
+                        {
+                            _CountourIndexes.Add(_CountourIndexes.Count);
+                        }
+                        _Polygon.InsertRange(index + 1, holeVerts);
+                        _Polygon.Insert(index + holeVerts.Count + 1, holeVerts[0]);
+                        _Polygon.Insert(index + holeVerts.Count + 2, _Polygon[index]);
+                    }
+                }
+            }
+        }
+
         private int FindMutuallyVisibleVertIndex(Vector2 vert)
         {
             Vector2 minIntersection = new Vector2();
@@ -250,7 +258,7 @@ namespace Foxsys.ApartmentEditor
                     _ConvexVerts.AddLast(i);
             }
         }
-
+        
         private bool IsVertConvex(int vertNum, bool isClockwisePolygon)
         {
             int index = _CountourIndexes.FindIndex(x => x == vertNum);

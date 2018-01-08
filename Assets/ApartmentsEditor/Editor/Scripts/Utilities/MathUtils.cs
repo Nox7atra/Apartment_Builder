@@ -8,6 +8,12 @@ namespace Foxsys.ApartmentEditor
 {
     public static class MathUtils
     {
+        public static List<Vector2> MergePolygons(List<Vector2> poly1, List<Vector2> poly2)
+        {
+            var holes = new List<Vector2>();
+
+            return holes;
+        }
         public static Vector2 CalculateTangent(Vector2 p1, Vector2 p2)
         {
            return new Vector2(p1.x - p2.x, p1.y - p2.y).normalized;
