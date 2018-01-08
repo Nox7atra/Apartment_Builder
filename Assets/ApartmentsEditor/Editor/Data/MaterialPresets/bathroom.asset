@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Name: bathroom
   m_EditorClassIdentifier: 
   Color: {r: 0, g: 0.048275948, b: 1, a: 1}
-  FloorMaterial: {fileID: 2100000, guid: dacfa76175c50cc49a0fce169af706a9, type: 2}
+  FloorMaterial: {fileID: 2100000, guid: 8c7a792b9e7c64b4ead749bc34303517, type: 2}
   RoofMaterial: {fileID: 2100000, guid: 9947000ffc89c1a43bf3e370f04ea3f7, type: 2}
-  WallMaterial: {fileID: 2100000, guid: 9947000ffc89c1a43bf3e370f04ea3f7, type: 2}
+  WallMaterial: {fileID: 2100000, guid: 8c7a792b9e7c64b4ead749bc34303517, type: 2}

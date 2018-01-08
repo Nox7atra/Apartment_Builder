@@ -65,7 +65,7 @@ namespace Foxsys.ApartmentEditor
 
             if(!inside)
                 wallContour.Reverse();
-
+  
 
             for (int j = 0, count = wallContour.Count; j < count; j++)
             {
@@ -112,9 +112,9 @@ namespace Foxsys.ApartmentEditor
                     if (MathUtils.IsPointInsideLineSegment(position - normal * room.WallThickness, begin, end))
                     {
                         holes.Add(wallObject.GetHole(position, begin, end));
+                        
                     }
                 }
-               
 
             }
             return holes;
@@ -208,16 +208,20 @@ namespace Foxsys.ApartmentEditor
                 if (!hole.TrueForAll(v => v.y != 0))      //is Door
                 {
                     ReorderHolePoints(hole);
+
                     int insertIndex = -1;
-                    for (int j = 0, count = wallContour.Count; j <= count; j++)
+                    for (int j = 0, count = wallContour.Count; j < count; j++)
                     {
                         Vector2 p1 = wallContour[j], p2 = wallContour[(j + 1) % count];
-                        if (MathUtils.IsPointInsideLineSegment(hole[0], p1, p2))
+          
+                        if ( MathUtils.IsPointInsideLineSegment(hole[0], p1, p2))
                         {
+
                             insertIndex = j + 1;
                             break;
                         }
                     }
+
                     for (int j = 0, count = wallContour.Count; j < count; j++)
                     {
                         for (int k = 0; k < hole.Count; k++)

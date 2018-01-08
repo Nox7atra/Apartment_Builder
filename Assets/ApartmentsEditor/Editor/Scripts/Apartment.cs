@@ -114,6 +114,8 @@ namespace Foxsys.ApartmentEditor
                     continue;
 
                 vert = room.GetVertInPos(point);
+                if(vert != null)
+                    break;
             }
             return vert;
         }

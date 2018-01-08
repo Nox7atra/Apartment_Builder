@@ -15,14 +15,107 @@ MonoBehaviour:
   IsGenerateOutside: 0
   PlanImage: {fileID: 0}
   _Rooms:
-  - {fileID: 114411985747492096}
+  - {fileID: 114724206959876132}
+  - {fileID: 114026066749177248}
+  - {fileID: 114708910615354844}
+  - {fileID: 114523814025498598}
+  - {fileID: 114629633632239988}
+  - {fileID: 114976115013176224}
+  - {fileID: 114374636499510868}
+  - {fileID: 114882482757578780}
+  - {fileID: 114549434078170192}
   _Dimensions:
     serializedVersion: 2
     x: -500
     y: -500
     width: 1000
     height: 1000
---- !u!114 &114411985747492096
+--- !u!114 &114026066749177248
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a52e267f180e5fb4b9966e3ef152b2c7, type: 3}
+  m_Name: living_1
+  m_EditorClassIdentifier: 
+  WallThickness: 0
+  _ParentApartment: {fileID: 11400000}
+  _Contour:
+  - _Parent: {fileID: 114026066749177248}
+    _Position: {x: -500, y: 260}
+  - _Parent: {fileID: 114026066749177248}
+    _Position: {x: -320, y: 260}
+  - _Parent: {fileID: 114026066749177248}
+    _Position: {x: -320, y: 180}
+  - _Parent: {fileID: 114026066749177248}
+    _Position: {x: -165, y: 180}
+  - _Parent: {fileID: 114026066749177248}
+    _Position: {x: -165, y: -345}
+  - _Parent: {fileID: 114026066749177248}
+    _Position: {x: -500, y: -345}
+  IsShowSizes: 0
+  IsShowSquare: 0
+  IsShowPositions: 0
+  MaterialPreset: {fileID: 11400000, guid: 330e02aaccb5f7844a5bc61f973add88, type: 2}
+  WallObjects:
+  - Position: 0.58776593
+    Parent: {fileID: 114026066749177248}
+    Object: {fileID: 11400000, guid: 0b35f2470d2c6244b987678576f2585e, type: 2}
+  - Position: 0.17765957
+    Parent: {fileID: 114026066749177248}
+    Object: {fileID: 11400000, guid: 8e319cdfb65579f498a659ae8acd00de, type: 2}
+  - Position: 0.037234068
+    Parent: {fileID: 114026066749177248}
+    Object: {fileID: 11400000, guid: fa906a09c8a425746a7c4d42dd99018f, type: 2}
+  - Position: 0.29680848
+    Parent: {fileID: 114026066749177248}
+    Object: {fileID: 11400000, guid: c278edde47a90664bab219bb723f4e45, type: 2}
+--- !u!114 &114348264018142244
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a52e267f180e5fb4b9966e3ef152b2c7, type: 3}
+  m_Name: living_2
+  m_EditorClassIdentifier: 
+  WallThickness: 12
+  _ParentApartment: {fileID: 11400000}
+  _Contour:
+  - _Parent: {fileID: 114348264018142244}
+    _Position: {x: 240, y: 180}
+  - _Parent: {fileID: 114348264018142244}
+    _Position: {x: 240, y: -115}
+  - _Parent: {fileID: 114348264018142244}
+    _Position: {x: -165, y: -115.000015}
+  - _Parent: {fileID: 114348264018142244}
+    _Position: {x: -165, y: 180}
+  IsShowSizes: 0
+  IsShowSquare: 0
+  IsShowPositions: 0
+  MaterialPreset: {fileID: 11400000, guid: 330e02aaccb5f7844a5bc61f973add88, type: 2}
+  WallObjects:
+  - Position: 0.030714286
+    Parent: {fileID: 114348264018142244}
+    Object: {fileID: 11400000, guid: 8e319cdfb65579f498a659ae8acd00de, type: 2}
+  - Position: 0.23928571
+    Parent: {fileID: 114348264018142244}
+    Object: {fileID: 11400000, guid: 8e319cdfb65579f498a659ae8acd00de, type: 2}
+  - Position: 0.3557143
+    Parent: {fileID: 114348264018142244}
+    Object: {fileID: 11400000, guid: 8e319cdfb65579f498a659ae8acd00de, type: 2}
+  - Position: 0.79
+    Parent: {fileID: 114348264018142244}
+    Object: {fileID: 11400000, guid: c278edde47a90664bab219bb723f4e45, type: 2}
+  - Position: 0.13285714
+    Parent: {fileID: 114348264018142244}
+    Object: {fileID: 11400000, guid: c278edde47a90664bab219bb723f4e45, type: 2}
+--- !u!114 &114374636499510868
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -36,32 +129,248 @@ MonoBehaviour:
   WallThickness: 0
   _ParentApartment: {fileID: 11400000}
   _Contour:
-  - _Parent: {fileID: 114411985747492096}
-    _Position: {x: -332, y: 82}
-  - _Parent: {fileID: 114411985747492096}
-    _Position: {x: -18, y: 258}
-  - _Parent: {fileID: 114411985747492096}
-    _Position: {x: 218, y: 82}
-  - _Parent: {fileID: 114411985747492096}
-    _Position: {x: 278, y: -500}
-  - _Parent: {fileID: 114411985747492096}
-    _Position: {x: -278, y: -500}
-  - _Parent: {fileID: 114411985747492096}
-    _Position: {x: -276, y: -171}
+  - _Parent: {fileID: 114374636499510868}
+    _Position: {x: 240, y: -265}
+  - _Parent: {fileID: 114374636499510868}
+    _Position: {x: 80, y: -265}
+  - _Parent: {fileID: 114374636499510868}
+    _Position: {x: 80, y: -115.00001}
+  - _Parent: {fileID: 114374636499510868}
+    _Position: {x: 500, y: -115}
+  - _Parent: {fileID: 114374636499510868}
+    _Position: {x: 500, y: -500}
+  - _Parent: {fileID: 114374636499510868}
+    _Position: {x: 240, y: -500}
   IsShowSizes: 0
   IsShowSquare: 0
   IsShowPositions: 0
   MaterialPreset: {fileID: 11400000, guid: 20b9d7f1dd5864a47afeba4ca0c2e155, type: 2}
   WallObjects:
-  - Position: 0.63296217
-    Parent: {fileID: 114411985747492096}
-    Object: {fileID: 11400000, guid: 8e319cdfb65579f498a659ae8acd00de, type: 2}
-  - Position: 0.8320704
-    Parent: {fileID: 114411985747492096}
-    Object: {fileID: 11400000, guid: 8e319cdfb65579f498a659ae8acd00de, type: 2}
-  - Position: 0.46770406
-    Parent: {fileID: 114411985747492096}
+  - Position: 0.771519
+    Parent: {fileID: 114374636499510868}
     Object: {fileID: 11400000, guid: 759fc20e5ebfe654b8e0dab7b8acd7a8, type: 2}
-  - Position: 0.39921534
-    Parent: {fileID: 114411985747492096}
+--- !u!114 &114523814025498598
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a52e267f180e5fb4b9966e3ef152b2c7, type: 3}
+  m_Name: bathroom_0
+  m_EditorClassIdentifier: 
+  WallThickness: 0
+  _ParentApartment: {fileID: 11400000}
+  _Contour:
+  - _Parent: {fileID: 114523814025498598}
+    _Position: {x: 80, y: 180}
+  - _Parent: {fileID: 114523814025498598}
+    _Position: {x: 80, y: 500}
+  - _Parent: {fileID: 114523814025498598}
+    _Position: {x: 240, y: 500}
+  - _Parent: {fileID: 114523814025498598}
+    _Position: {x: 240, y: 180}
+  IsShowSizes: 0
+  IsShowSquare: 0
+  IsShowPositions: 0
+  MaterialPreset: {fileID: 11400000, guid: 955bb6e23b42819479fa556291b2904b, type: 2}
+  WallObjects:
+  - Position: 0.92187256
+    Parent: {fileID: 114523814025498598}
+    Object: {fileID: 11400000, guid: 8e319cdfb65579f498a659ae8acd00de, type: 2}
+  - Position: 0.4129032
+    Parent: {fileID: 114523814025498598}
+    Object: {fileID: 11400000, guid: 8c4675624b272fc46815a48415e158f7, type: 2}
+--- !u!114 &114549434078170192
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a52e267f180e5fb4b9966e3ef152b2c7, type: 3}
+  m_Name: living_5
+  m_EditorClassIdentifier: 
+  WallThickness: 0
+  _ParentApartment: {fileID: 11400000}
+  _Contour:
+  - _Parent: {fileID: 114549434078170192}
+    _Position: {x: -165, y: 180}
+  - _Parent: {fileID: 114549434078170192}
+    _Position: {x: 240, y: 180}
+  - _Parent: {fileID: 114549434078170192}
+    _Position: {x: 240, y: -115}
+  - _Parent: {fileID: 114549434078170192}
+    _Position: {x: -165, y: -115.000015}
+  IsShowSizes: 0
+  IsShowSquare: 0
+  IsShowPositions: 0
+  MaterialPreset: {fileID: 11400000, guid: 330e02aaccb5f7844a5bc61f973add88, type: 2}
+  WallObjects:
+  - Position: 0.55285716
+    Parent: {fileID: 114549434078170192}
+    Object: {fileID: 11400000, guid: c278edde47a90664bab219bb723f4e45, type: 2}
+--- !u!114 &114629633632239988
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a52e267f180e5fb4b9966e3ef152b2c7, type: 3}
+  m_Name: living_4
+  m_EditorClassIdentifier: 
+  WallThickness: 0
+  _ParentApartment: {fileID: 11400000}
+  _Contour:
+  - _Parent: {fileID: 114629633632239988}
+    _Position: {x: 80, y: -115.00001}
+  - _Parent: {fileID: 114629633632239988}
+    _Position: {x: 80, y: -500}
+  - _Parent: {fileID: 114629633632239988}
+    _Position: {x: -165, y: -500}
+  - _Parent: {fileID: 114629633632239988}
+    _Position: {x: -165, y: -115.000015}
+  IsShowSizes: 0
+  IsShowSquare: 0
+  IsShowPositions: 0
+  MaterialPreset: {fileID: 11400000, guid: 330e02aaccb5f7844a5bc61f973add88, type: 2}
+  WallObjects:
+  - Position: 0.40317464
+    Parent: {fileID: 114629633632239988}
     Object: {fileID: 11400000, guid: 759fc20e5ebfe654b8e0dab7b8acd7a8, type: 2}
+  - Position: 0.9015873
+    Parent: {fileID: 114629633632239988}
+    Object: {fileID: 11400000, guid: c278edde47a90664bab219bb723f4e45, type: 2}
+--- !u!114 &114708910615354844
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a52e267f180e5fb4b9966e3ef152b2c7, type: 3}
+  m_Name: living_3
+  m_EditorClassIdentifier: 
+  WallThickness: 0
+  _ParentApartment: {fileID: 11400000}
+  _Contour:
+  - _Parent: {fileID: 114708910615354844}
+    _Position: {x: -165, y: 500}
+  - _Parent: {fileID: 114708910615354844}
+    _Position: {x: 80, y: 500}
+  - _Parent: {fileID: 114708910615354844}
+    _Position: {x: 80, y: 180}
+  - _Parent: {fileID: 114708910615354844}
+    _Position: {x: -165, y: 180}
+  IsShowSizes: 0
+  IsShowSquare: 0
+  IsShowPositions: 0
+  MaterialPreset: {fileID: 11400000, guid: 330e02aaccb5f7844a5bc61f973add88, type: 2}
+  WallObjects:
+  - Position: 0.40090907
+    Parent: {fileID: 114708910615354844}
+    Object: {fileID: 11400000, guid: 8e319cdfb65579f498a659ae8acd00de, type: 2}
+  - Position: 0.110909104
+    Parent: {fileID: 114708910615354844}
+    Object: {fileID: 11400000, guid: 759fc20e5ebfe654b8e0dab7b8acd7a8, type: 2}
+  - Position: 0.6109091
+    Parent: {fileID: 114708910615354844}
+    Object: {fileID: 11400000, guid: c278edde47a90664bab219bb723f4e45, type: 2}
+--- !u!114 &114724206959876132
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a52e267f180e5fb4b9966e3ef152b2c7, type: 3}
+  m_Name: living_0
+  m_EditorClassIdentifier: 
+  WallThickness: 0
+  _ParentApartment: {fileID: 11400000}
+  _Contour:
+  - _Parent: {fileID: 114724206959876132}
+    _Position: {x: -175, y: -500}
+  - _Parent: {fileID: 114724206959876132}
+    _Position: {x: -500, y: -500}
+  - _Parent: {fileID: 114724206959876132}
+    _Position: {x: -500, y: -345}
+  - _Parent: {fileID: 114724206959876132}
+    _Position: {x: -175, y: -345}
+  IsShowSizes: 0
+  IsShowSquare: 0
+  IsShowPositions: 0
+  MaterialPreset: {fileID: 11400000, guid: 330e02aaccb5f7844a5bc61f973add88, type: 2}
+  WallObjects: []
+--- !u!114 &114882482757578780
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a52e267f180e5fb4b9966e3ef152b2c7, type: 3}
+  m_Name: bathroom_2
+  m_EditorClassIdentifier: 
+  WallThickness: 0
+  _ParentApartment: {fileID: 11400000}
+  _Contour:
+  - _Parent: {fileID: 114882482757578780}
+    _Position: {x: 500, y: -115}
+  - _Parent: {fileID: 114882482757578780}
+    _Position: {x: 240, y: -115}
+  - _Parent: {fileID: 114882482757578780}
+    _Position: {x: 240, y: 105}
+  - _Parent: {fileID: 114882482757578780}
+    _Position: {x: 500, y: 105}
+  IsShowSizes: 0
+  IsShowSquare: 0
+  IsShowPositions: 0
+  MaterialPreset: {fileID: 11400000, guid: 955bb6e23b42819479fa556291b2904b, type: 2}
+  WallObjects:
+  - Position: 0.8784946
+    Parent: {fileID: 114882482757578780}
+    Object: {fileID: 11400000, guid: 759fc20e5ebfe654b8e0dab7b8acd7a8, type: 2}
+  - Position: 0.37419355
+    Parent: {fileID: 114882482757578780}
+    Object: {fileID: 11400000, guid: c278edde47a90664bab219bb723f4e45, type: 2}
+--- !u!114 &114976115013176224
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a52e267f180e5fb4b9966e3ef152b2c7, type: 3}
+  m_Name: bathroom_1
+  m_EditorClassIdentifier: 
+  WallThickness: 0
+  _ParentApartment: {fileID: 11400000}
+  _Contour:
+  - _Parent: {fileID: 114976115013176224}
+    _Position: {x: 80, y: -265}
+  - _Parent: {fileID: 114976115013176224}
+    _Position: {x: 240, y: -265}
+  - _Parent: {fileID: 114976115013176224}
+    _Position: {x: 240, y: -500}
+  - _Parent: {fileID: 114976115013176224}
+    _Position: {x: 80, y: -499.99997}
+  IsShowSizes: 0
+  IsShowSquare: 0
+  IsShowPositions: 0
+  MaterialPreset: {fileID: 11400000, guid: 955bb6e23b42819479fa556291b2904b, type: 2}
+  WallObjects:
+  - Position: 0.14810121
+    Parent: {fileID: 114976115013176224}
+    Object: {fileID: 11400000, guid: 8e319cdfb65579f498a659ae8acd00de, type: 2}
+  - Position: 0.6025317
+    Parent: {fileID: 114976115013176224}
+    Object: {fileID: 11400000, guid: 8c4675624b272fc46815a48415e158f7, type: 2}

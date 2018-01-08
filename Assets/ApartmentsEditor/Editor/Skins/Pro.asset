@@ -160,12 +160,8 @@ MonoBehaviour:
   IconRecenter: {fileID: 2800000, guid: 4dbacabd9e09788449dc39bfbbe064a8, type: 3}
   GridColor: {r: 0.28654844, g: 0.3342143, b: 0.3897059, a: 1}
   VertColor: {r: 1, g: 0.7322515, b: 0.029411793, a: 1}
-  KitchenContourColor: {r: 1, g: 0, b: 0.022000015, a: 1}
-  BathroomContourColor: {r: 0.058391, g: 0.7606939, b: 0.99264705, a: 1}
-  ToiletContourColor: {r: 0.33110604, g: 0.88235295, b: 0.15570934, a: 1}
-  LivingContourColor: {r: 1, g: 0.6088235, b: 0.022058845, a: 1}
   RoomDimensionsColor: {r: 0.15862082, g: 1, b: 0, a: 1}
   SelectionColor: {r: 0.94482756, g: 1, b: 0, a: 1}
   DoorColor: {r: 1, g: 1, b: 1, a: 1}
-  WindowColor: {r: 0, g: 0.25517225, b: 1, a: 1}
+  WindowColor: {r: 1, g: 0, b: 0, a: 1}
   CirclesRad: 30

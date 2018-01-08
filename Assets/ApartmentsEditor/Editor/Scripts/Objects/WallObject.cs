@@ -38,7 +38,7 @@ namespace Foxsys.ApartmentEditor
 
         public float CalculateOffset(Vector2 position, Vector2 wallBegin, Vector2 wallEnd, bool isFromBegin)
         {
-            return Vector2.Distance(position, wallEnd) - Vector2.Distance(wallEnd, wallBegin) / 2 + (isFromBegin ? Width / 2 : -Width / 2);
+            return -Vector2.Distance(position, wallEnd) + Vector2.Distance(wallEnd, wallBegin) / 2 + (isFromBegin ? Width / 2 : -Width / 2);
         }
 
         public bool TryAddObject(Vector2 position)

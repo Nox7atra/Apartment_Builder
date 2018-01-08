@@ -15,6 +15,7 @@ namespace Foxsys.ApartmentEditor
             _SelectedManager = target as ObjectsManager;
 
             _SelectedManager.OnReset += Repaint;
+            _SelectedManager.OnChangeMode += Repaint;
             if (_SelectedManager.CurrentMode == ObjectsManager.Mode.None)
                 return;
             ActiveEditorTracker.sharedTracker.isLocked = true;
@@ -24,15 +25,18 @@ namespace Foxsys.ApartmentEditor
         public void OnDestroy()
         {
             _SelectedManager.OnReset -= Repaint;
+            _SelectedManager.OnChangeMode -= Repaint;
             _SelectedManager = null;        
         }
         public override void OnInspectorGUI()
         {
+            base.OnInspectorGUI();
+        
             if (_SelectedManager.CurrentMode == ObjectsManager.Mode.None || _SelectedManager.CurrentMode == ObjectsManager.Mode.Vert)
                 return;
 
-            base.OnInspectorGUI();
-            var wallObj = _ChosenObject as WallObject;
+            var wallObj = _SelectedManager.SelectedObject as WallObject;
+
             if (wallObj != null)
             {
                 _ChosenObject = (WallObject) EditorGUILayout.ObjectField(wallObj, typeof(WallObject), false);

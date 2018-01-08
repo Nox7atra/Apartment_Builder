@@ -166,7 +166,7 @@ namespace Foxsys.ApartmentEditor
 
             Grid.Draw();
 
-            _Toolbar.Draw();
+
             var apartment = ApartmentsManager.Instance.CurrentApartment;
             if (apartment != null)
             {
@@ -178,7 +178,7 @@ namespace Foxsys.ApartmentEditor
                 stateApartmentEditor.Value.Draw();
             }
 
-
+            _Toolbar.Draw();
             KeysEvents();
         }
         #endregion

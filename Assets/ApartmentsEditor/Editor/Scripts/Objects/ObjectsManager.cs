@@ -18,7 +18,7 @@ namespace Foxsys.ApartmentEditor
         #region events
 
         public event Action OnReset;
-
+        public event Action OnChangeMode;
         #endregion
         #region properties
 
@@ -58,6 +58,8 @@ namespace Foxsys.ApartmentEditor
                     _SelectedObject = new RoomVert(null, new Vector2());
                     break;
             }
+            if (OnChangeMode != null)
+                OnChangeMode();
         }
 
         public void SelectObject(IWallObject wallObj)

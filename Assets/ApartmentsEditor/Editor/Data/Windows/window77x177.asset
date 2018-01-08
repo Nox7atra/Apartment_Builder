@@ -9,8 +9,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 52205107df63fa14fbbf1b52e407af61, type: 3}
-  m_Name: default
+  m_Name: window77x177
   m_EditorClassIdentifier: 
-  Width: 180
+  Width: 77
   Height: 177
   DistanceFromFloor: 90

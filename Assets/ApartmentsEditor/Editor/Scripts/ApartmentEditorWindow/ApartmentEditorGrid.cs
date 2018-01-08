@@ -28,12 +28,15 @@ namespace Foxsys.ApartmentEditor
         #region public methods
         public Vector2 GUIToGrid(Vector3 vec)
         {
-            Vector2 newVec = ((Vector2)vec - new Vector2(_ParentWindow.position.width / 2, _ParentWindow.position.height / 2)) * _Zoom + _Offset;
+            Vector2 newVec = (
+                new Vector2(vec.x, -vec.y) - new Vector2(_ParentWindow.position.width / 2, -_ParentWindow.position.height / 2)) 
+                * _Zoom + new Vector2(_Offset.x, -_Offset.y);
             return newVec.RoundCoordsToInt();
         }
         public Vector2 GridToGUI(Vector3 vec)
         {
-            return ((Vector2) vec  - _Offset) / _Zoom + new Vector2(_ParentWindow.position.width / 2, _ParentWindow.position.height / 2);
+            return (new Vector2(vec.x - _Offset.x, -vec.y - _Offset.y) ) / _Zoom 
+                + new Vector2(_ParentWindow.position.width / 2, _ParentWindow.position.height / 2);
         }
         public void Draw()
         {

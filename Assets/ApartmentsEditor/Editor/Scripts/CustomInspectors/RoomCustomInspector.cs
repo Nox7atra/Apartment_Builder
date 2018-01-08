@@ -40,7 +40,7 @@ namespace Foxsys.ApartmentEditor
             for (int i = 0, count = contour.Count; i < count; i++)
             {
                 var newPosition = EditorGUILayout.Vector2Field("Point " + i,
-                    contour[i].Position);
+                    contour[i].Position.RoundCoordsToInt());
 
                 if (dimension.Contains(newPosition))
                 {
