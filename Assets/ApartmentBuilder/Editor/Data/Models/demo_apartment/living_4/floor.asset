@@ -31,7 +31,7 @@ Mesh:
   m_KeepVertices: 1
   m_KeepIndices: 1
   m_IndexFormat: 0
-  m_IndexBuffer: 030000000100010002000300
+  m_IndexBuffer: 000001000200000002000300
   m_Skin: []
   m_VertexData:
     m_CurrentChannels: 11

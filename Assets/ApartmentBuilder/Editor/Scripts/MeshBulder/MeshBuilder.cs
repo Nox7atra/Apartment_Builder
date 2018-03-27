@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using Enumerable = System.Linq.Enumerable;
 using Object = UnityEngine.Object;
 
 namespace Foxsys.ApartmentBuilder
@@ -20,7 +19,7 @@ namespace Foxsys.ApartmentBuilder
             _ApartmentName = apartment.name;
             GameObject go = new GameObject(_ApartmentName);
             ClearOld();
-            var rooms = GenerateRooms(apartment, new EarCuttingTriangulator());
+            var rooms = GenerateRooms(apartment);
 
             rooms.transform.SetParent(go.transform);
             AssetDatabase.Refresh();
@@ -33,27 +32,27 @@ namespace Foxsys.ApartmentBuilder
             if(Directory.Exists(path))
                 Directory.Delete(path, true);
         }
-        private static GameObject GenerateRooms(Apartment apartment, Triangulator triangulator)
+        private static GameObject GenerateRooms(Apartment apartment)
         {
             GameObject go = new GameObject("Rooms");
           
             var rooms = apartment.Rooms;
             foreach (var room in rooms)
             {
-                var roomGo = GenerateRoom(room, triangulator);
+                var roomGo = GenerateRoom(room);
               
                 roomGo.transform.SetParent(go.transform);
 
                 if (apartment.IsGenerateOutside)
                 {
-                    var outside = GenerateRoom(room, triangulator, false);
+                    var outside = GenerateRoom(room, false);
                     outside.transform.SetParent(roomGo.transform);
                 }
             }
             return go;
         }
 
-        private static GameObject GenerateRoom(Room room, Triangulator triangulator, bool inside = true)
+        private static GameObject GenerateRoom(Room room, bool inside = true)
         {
             var apartment = room.ParentApartment;
             GameObject roomGO = new GameObject(room.name + (inside ? "" : "_outside"));
@@ -76,7 +75,6 @@ namespace Foxsys.ApartmentBuilder
                     end,
                     (end + begin).XYtoXYZ() / 2,
                     holes,
-                    triangulator,
                     height,
                     inside ? room.MaterialPreset.WallMaterial : apartment.OutsideMaterial,
                     j);
@@ -89,7 +87,6 @@ namespace Foxsys.ApartmentBuilder
 
             GameObject floorGO = GenerateFloor(
                 wallContour,
-                triangulator, 
                 centroid, 
                 inside ? room.MaterialPreset.FloorMaterial : apartment.OutsideMaterial);
             SaveMesh(floorGO.GetComponent<MeshFilter>().sharedMesh, room.name, inside);
@@ -134,8 +131,7 @@ namespace Foxsys.ApartmentBuilder
             var mf = roofGO.GetComponent<MeshFilter>();
             var mr = roofGO.GetComponent<MeshRenderer>();
             var mesh = Object.Instantiate(mf.sharedMesh);
-     
-
+  
             var tris = mesh.triangles;
             for (int i = 0; i < tris.Length; i+=3)
             {
@@ -153,7 +149,6 @@ namespace Foxsys.ApartmentBuilder
         }
         private static GameObject GenerateFloor(
             List<Vector2> roomContour, 
-            Triangulator triangulator, 
             Vector3 centroid, 
             Material floorMat)
         {
@@ -162,8 +157,10 @@ namespace Foxsys.ApartmentBuilder
             MeshRenderer mr = go.AddComponent<MeshRenderer>();
 
             go.transform.position = centroid / MeasurmentK;
-
-            var mesh = triangulator.CreateMesh(roomContour, null);
+            var polygon = new Poly2Mesh.Polygon();
+            var converter = new Converter<Vector2, Vector3>(Vector2ToVector3);
+            polygon.outside = roomContour.ConvertAll(converter);
+            var mesh = Poly2Mesh.CreateMesh(polygon);
             var verts = mesh.vertices;
 
             for (int i = 0; i < verts.Length; i++)
@@ -186,14 +183,13 @@ namespace Foxsys.ApartmentBuilder
             Vector3 end,
             Vector3 center,
             List<List<Vector2>> holes,
-            Triangulator triangulator,
             float apartmentHeight,
             Material wallMat,
             int index)
         {
             GameObject wallGO = new GameObject("wall" + index);
             MeshFilter wallMf = wallGO.AddComponent<MeshFilter>();
-            MeshRenderer wallMr = wallGO.AddComponent<MeshRenderer>();
+            MeshRenderer wallMr = wallGO.AddComponent<MeshRenderer>(); 
 
             float wallLength = (Vector2.Distance(begin, end) / 2) / MeasurmentK;
             float wallHeight = apartmentHeight / MeasurmentK;
@@ -205,51 +201,24 @@ namespace Foxsys.ApartmentBuilder
                 new Vector2( wallLength, 0)
          
             };
-            for(int iter = 0; iter < holes.Count; iter++)
+             
+            var polygon = new Poly2Mesh.Polygon();
+            var converter = new Converter<Vector2, Vector3>(Vector2ToVector3);
+            polygon.outside = wallContour.ConvertAll(converter);
+            var v3Holes = new List<List<Vector3>>();
+            holes.ForEach(x => v3Holes.Add(x.ConvertAll(converter)));
+            for (int i = 0; i < v3Holes.Count; i++)
             {
-                var hole = holes[iter];
-                for (int i = 0; i < hole.Count; i++)
+                var hole = v3Holes[i];
+                for (int j = 0; j < hole.Count; j++)
                 {
-                    hole[i] = hole[i] / MeasurmentK;
+                    hole[j] = hole[j] / MeasurmentK;
                 }
-                if (!hole.TrueForAll(v => v.y != 0))      //is Door
-                {
-                    ReorderHolePoints(hole);
 
-                    int insertIndex = -1;
-                    for (int j = 0, count = wallContour.Count; j < count; j++)
-                    {
-                        Vector2 p1 = wallContour[j], p2 = wallContour[(j + 1) % count];
-          
-                        if ( MathUtils.IsPointInsideLineSegment(hole[0], p1, p2))
-                        {
-
-                            insertIndex = j + 1;
-                            break;
-                        }
-                    }
-
-                    for (int j = 0, count = wallContour.Count; j < count; j++)
-                    {
-                        for (int k = 0; k < hole.Count; k++)
-                        {
-                            if (hole[k] == wallContour[j])
-                            {
-                                hole.RemoveAt(k);
-                                wallContour.RemoveAt(j);
-                                insertIndex--;
-                                j--;
-                                k--;
-                            }
-                        }
-                    }
-                    wallContour.InsertRange(insertIndex, hole);
-                    holes.Remove(hole);
-                    iter--;
-                }
-            
             }
-            var mesh = triangulator.CreateMesh(wallContour, holes);
+            
+            polygon.holes = v3Holes;
+            var mesh = Poly2Mesh.CreateMesh(polygon);
             mesh.RecalculateNormals();
             mesh.RecalculateBounds();
             mesh.uv = MathUtils.CreatePlaneUVs(mesh);
@@ -263,17 +232,7 @@ namespace Foxsys.ApartmentBuilder
             return wallGO;
         }
 
-        private static void ReorderHolePoints(List<Vector2> hole)
-        {
-            var bot = hole.Where(v => Math.Abs(v.y) <= 0).ToList();
-            bot.Sort((v1, v2) => v1.x > v2.x ? -1 : 1);
-            var top = hole.Where(v =>Math.Abs(v.y) > 0).ToList();
-            top.Sort((v1, v2) => v1.x > v2.x ? -1 : 1);
-            hole[0] = bot[0];
-            hole[1] = top[0];
-            hole[2] = top[1];
-            hole[3] = bot[1];
-        }
+
         private static void SaveMesh(Mesh mesh, string roomName, bool isIndide)
         {
             var path = Path.Combine(PathsConfig.Instance.PathToModels, _ApartmentName);
@@ -284,6 +243,11 @@ namespace Foxsys.ApartmentBuilder
             }
             path = Path.Combine(path, mesh.name + ".asset");
             AssetDatabase.CreateAsset(mesh,path);
+        }
+
+        private static Vector3 Vector2ToVector3(Vector2 p)
+        {
+            return (Vector3) p;
         }
     }
 }
