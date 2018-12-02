@@ -7,6 +7,7 @@ namespace Foxsys.ApartmentBuilder
 {
     public sealed class ApartmentBuilderWindow : EditorWindow
     {
+        private static readonly Color BgColor = new Color(56 / 255f, 56 / 255f, 56 / 255f);
         #region factory
         [MenuItem("Window/Apartment Builder/Open Editor")]
         public static void Create()
@@ -24,7 +25,7 @@ namespace Foxsys.ApartmentBuilder
         #region fields
 
         public ApartmentBuilderGrid Grid;
-
+        
         private Toolbar _Toolbar;
         private EditorWindowState _CurrentState;
         private Dictionary<EditorWindowState, StateApartmentBuilder> _States;
@@ -160,13 +161,11 @@ namespace Foxsys.ApartmentBuilder
 
         private void OnGUI()
         {
-            float bgValue = 56 / 255f;
-            GUI.color = new Color(bgValue, bgValue, bgValue);
+            GUI.color = BgColor;
             GUI.DrawTexture(new Rect(Vector2.zero, maxSize), EditorGUIUtility.whiteTexture);
             GUI.color = Color.white;
 
             Grid.Draw();
-
 
             var apartment = ApartmentsManager.Instance.CurrentApartment;
             if (apartment != null)

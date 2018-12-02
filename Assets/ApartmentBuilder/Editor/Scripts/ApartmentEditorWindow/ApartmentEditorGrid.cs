@@ -53,9 +53,6 @@ namespace Foxsys.ApartmentBuilder
             var y = _Offset.y + dv.y * _Zoom;
             _Offset.x = x;
             _Offset.y = y;
-            //float halfLength = DEFAULT_CELL_SIZE * CELLS_IN_LINE_COUNT;
-            //_Offset.x = x > halfLength ? halfLength : x < -halfLength ? -halfLength : x;
-            //_Offset.y = y > halfLength ? halfLength : y < -halfLength ? -halfLength : y;
         }
         #endregion
 
