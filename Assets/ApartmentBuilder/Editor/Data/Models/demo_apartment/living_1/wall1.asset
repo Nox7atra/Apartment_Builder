@@ -3,10 +3,10 @@
 --- !u!43 &4300000
 Mesh:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: wall1
-  serializedVersion: 8
+  serializedVersion: 9
   m_SubMeshes:
   - serializedVersion: 2
     firstByte: 0
@@ -31,10 +31,9 @@ Mesh:
   m_KeepVertices: 1
   m_KeepIndices: 1
   m_IndexFormat: 0
-  m_IndexBuffer: 000001000200010000000300040001000300050004000300060004000500060007000400
-  m_Skin: []
+  m_IndexBuffer: 000001000200000003000100040001000300050004000300060004000500060007000400
   m_VertexData:
-    m_CurrentChannels: 11
+    serializedVersion: 2
     m_VertexCount: 8
     m_Channels:
     - stream: 0
@@ -45,6 +44,10 @@ Mesh:
       offset: 12
       format: 0
       dimension: 3
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
     - stream: 0
       offset: 0
       format: 0
@@ -69,8 +72,28 @@ Mesh:
       offset: 0
       format: 0
       dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
     m_DataSize: 256
-    _typelessdata: 666686bf00000000000000000000000000000000000080bfbe9f7a3fde02793f6e955dbf00000040000000000000000000000000000080bf9e187b3f96217e3f6e955dbf00000000000000000000000000000000ffff7fbf9e187b3fde02793f666686bf52b82e40000000000000000000000000000080bfbe9f7a3f0000803f1a6bec3d00000040000000000000000000000000ffff7fbf879b7d3f96217e3f6666863f52b82e40000000000000000000000000000080bf0000803f0000803f6666863f00000000000000000000000000000000000080bf0000803fde02793f1a6bec3d00000000000000000000000000000000000080bf879b7d3fde02793f
+    _typelessdata: 666686bf00000000000000000000000000000000000080bfbe9f7a3fde02793f3b3d32bf00000040000000000000000000000000000080bf94877b3f96217e3f3b3d32bf00000000000000000000000000000000000080bf94877b3fde02793f666686bf52b82e40000000000000000000000000ffff7fbfbe9f7a3f0000803f2dcb913e00000040000000000000000000000000000080bf7d0a7e3f96217e3f6666863f52b82e40000000000000000000000000ffff7fbf0000803f0000803f6666863f00000000000000000000000000000000ffff7fbf0000803fde02793f2dcb913e00000000000000000000000000000000000080bf7d0a7e3fde02793f
   m_CompressedMesh:
     m_Vertices:
       m_NumItems: 0
@@ -129,4 +152,6 @@ Mesh:
   m_MeshUsageFlags: 0
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
+  m_MeshMetrics[0]: 1
+  m_MeshMetrics[1]: 1
   m_MeshOptimized: 0
